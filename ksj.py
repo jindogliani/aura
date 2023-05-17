@@ -13,7 +13,7 @@ from time import sleep
 def background(file_num):
  
     # 이미지 읽어서 그레이스케일 변환, 바이너리 스케일 변환
-    img = cv2.imread("Input_Area/"+file_num+".png")
+    img = cv2.imread("GalleryImage/"+file_num+".png")
     imgray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     #ret, th = cv2.threshold(imgray, 7,255,cv2.THRESH_BINARY_INV)
     blur = cv2.GaussianBlur(imgray, ksize=(11, 11), sigmaX=1)
@@ -29,13 +29,13 @@ def background(file_num):
         (center_x, center_y), (w, h), rotation = rect
         vertex = cv2.boxPoints(rect)
         box = cv2.boxPoints(rect)   # 중심점과 각도를 4개의 꼭지점 좌표로 변환
-        box = np.int0(box)          # 정수로 변환
+        box = np.intp(box)          # 정수로 변환
 
-        center_x = np.int0(center_x)
-        center_y = np.int0(center_y)
+        center_x = np.intp(center_x)
+        center_y = np.intp(center_y)
         #print("thisis center", center_x, center_y)
-        w = np.int0(w)
-        h = np.int0(h)
+        w = np.intp(w)
+        h = np.intp(h)
         #print("thisis img", img[center_x][center_y])    # Oriented Bounding Box
     else:
         for contr in contours:  
@@ -43,13 +43,13 @@ def background(file_num):
             (center_x, center_y), (w, h), rotation = rect
             vertex = cv2.boxPoints(rect)
             box = cv2.boxPoints(rect)   # 중심점과 각도를 4개의 꼭지점 좌표로 변환
-            box = np.int0(box)          # 정수로 변환
+            box = np.intp(box)          # 정수로 변환
 
-            center_x = np.int0(center_x)
-            center_y = np.int0(center_y)
+            center_x = np.intp(center_x)
+            center_y = np.intp(center_y)
             #print("thisis center", center_x, center_y)
-            w = np.int0(w)
-            h = np.int0(h)
+            w = np.intp(w)
+            h = np.intp(h)
             #print("thisis img", img[center_x][center_y])
         
     degree = ((np.arctan2(vertex[3][0]-vertex[0][0], vertex[3][1]-vertex[0][1])*180)/np.pi)
@@ -76,12 +76,12 @@ def background(file_num):
         vertex = cv2.boxPoints(rect)
         #print(vertex)
         box = cv2.boxPoints(rect)   # 중심점과 각도를 4개의 꼭지점 좌표로 변환
-        box = np.int0(box)    
+        box = np.intp(box)    
             
-        center_x = np.int0(center_x)
-        center_y = np.int0(center_y)
-        w = np.int0(w)
-        h = np.int0(h)
+        center_x = np.intp(center_x)
+        center_y = np.intp(center_y)
+        w = np.intp(w)
+        h = np.intp(h)
         #print(w, h)
         #cv2.drawContours(img_rotate, [box], -1, (220, 20, 20), 2)
     # Oriented Bounding Box
@@ -98,12 +98,12 @@ def background(file_num):
             vertex = cv2.boxPoints(rect)
             #print(vertex)
             box = cv2.boxPoints(rect)   # 중심점과 각도를 4개의 꼭지점 좌표로 변환
-            box = np.int0(box)    
+            box = np.intp(box)    
                 
-            center_x = np.int0(center_x)
-            center_y = np.int0(center_y)
-            w = np.int0(w)
-            h = np.int0(h)
+            center_x = np.intp(center_x)
+            center_y = np.intp(center_y)
+            w = np.intp(w)
+            h = np.intp(h)
             #print(w, h)
             #cv2.drawContours(img_rotate, [box], -1, (220, 20, 20), 2)
 
@@ -209,4 +209,4 @@ def img_to_data(file_num):
     return img, pixel_data
 
 
-img_to_data('0')
+img_to_data('15')
