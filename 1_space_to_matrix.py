@@ -12,16 +12,16 @@ import os
 
 currentPath = os.getcwd()
 
-#GMA_W-10 는 갤러리 기준 -10미터 위에 plane이 
-#GMA_W+0.5 는 갤러리 기준 0.5미터 위에 plane이 캡처를 진행한
+# GMA_W-10 는 갤러리 기준 -10미터 위에 white plane이 있을 때 캡처: 전체 갤러리 탑뷰
+# GMA_W+0.5 는 갤러리 기준 0.5미터 위에 white plane이 있을 때 캡처: 갤러리 내부 가벽 탑뷰
 image = cv2.imread("GalleryImage/GMA3_W-10.png", cv2.IMREAD_COLOR)
 wImage = cv2.imread("GalleryImage/GMA3_W+0.5.png", cv2.IMREAD_COLOR)
 
-#회색으로 색상 변환
+# grey scale로 색상 변환
 imageGrey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 wImageGrey = cv2.cvtColor(wImage, cv2.COLOR_BGR2GRAY)
 
-#
+# 흰색 제외 전부 날리기
 ret, imageThreshold = cv2.threshold(imageGrey, 254, 255, cv2.THRESH_BINARY)
 ret, wImageThreshold = cv2.threshold(wImageGrey, 254, 255, cv2.THRESH_BINARY)
 
@@ -41,6 +41,7 @@ contours, hierarchy = cv2.findContours(imageThreshold, cv2.RETR_TREE, cv2.CHAIN_
 wContours, hierarchy = cv2.findContours(wImageThreshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 # contours = contours + wContours
 
+# 내벽 컨투어 검출 => 근데 컨투어에 문제가 있는 상황..
 cntrs = []
 for cnt in wContours:
     if cv2.contourArea(cnt) > 3000:
@@ -50,6 +51,7 @@ c = cntrs[0]
 mask = np.zeros(imageGrey.shape, np.uint8)
 cv2.drawContours(mask, [c], -1, 255, 2)
 
+# 컨투어 픽셀값 뽑기 => 실패
 pixel_np = np.transpose(np.nonzero(mask))
 pixel_cv = cv2.findNonZero(mask)
 img = image.copy()
@@ -57,7 +59,7 @@ cv2.drawContours(img, [pixel_cv], -1, (0, 0, 255), 1)
 cv2.imshow('numpy', mask)
 
 image = cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
-# cv2.imshow('Image', image)
+cv2.imshow('Image', image)
 
 # plt.figure(1)
 # plt.imshow(cv2.cvtColor(wImageThreshold2, cv2.COLOR_GRAY2RGB))
