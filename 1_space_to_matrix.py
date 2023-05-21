@@ -5,6 +5,8 @@ import numpy as np
 import networkx as nx
 import json 
 import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 import matplotlib.cm as cm
 from matplotlib.colors import Normalize
 from time import sleep
@@ -22,8 +24,8 @@ imageGrey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 wImageGrey = cv2.cvtColor(wImage, cv2.COLOR_BGR2GRAY)
 
 # 흰색 제외 전부 날리기
-ret, imageThreshold = cv2.threshold(imageGrey, 254, 255, cv2.THRESH_BINARY)
-ret, wImageThreshold = cv2.threshold(wImageGrey, 254, 255, cv2.THRESH_BINARY)
+_, imageThreshold = cv2.threshold(imageGrey, 254, 255, cv2.THRESH_BINARY)
+_, wImageThreshold = cv2.threshold(wImageGrey, 254, 255, cv2.THRESH_BINARY)
 
 # 색상 반전
 imageThreshold = cv2.bitwise_not(imageThreshold)
@@ -44,28 +46,69 @@ wContours, hierarchy = cv2.findContours(wImageThreshold, cv2.RETR_TREE, cv2.CHAI
 # 내벽 컨투어 검출 => 근데 컨투어에 문제가 있는 상황..
 cntrs = []
 for cnt in wContours:
-    if cv2.contourArea(cnt) > 3000:
+    if cv2.contourArea(cnt) > 2000:
         cntrs.append(cnt)
 
+
 c = cntrs[0]
+
 mask = np.zeros(imageGrey.shape, np.uint8)
-cv2.drawContours(mask, [c], -1, 255, 2)
+cv2.drawContours(mask, contours, -1, 255, 4)
+pixel_cv = cv2.findNonZero(mask)
+print(type(pixel_cv))
+print(pixel_cv)
+print(pixel_cv[0][0])
+galleryH = int(imageGrey.shape[0]*0.045)
+galleryW = int(imageGrey.shape[1]*0.045)
+heatmapCellSize = 0.2
+hCells, wCells = galleryH / heatmapCellSize, galleryW / heatmapCellSize
+
+hMap = np.zeros((int(hCells), int(wCells)), np.uint8)
+print(type(hMap))
+print(hMap)
+
+# for i in pixel_cv:
+#     for j in i:
+#         for yx, idx in np.ndenumerate(hMap):
+#             if idx == 0:
+#                 if heatmapCellSize*yx[0] <= j[0] * 0.045 < (yx[0]+1)*heatmapCellSize:
+#                     if yx[1]*heatmapCellSize <= j[1] * 0.045 < (yx[1]+1)*heatmapCellSize:
+#                         idx += 1
+#                 else:
+#                     idx = 0
+#                 print('processing')
+#             else:
+#                 idx = 1
+# print('done')
+
+# hMapCSV = pd.DataFrame(hMap)
+# sns.heatmap(hMapCSV, cmap='Greens', vmin=0, vmax=1)
 
 # 컨투어 픽셀값 뽑기 => 실패
-pixel_np = np.transpose(np.nonzero(mask))
-pixel_cv = cv2.findNonZero(mask)
+
+
 img = image.copy()
-cv2.drawContours(img, [pixel_cv], -1, (0, 0, 255), 1)
+# cv2.drawContours(img, [pixel_cv], -1, (0, 0, 255), 1)
 cv2.imshow('numpy', mask)
-
 image = cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
-cv2.imshow('Image', image)
+resized_mask = cv2.resize(mask, (int(wCells), int(hCells)))
+_, add_th = cv2.threshold(resized_mask, 127, 255, cv2.THRESH_BINARY)
 
+cv2.imshow("th", add_th)
+
+hMapCSV = pd.DataFrame(add_th)
+sns.heatmap(add_th, cmap='Greens', vmin=0, vmax=1)
+ 
+print(resized_mask.shape)
+
+cv2.imshow("resized", resized_mask)
+#픽셀 1050 갤러리 너비 48미터 => 1픽셀 당 0.045미터 정도...
+
+cv2.imshow('Image', image)
 # plt.figure(1)
-# plt.imshow(cv2.cvtColor(wImageThreshold2, cv2.COLOR_GRAY2RGB))
+# plt.imshow(cv2.cvtColor(wImageThreshold, cv2.COLOR_GRAY2RGB))
 # plt.figure(2)
 # plt.imshow(cv2.cvtColor(imageThreshold, cv2.COLOR_GRAY2RGB))
-
 plt.show()
 cv2.waitKey(0)
 cv2.imwrite("GalleryImage/test.png", imageThreshold)
