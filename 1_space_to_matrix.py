@@ -1,14 +1,15 @@
-#Unity 상에서 공간 캡처 데이터를 불러와서 매트릭스로 변형 및 .csv로 저장
+# Unity 상에서 공간 캡처 데이터를 불러와서 매트릭스로 변형 및 .csv로 저장
+
+import json
+import os
+from time import sleep
 
 import cv2
-import numpy as np
-import networkx as nx
-import json 
-import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import matplotlib.pyplot as plt
+import networkx as nx
+import numpy as np
 from matplotlib.colors import Normalize
-from time import sleep
-import os
 
 currentPath = os.getcwd()
 
@@ -37,8 +38,12 @@ wImageThreshold = cv2.bitwise_not(wImageThreshold)
 # cContours, hierarchy = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 # 컨투어 생성
-contours, hierarchy = cv2.findContours(imageThreshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-wContours, hierarchy = cv2.findContours(wImageThreshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+contours, hierarchy = cv2.findContours(
+    imageThreshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE
+)
+wContours, hierarchy = cv2.findContours(
+    wImageThreshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE
+)
 # contours = contours + wContours
 
 # 내벽 컨투어 검출 => 근데 컨투어에 문제가 있는 상황..
@@ -56,10 +61,10 @@ pixel_np = np.transpose(np.nonzero(mask))
 pixel_cv = cv2.findNonZero(mask)
 img = image.copy()
 cv2.drawContours(img, [pixel_cv], -1, (0, 0, 255), 1)
-cv2.imshow('numpy', mask)
+cv2.imshow("numpy", mask)
 
 image = cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
-cv2.imshow('Image', image)
+cv2.imshow("Image", image)
 
 # plt.figure(1)
 # plt.imshow(cv2.cvtColor(wImageThreshold2, cv2.COLOR_GRAY2RGB))

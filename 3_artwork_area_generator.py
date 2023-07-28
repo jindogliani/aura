@@ -6,8 +6,7 @@ import os
 
 currentPath = os.getcwd()
 visitorDataArtworkList = "preAURA_mmdd_MMDD_artworks"
-# "preAURA_MMDD_MMDD_artworks" => AURA 이전의 mmdd 부터 MMDD 까지의 작품들 .npy 들을 보관하는 폴더명 
+# "preAURA_MMDD_MMDD_artworks" => AURA 이전의 mmdd 부터 MMDD 까지의 작품들 .npy 들을 보관하는 폴더명
 
 print("현재 위치:" + currentPath)
-os.makedirs(currentPath+ "/" + visitorDataArtworkList, exist_ok= True)
-
+os.makedirs(currentPath + "/" + visitorDataArtworkList, exist_ok=True)
