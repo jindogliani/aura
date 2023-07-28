@@ -4,6 +4,7 @@
 """
 import csv
 import json
+import math
 import os
 
 import matplotlib.pyplot as plt
@@ -23,7 +24,7 @@ def process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, unit_cell_s
         x_cord = (float(data["move_x"]) + x_offset) / unit_cell_size
         y_cord = (float(data["move_y"]) + y_offset) / unit_cell_size
         gaze_target = data["lookingAt"]
-        row, col = int(y_cord), int(x_cord)
+        row, col = math.floor(y_cord), math.floor(x_cord)
         if row < 0 or col < 0 or row >= heatmap.shape[0] or col >= heatmap.shape[1]:
             continue
         dic = dict_array[row, col]
@@ -100,7 +101,7 @@ with open(visitor_data_path, "r") as f:
     process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, unit_cell_size)
 
 plt.figure(1)
-_figs, axes = plt.subplots(1, 26, sharey=True)
+_figs, axes = plt.subplots(1, 25, sharey=True)
 
 with open(artwork_data_path, "r") as f:
     artwork_data = json.load(f)
