@@ -7,12 +7,45 @@ import csv
 import json
 import os
 
-import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from matplotlib.colors import Normalize
+
+
+# Function to create an empty heatmap
+def create_empty_heatmap(spaceVerticalCells, spaceHorizontalCells):
+    return np.zeros((spaceVerticalCells, spaceHorizontalCells), dtype=np.uint16)
+
+
+# Function to process visitor data and update the heatmap
+def process_visitor_data(
+    heatmap, dictArray, visitorDataCSV, xOffset, yOffset, heatmapCellSize, ArtworkList
+):
+    reader = csv.DictReader(visitorDataCSV)
+
+    for line in reader:
+        newXcord = xOffset + float(line["move_x"])
+        newYcord = yOffset + float(line["move_y"])
+
+        for yx, i in np.ndenumerate(dictArray):
+            if yx[0] * heatmapCellSize <= newYcord < (yx[0] + 1) * heatmapCellSize:
+                if yx[1] * heatmapCellSize <= newXcord < (yx[1] + 1) * heatmapCellSize:
+                    if line["lookingAt"] != "wall":
+                        if line["lookingAt"] not in dictArray[yx[0]][yx[1]]:
+                            dictArray[yx[0]][yx[1]][line["lookingAt"]] = 1
+                        else:
+                            dictArray[yx[0]][yx[1]][line["lookingAt"]] += 1
+
+        for yx, i in np.ndenumerate(heatmap):
+            if yx[0] * heatmapCellSize <= newYcord < (yx[0] + 1) * heatmapCellSize:
+                if yx[1] * heatmapCellSize <= newXcord < (yx[1] + 1) * heatmapCellSize:
+                    heatmap[yx[0]][yx[1]] += 1
+                    print("processing")
+                    print(yx)
+    print("end")
+    visitorDataCSV.close()
+
 
 """
 예상 공간 값으로 0값 들어가는 이중배열 생성
@@ -22,23 +55,15 @@ spaceVerticalSize, spaceHorizontalSize = 10, 15
 heatmapCellSize = 0.2
 # 히트맵 셀 사이즈: 0.2미터 = 20센티미터
 spaceVertcalCells, spaceHorizontalCells = (
-    spaceVerticalSize / heatmapCellSize,
-    spaceHorizontalSize / heatmapCellSize,
+    round(spaceVerticalSize / heatmapCellSize),
+    round(spaceHorizontalSize / heatmapCellSize),
 )
-spaceHorizontalCells = round(spaceHorizontalCells)
-spaceVertcalCells = round(spaceVertcalCells)
 # 히트맵 가로 셀 개수: 15/0.2 = 75개 | 히트맵 세로 셀 개수: 10/0.2 = 50개
-heatmap = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype=np.uint16)
+heatmap = create_empty_heatmap(spaceVertcalCells, spaceHorizontalCells)
 # 히트맵 numpy 이중배열
 
-dic = dict()
-# array1 = [dic]*spaceVertcalCells*spaceHorizontalCells
-array1 = []
-for i in range(spaceVertcalCells * spaceHorizontalCells):
-    array1.append(copy.deepcopy(dic))
-    i += 1
+array1 = [dict() for _ in range(spaceVertcalCells * spaceHorizontalCells)]
 dictArray = np.reshape(array1, (spaceVertcalCells, spaceHorizontalCells))
-# 나중에 수정 필요... 임시방편
 
 """
 작품별 npy 저장하는 폴더 생성 및 작품리스트 생성
@@ -50,11 +75,7 @@ with open("Daegu_new.json", "r") as f:
     artworkDataJSONname = f.name[:-5]
 # 관람객데이터 csv파일, 전시정보 json파일 open
 
-ArtworkList = []
-for x in artworkDataJSON["exhibitionObjects"]:
-    ArtworkList.append(x["id"])
-# ArtworkList 리스트에 작품들 관리번호 호출
-
+ArtworkList = [x["id"] for x in artworkDataJSON["exhibitionObjects"]]
 artworkVisitorDataDir = artworkDataJSONname + "_" + visitorDataCSV.name[:-4]
 os.makedirs(currentPath + "/" + artworkVisitorDataDir, exist_ok=True)
 # "Daegu_new_preAURA_mmdd_MMDD" => AURA 이전의 mmdd 부터 MMDD 까지의 Daegu_new 콜렉션의 작품들 .npy 들을 보관하는 폴더명
@@ -64,56 +85,23 @@ reader = csv.DictReader(visitorDataCSV)
 xOffset = -2.4
 yOffset = 0
 # 현재 5전시실만 배열로 변환
-
-for line in reader:
-    newXcord = xOffset + float(line["move_x"])
-    newYcord = yOffset + float(line["move_y"])
-    # for (y, x), i in np.ndenumerate(dictArray):
-    for yx, i in np.ndenumerate(dictArray):  # 나중에 수정 필요... 임시방편 #TODO
-        if yx[0] * heatmapCellSize <= newYcord < (yx[0] + 1) * heatmapCellSize:
-            if yx[1] * heatmapCellSize <= newXcord < (yx[1] + 1) * heatmapCellSize:
-                if line["lookingAt"] != "wall":
-                    if line["lookingAt"] not in dictArray[yx[0]][yx[1]]:
-                        dictArray[yx[0]][yx[1]][line["lookingAt"]] = 1
-                    elif line["lookingAt"] in dictArray[yx[0]][yx[1]]:
-                        dictArray[yx[0]][yx[1]][line["lookingAt"]] += 1
-    for yx, i in np.ndenumerate(heatmap):  # 나중에 수정 필요... 임시방편
-        if yx[0] * heatmapCellSize <= newYcord < (yx[0] + 1) * heatmapCellSize:
-            if yx[1] * heatmapCellSize <= newXcord < (yx[1] + 1) * heatmapCellSize:
-                heatmap[yx[0]][yx[1]] += 1
-                print("processing")
-                print(yx)
-print("end")
-visitorDataCSV.close()
-
-# PA25heatmap = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = int)
-# PA24heatmap = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = int)
-
-# for yx, i in np.ndenumerate(dictArray): #나중에 수정 필요... 임시방편
-#       if 'PA-0025' in dictArray[yx[0]][yx[1]]:
-#             PA25heatmap[yx[0]][yx[1]] = dictArray[yx[0]][yx[1]]['PA-0025']
-#       if 'PA-0024' in dictArray[yx[0]][yx[1]]:
-#             PA24heatmap[yx[0]][yx[1]] = dictArray[yx[0]][yx[1]]['PA-0024']
+process_visitor_data(
+    heatmap, dictArray, visitorDataCSV, xOffset, yOffset, heatmapCellSize, ArtworkList
+)
 
 plt.figure(1)
 sub_plots, axes = plt.subplots(1, 25, sharey=True)
 num = 0
 
 for artwork in ArtworkList:
-    artworkNp = artwork + "Heatmap"
-    globals()[artworkNp] = np.zeros(
-        (spaceVertcalCells, spaceHorizontalCells), dtype=np.uint16
-    )
-    artwork_Np = globals()[artworkNp]
+    artwork_Np = create_empty_heatmap(spaceVertcalCells, spaceHorizontalCells)
     for yx, i in np.ndenumerate(dictArray):  # 나중에 수정 필요... 임시방편
         if artwork in dictArray[yx[0]][yx[1]]:
             artwork_Np[yx[0]][yx[1]] = int(dictArray[yx[0]][yx[1]][artwork])
     if np.max(artwork_Np) != 0:
         np.save(currentPath + "/" + artworkVisitorDataDir + "/" + artwork, artwork_Np)
         artwork_Np_CSV = pd.DataFrame(artwork_Np)
-        sns.heatmap(
-            artwork_Np_CSV, cmap="Greens", vmin=0, vmax=200, ax=axes[num]
-        )  # 히트맵 plot 띄우는 거 수정필요
+        sns.heatmap(artwork_Np_CSV, cmap="Greens", vmin=0, vmax=200, ax=axes[num])
         num += 1
 
 heatmapCSV = pd.DataFrame(heatmap)
