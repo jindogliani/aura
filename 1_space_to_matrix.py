@@ -21,26 +21,40 @@ def process_image(image_path, threshold_value=254):
 gallery_image_path = "GalleryImage/GMA3_W-10.png"
 wall_image_path = "GalleryImage/GMA3_W+0.5.png"
 
-image, imageGrey, imageThreshold, contours = process_image(gallery_image_path)
-wImage, wImageGrey, wImageThreshold, wContours = process_image(wall_image_path)
+(
+    gallery_image,
+    gallery_image_grey,
+    gallery_image_threshold,
+    gallery_contours,
+) = process_image(gallery_image_path)
+(
+    wall_image,
+    wall_image_grey,
+    wall_image_threshold,
+    wall_contours,
+) = process_image(wall_image_path)
 
 
 # list comprehension
-cntrs = [cnt for cnt in wContours if cv2.contourArea(cnt) > 3000]
+contours = [
+    wall_contour
+    for wall_contour in wall_contours
+    if cv2.contourArea(wall_contour) > 3000
+]
 
-c = cntrs[0]
-mask = np.zeros(imageGrey.shape, np.uint8)
-cv2.drawContours(mask, [c], -1, 255, 2)
+contour = contours[0]
+mask = np.zeros(gallery_image_grey.shape, np.uint8)
+cv2.drawContours(mask, [contour], -1, 255, 2)
 
 # 컨투어 픽셀값 뽑기 => 실패
 pixel_np = np.transpose(np.nonzero(mask))
 pixel_cv = cv2.findNonZero(mask)
-img = image.copy()
+img = gallery_image.copy()
 cv2.drawContours(img, [pixel_cv], -1, (0, 0, 255), 1)
 cv2.imshow("numpy", mask)
 
-image = cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
-cv2.imshow("Image", image)
+gallery_image = cv2.drawContours(gallery_image, gallery_contours, -1, (0, 255, 0), 2)
+cv2.imshow("Image", gallery_image)
 
 # plt.figure(1)
 # plt.imshow(cv2.cvtColor(wImageThreshold2, cv2.COLOR_GRAY2RGB))
@@ -49,4 +63,4 @@ cv2.imshow("Image", image)
 
 plt.show()
 cv2.waitKey(0)
-cv2.imwrite("GalleryImage/test.png", imageThreshold)
+cv2.imwrite("GalleryImage/test.png", gallery_image_threshold)
