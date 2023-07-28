@@ -2,7 +2,6 @@
 - 관람객 데이터 .csv파일을 불러와서 heatmap으로 표현
 - artwork 영역을 매트릭스로 저장한 후에 .npy 혹은 .npz 형태로 저장
 """
-import copy
 import csv
 import json
 import os
@@ -24,24 +23,28 @@ def process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, unit_cell_s
         x_cord = (float(data["move_x"]) + x_offset) / unit_cell_size
         y_cord = (float(data["move_y"]) + y_offset) / unit_cell_size
         gaze_target = data["lookingAt"]
-        # row, col = int(y_cord), int(x_cord)
-        # dic = dict_array[row, col]
+        row, col = int(y_cord), int(x_cord)
+        if row < 0 or col < 0 or row >= heatmap.shape[0] or col >= heatmap.shape[1]:
+            continue
+        dic = dict_array[row, col]
 
-        for (row, col), dic in np.ndenumerate(dict_array):
-            if row <= y_cord < row + 1 and col <= x_cord < col + 1:
-                if gaze_target != "wall" and gaze_target not in dic:
-                    dict_array[row, col][gaze_target] = 1
-                else:
-                    dict_array[row, col][gaze_target] += 1
+        # for (row, col), dic in np.ndenumerate(dict_array):
+        #     if row <= y_cord < row + 1 and col <= x_cord < col + 1:
+        if gaze_target != "wall":
+            if gaze_target in dic:
+                dict_array[row, col][gaze_target] += 1
             else:
-                continue
-        for (row, col), _ in np.ndenumerate(heatmap):
-            if row <= y_cord < row + 1 and col <= x_cord < col + 1:
-                heatmap[row, col] += 1
-                print("processing")
-                print((row, col))
-            else:
-                continue
+                dict_array[row, col][gaze_target] = 1
+                # else:
+                #     continue
+
+        # for (row, col), _ in np.ndenumerate(heatmap):
+        # if row <= y_cord < row + 1 and col <= x_cord < col + 1:
+        heatmap[row, col] += 1
+        print("processing")
+        print((row, col))
+        # else:
+        #     continue
     print("end")
 
 
@@ -61,6 +64,7 @@ def process_artwork_heatmap(
             sns.heatmap(
                 artwork_heatmap_df, cmap="Greens", vmin=0, vmax=200, ax=axes[num]
             )
+            print("processing", num, artwork_id)
             num += 1
 
 
@@ -87,16 +91,16 @@ height, width = 10, 15  # horizontal, vertical length in meters
 unit_cell_size = 0.2  # length of each cell in meters
 rows, cols = round(height / unit_cell_size), round(width / unit_cell_size)
 
-heatmap = create_empty_heatmap(rows, cols)
-dict_array = np.reshape([dict() for _ in range(rows * cols)], (rows, cols))
 with open(visitor_data_path, "r") as f:
+    heatmap = create_empty_heatmap(rows, cols)
+    dict_array = np.reshape([dict() for _ in range(rows * cols)], (rows, cols))
     reader = csv.DictReader(f)
-x_offset = -2.4
-y_offset = 0
-process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, unit_cell_size)
+    x_offset = -2.4
+    y_offset = 0
+    process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, unit_cell_size)
 
 plt.figure(1)
-_figs, axes = plt.subplots(1, 25, sharey=True)
+_figs, axes = plt.subplots(1, 26, sharey=True)
 
 with open(artwork_data_path, "r") as f:
     artwork_data = json.load(f)
