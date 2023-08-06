@@ -1,4 +1,9 @@
-#Unity 상에서 공간 캡처 데이터를 불러와서 매트릭스로 변형 및 .csv로 저장
+"""
+2023/08/05
+- 캡처 이미지 데이터를 공간 데이터로 활용하는데 어려움이 있음.
+- 따라서 좌표 (coords) 데이터를 불러오는 방식으로 변경함.
+- 2023년 광주시립미술관 전체 데이터 사용
+"""
 
 import cv2
 import numpy as np
@@ -11,10 +16,10 @@ import pandas as pd
 from time import localtime, time
 import os
 
-date = '+' + str(localtime(time()).tm_mon) + str(localtime(time()).tm_mday)
+date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) + ')'
 
 #공간 x,z 좌표 데이터를 읽어온다.
-spaceDataCSV = open('SpaceData/coords_GMA2.csv', 'r', encoding='utf-8-sig') #2022년 하정웅미술관 갤러리5 데이터
+spaceDataCSV = open('SpaceData/coords_GMA2.csv', 'r', encoding='utf-8-sig') #2023년 광주시립미술관 전체 데이터
 spaceDataCSVname = spaceDataCSV.name[10:-4]
 reader = csv.reader(spaceDataCSV)
 
@@ -25,10 +30,11 @@ points2Arr = np.roll(pointsArr, -1, axis=0)
 edgeArr = np.concatenate((pointsArr, points2Arr), axis=1)
 spaceDataCSV.close()
 
+#공간 세로 길이: 50미터 | 공간 가로 길이: 50미터
 spaceVerticalSize, spaceHorizontalSize = 50, 50
-#공간 세로 길이: 10미터 | 공간 가로 길이: 20미터
-heatmapCellSize = 0.2
-#히트맵 셀 사이즈: 0.2미터 = 20센티미터
+#히트맵 셀 사이즈: 0.1미터 = 10센티미터
+heatmapCellSize = 0.1
+
 spaceVertcalCells, spaceHorizontalCells = spaceVerticalSize / heatmapCellSize, spaceHorizontalSize / heatmapCellSize
 spaceHorizontalCells, spaceVertcalCells = round(spaceHorizontalCells), round(spaceVertcalCells)
 #히트맵 가로 셀 개수: 10/0.2 = 50개 | 히트맵 세로 셀 개수: 20/0.2 = 100개 
@@ -58,7 +64,9 @@ for i in range(len(li)):
         li[i]['displayable'] = True
     print(li[i])
 
-resized_img = cv2.resize(img, (int(spaceHorizontalCells)*2, int(spaceVertcalCells)*2)) #1px == 10cm
+#공간 데이터를 통해 생성한 img를 1/10으로 리사이즈함.
+#이를 통해 10cm 크기의 cell을 갖는 공간 배열 생성
+resized_img = cv2.resize(img, (int(spaceHorizontalCells), int(spaceVertcalCells))) #1px == 10cm
 _, resized_img_th = cv2.threshold(resized_img, 127, 255, cv2.THRESH_BINARY)
 _resized_img_th = np.asarray(resized_img_th, dtype = np.int8)
 
@@ -73,15 +81,3 @@ plt.show()
 
 np.save("SpaceData/" + spaceDataCSVname + date, _resized_img_th)
 sMapCSV.to_csv("SpaceData/" + spaceDataCSVname + date + '_Heatmap.csv', index=False)
-
-'''
-지금 numpy iter가 굉장히 마음에 들지 않는데, 그냥 사용 중.. 나중에 대체 방법 확인 필요
-it = np.nditer(edgeArr, flags=['multi_index'])
-while not it.finished:
-    idx = it.multi_index
-    print(idx[0], idx[1], edgeArr[idx])
-    it.iternext()
-'''
-
-
-
