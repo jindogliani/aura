@@ -19,58 +19,6 @@ from matplotlib.colors import Normalize
 
 date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) + ')'
 
-# Function to create an empty heatmap
-def create_empty_heatmap(space_vertical_cells, space_horizontal_cells):
-    return np.zeros((space_vertical_cells, space_horizontal_cells), dtype=np.uint16)
-
-# Function to process visitor data and update the heatmap
-def process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, unit_cell_size):
-    for data in reader:
-        x_cord = (float(data["move_x"]) + x_offset) / unit_cell_size
-        y_cord = (float(data["move_y"]) + y_offset) / unit_cell_size
-        gaze_target = data["lookingAt"]
-        row, col = math.floor(y_cord), math.floor(x_cord)
-        if row < 0 or col < 0 or row >= heatmap.shape[0] or col >= heatmap.shape[1]:
-            continue
-        dic = dict_array[row, col]
-
-        # for (row, col), dic in np.ndenumerate(dict_array):
-        #     if row <= y_cord < row + 1 and col <= x_cord < col + 1:
-        if gaze_target != "wall":
-            if gaze_target in dic:
-                dict_array[row, col][gaze_target] += 1
-            else:
-                dict_array[row, col][gaze_target] = 1
-                # else:
-                #     continue
-
-        # for (row, col), _ in np.ndenumerate(heatmap):
-        # if row <= y_cord < row + 1 and col <= x_cord < col + 1:
-        heatmap[row, col] += 1
-        print("processing")
-        print((row, col))
-        # else:
-        #     continue
-    print("end")
-
-def process_artwork_heatmap(
-    artwork_id_list, rows, cols, dict_array, artwork_visitor_data_dir, axes
-):
-    num = 0
-    for artwork_id in artwork_id_list:
-        artwork_heatmap = create_empty_heatmap(rows, cols)
-        for (row, col), dic in np.ndenumerate(dict_array):
-            if artwork_id in dic:
-                artwork_heatmap[row, col] = int(dic[artwork_id])
-        if np.max(artwork_heatmap) != 0:
-            save_file_path = os.path.join(artwork_visitor_data_dir, artwork_id)
-            np.save(save_file_path, artwork_heatmap)
-            artwork_heatmap_df = pd.DataFrame(artwork_heatmap)
-            sns.heatmap(
-                artwork_heatmap_df, cmap="Greens", vmin=0, vmax=200, ax=axes[num]
-            )
-            print("processing", num, artwork_id)
-            num += 1
 
 """
 예상 공간 값으로 0값 들어가는 이중배열 생성
@@ -105,8 +53,6 @@ visitor_data_filename, _ = os.path.splitext(os.path.basename(visitor_data_path))
 artwork_visitor_data_dirname = f"{artwork_data_filename}_{visitor_data_filename}"
 artwork_visitor_data_dir = os.path.join(cwd, artwork_visitor_data_dirname)
 os.makedirs(artwork_visitor_data_dir, exist_ok=True)
-
-
 
 
 visitorDataCSV = open('VisitorData/preAURA_1025_1030.csv', 'r')

@@ -26,35 +26,25 @@ def create_empty_heatmap(space_vertical_cells, space_horizontal_cells):
 # Function to process visitor data and update the heatmap
 def process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, unit_cell_size):
     for data in reader:
-        x_cord = (float(data["move_x"]) + x_offset) / unit_cell_size
-        y_cord = (float(data["move_y"]) + y_offset) / unit_cell_size
+        x_cord = (x_offset + float(data["move_x"])) / unit_cell_size
+        y_cord = (y_offset + float(data["move_y"])) / unit_cell_size #TODO #추후 수집하는 관람객 데이터 형태에 따라 수정 필요
         gaze_target = data["lookingAt"]
         row, col = math.floor(y_cord), math.floor(x_cord)
         if row < 0 or col < 0 or row >= heatmap.shape[0] or col >= heatmap.shape[1]:
             continue
         dic = dict_array[row, col]
 
-        # for (row, col), dic in np.ndenumerate(dict_array):
-        #     if row <= y_cord < row + 1 and col <= x_cord < col + 1:
         if gaze_target != "wall":
             if gaze_target in dic:
                 dict_array[row, col][gaze_target] += 1
             else:
                 dict_array[row, col][gaze_target] = 1
-                # else:
-                #     continue
+            heatmap[row, col] += 1
 
-        # for (row, col), _ in np.ndenumerate(heatmap):
-        # if row <= y_cord < row + 1 and col <= x_cord < col + 1:
-        heatmap[row, col] += 1
-        print("processing")
-        print((row, col))
-        # else:
-        #     continue
     print("end")
 
 def process_artwork_heatmap(
-    artwork_id_list, rows, cols, dict_array, artwork_visitor_data_dir, axes
+    artwork_id_list, rows, cols, dict_array, artwork_visitor_data_dir, axes, plot_column
 ):
     num = 0
     for artwork_id in artwork_id_list:
@@ -63,36 +53,16 @@ def process_artwork_heatmap(
             if artwork_id in dic:
                 artwork_heatmap[row, col] = int(dic[artwork_id])
         if np.max(artwork_heatmap) != 0:
+            plt_row, plt_col = divmod(num, plot_column)
             save_file_path = os.path.join(artwork_visitor_data_dir, artwork_id)
-            np.save(save_file_path, artwork_heatmap)
+            np.save(save_file_path, artwork_heatmap) #TODO #2개가 더 많이 저장됨. 13번이랑 39번.
             artwork_heatmap_df = pd.DataFrame(artwork_heatmap)
             sns.heatmap(
-                artwork_heatmap_df, cmap="Greens", vmin=0, vmax=200, ax=axes[num]
+                 artwork_heatmap_df, cmap="Greens", vmin=0, vmax=30, ax=axes[plt_row, plt_col]
             )
+            axes[plt_row, plt_col].set_title(artwork_id)
             print("processing", num, artwork_id)
             num += 1
-
-"""
-예상 공간 값으로 0값 들어가는 이중배열 생성
-"""
-#공간 세로 길이: 20미터 | 공간 가로 길이: 20미터
-#히트맵 셀 사이즈: 0.1미터 = 10센티미터
-#히트맵 가로 셀 개수: 20/0.1 = 200개 | 히트맵 세로 셀 개수: 20/0.1 = 200개 
-spaceVerticalSize, spaceHorizontalSize = 10, 20
-heatmapCellSize = 0.1
-spaceVertcalCells, spaceHorizontalCells = spaceVerticalSize / heatmapCellSize, spaceHorizontalSize / heatmapCellSize
-spaceVertcalCells, spaceHorizontalCells = round(spaceVertcalCells), round(spaceHorizontalCells)
-
-heatmap = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = np.uint16)
-
-
-dic = dict()
-array1 = []
-for i in range(spaceVertcalCells*spaceHorizontalCells):
-        array1.append(copy.deepcopy(dic))
-        i += 1
-dictArray = np.reshape(array1, (spaceVertcalCells, spaceHorizontalCells))
-#나중에 수정 필요... 임시방편
 
 """
 작품별 npy 저장하는 폴더 생성 및 작품리스트 생성
@@ -103,77 +73,50 @@ visitor_data_path = "VisitorData/preAURA_1025_1030.csv"
 artwork_data_filename, _ = os.path.splitext(os.path.basename(artwork_data_path))
 visitor_data_filename, _ = os.path.splitext(os.path.basename(visitor_data_path))
 artwork_visitor_data_dirname = f"{artwork_data_filename}_{visitor_data_filename}"
-artwork_visitor_data_dir = os.path.join(cwd, artwork_visitor_data_dirname)
+artwork_visitor_data_dir = os.path.join(cwd, artwork_visitor_data_dirname + date)
 os.makedirs(artwork_visitor_data_dir, exist_ok=True)
 
+"""
+예상 공간 값으로 0값 들어가는 이중배열 생성
+"""
+#공간 세로 길이: 20미터 | 공간 가로 길이: 20미터
+#히트맵 셀 사이즈: 0.1미터 = 10센티미터
+#히트맵 가로 셀 개수: 20/0.1 = 200개 | 히트맵 세로 셀 개수: 20/0.1 = 200개 
+spaceVerticalSize, spaceHorizontalSize = 20, 20
+heatmapCellSize = 0.1
+spaceVertcalCells, spaceHorizontalCells = spaceVerticalSize / heatmapCellSize, spaceHorizontalSize / heatmapCellSize
+rows, cols = round(spaceVertcalCells), round(spaceHorizontalCells)
 
-
-
-visitorDataCSV = open('VisitorData/preAURA_1025_1030.csv', 'r')
-visitorDataCSVname = visitorDataCSV.name[12:-4]
-reader = csv.DictReader(visitorDataCSV)
-
-with open('Daegu_new.json', 'r') as f:
-        artworkDataJSON = json.load(f)
-        artworkDataJSONname = f.name[:-5]
-#관람객데이터 csv파일, 전시정보 json파일 open
-
-ArtworkList = []
-for x in artworkDataJSON['exhibitionObjects']:
-        ArtworkList.append(x['id'])
-#ArtworkList 리스트에 작품들 관리번호 호출
-
-artworkVisitorDataDir = artworkDataJSONname + '_' + visitorDataCSVname
-os.makedirs(cwd+ "/" + artworkVisitorDataDir, exist_ok= True)
-#"Daegu_new_preAURA_mmdd_MMDD" => AURA 이전의 mmdd 부터 MMDD 까지의 Daegu_new 콜렉션의 작품들 .npy 들을 보관하는 폴더명 
-
-xOffset, yOffset = 0, 0 #현재는 공간데이터에 오프셋 값을 줌
-# xOffset, yOffset = -4.1, -5.8
+#현재는 공간데이터에 오프셋 값을 줌 # xOffset, yOffset = -4.1, -5.8
 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
 #관람객 시작점이 상대좌표에서 (0, y, 0) 이었으나 절대좌표에서는 (-4.1, y, -5.8)
+with open(visitor_data_path, "r") as f:
+    heatmap = create_empty_heatmap(rows, cols)
+    dict_array = np.reshape([dict() for _ in range(rows * cols)], (rows, cols)) #TODO
+    reader = csv.DictReader(f)
+    x_offset, y_offset = -2.4, 0
+    process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, heatmapCellSize)
 
-for line in reader: 
-      newXcord = xOffset + float(line['move_x'])
-      newYcord = yOffset - float(line['move_y'])
-      # for (y, x), i in np.ndenumerate(dictArray): 
-      for yx, i in np.ndenumerate(dictArray): #나중에 수정 필요... 임시방편 #TODO
-        if(yx[0]*heatmapCellSize <= newYcord < (yx[0]+1)*heatmapCellSize):
-               if(yx[1]*heatmapCellSize <= newXcord < (yx[1]+1)*heatmapCellSize):
-                     if line['lookingAt'] != 'wall':
-                        if line['lookingAt'] not in dictArray[yx[0]][yx[1]]:
-                              dictArray[yx[0]][yx[1]][line['lookingAt']] = 1
-                        elif line['lookingAt'] in dictArray[yx[0]][yx[1]]:
-                              dictArray[yx[0]][yx[1]][line['lookingAt']] += 1                      
-      for yx, i in np.ndenumerate(heatmap): #나중에 수정 필요... 임시방편
-            if(yx[0]*heatmapCellSize <= newYcord < (yx[0]+1)*heatmapCellSize):
-                   if(yx[1]*heatmapCellSize <= newXcord < (yx[1]+1)*heatmapCellSize):
-                          heatmap[yx[0]][yx[1]] += 1
-                          print(yx)      
-print('end')
-visitorDataCSV.close()
-
+#내일 히트맵 찍어봐서 비교 필요함. 2023/08/06
 
 plt.figure(1)
-# sub_plots, axes = plt.subplots(1, 25, sharey=True)
-# num = 0
-for artwork in ArtworkList:
-      artworkNp = artwork + 'Heatmap'
-      globals()[artworkNp] = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = np.uint16)
-      artwork_Np = globals()[artworkNp]
-      for yx, i in np.ndenumerate(dictArray): #나중에 수정 필요... 임시방편
-            if artwork in dictArray[yx[0]][yx[1]]:
-                  artwork_Np[yx[0]][yx[1]] = int(dictArray[yx[0]][yx[1]][artwork])
-      if np.max(artwork_Np) !=0:
-            np.save(cwd + "/" +artworkVisitorDataDir + "/" + artwork, artwork_Np)
-            artwork_Np_CSV = pd.DataFrame(artwork_Np)
-            # sns.heatmap(artwork_Np_CSV, cmap='Greens', vmin=0, vmax=200, ax=axes[num])
-            # num += 1
+plt_row, plt_col = 4, 7
+_figs, axes = plt.subplots(plt_row, plt_col, sharey=False)
 
-np.save(cwd + "/" +artworkVisitorDataDir + "/" + visitorDataCSVname + date, heatmap)
-heatmapCSV = pd.DataFrame(heatmap)
-dictArrayCSV = pd.DataFrame(dictArray)
-heatmapCSV.to_csv(visitorDataCSV.name[:-4] + '_Heatmap.csv', index=False)
-dictArrayCSV.to_csv(visitorDataCSV.name[:-4] + '_DictArray.csv', index=False)
+#전시정보 json파일 open
+with open(artwork_data_path, "r") as f:
+    artwork_data = json.load(f)
+artwork_id_list = [artwork["id"] for artwork in artwork_data["exhibitionObjects"]]
 
-sns.heatmap(heatmapCSV, cmap='Greens', vmin=0, vmax=200)
+process_artwork_heatmap(
+    artwork_id_list, rows, cols, dict_array, artwork_visitor_data_dir, axes, plt_col
+)
+
+np.save(artwork_visitor_data_dir + "/" + visitor_data_filename + "_Heatmap" + date, heatmap)
+heatmap_csv = pd.DataFrame(heatmap)
+dict_array_csv = pd.DataFrame(dict_array)
+heatmap_csv.to_csv(visitor_data_filename + "_Heatmap" + date + ".csv", index=False)
+dict_array_csv.to_csv(visitor_data_filename + "_DictArray" + date + ".csv", index=False)
+
+sns.heatmap(heatmap_csv, cmap='Greens', vmin=0, vmax=100)
 plt.show()
