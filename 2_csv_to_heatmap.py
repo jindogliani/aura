@@ -27,7 +27,7 @@ def create_empty_heatmap(space_vertical_cells, space_horizontal_cells):
 def process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, unit_cell_size):
     for data in reader:
         x_cord = (x_offset + float(data["move_x"])) / unit_cell_size
-        y_cord = (y_offset + float(data["move_y"])) / unit_cell_size #TODO #추후 수집하는 관람객 데이터 형태에 따라 수정 필요
+        y_cord = (y_offset - float(data["move_y"])) / unit_cell_size #TODO #추후 수집하는 관람객 데이터 형태에 따라 수정 필요
         gaze_target = data["lookingAt"]
         row, col = math.floor(y_cord), math.floor(x_cord)
         if row < 0 or col < 0 or row >= heatmap.shape[0] or col >= heatmap.shape[1]:
@@ -94,13 +94,13 @@ with open(visitor_data_path, "r") as f:
     heatmap = create_empty_heatmap(rows, cols)
     dict_array = np.reshape([dict() for _ in range(rows * cols)], (rows, cols)) #TODO
     reader = csv.DictReader(f)
-    x_offset, y_offset = -2.4, 0
+    x_offset, y_offset = 6+4.1, 10+5.8
     process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, heatmapCellSize)
 
 #내일 히트맵 찍어봐서 비교 필요함. 2023/08/06
 
 plt.figure(1)
-plt_row, plt_col = 4, 7
+plt_row, plt_col = 5, 8
 _figs, axes = plt.subplots(plt_row, plt_col, sharey=False)
 
 #전시정보 json파일 open
@@ -111,12 +111,12 @@ artwork_id_list = [artwork["id"] for artwork in artwork_data["exhibitionObjects"
 process_artwork_heatmap(
     artwork_id_list, rows, cols, dict_array, artwork_visitor_data_dir, axes, plt_col
 )
-
+plt.show()
 np.save(artwork_visitor_data_dir + "/" + visitor_data_filename + "_Heatmap" + date, heatmap)
 heatmap_csv = pd.DataFrame(heatmap)
 dict_array_csv = pd.DataFrame(dict_array)
-heatmap_csv.to_csv(visitor_data_filename + "_Heatmap" + date + ".csv", index=False)
-dict_array_csv.to_csv(visitor_data_filename + "_DictArray" + date + ".csv", index=False)
+heatmap_csv.to_csv(artwork_visitor_data_dir + "/" + visitor_data_filename + "_Heatmap" + date + ".csv", index=False)
+dict_array_csv.to_csv(artwork_visitor_data_dir + "/" + visitor_data_filename + "_DictArray" + date + ".csv", index=False)
 
 sns.heatmap(heatmap_csv, cmap='Greens', vmin=0, vmax=100)
 plt.show()

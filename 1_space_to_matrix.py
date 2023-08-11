@@ -15,6 +15,7 @@ import seaborn as sns
 import pandas as pd
 from time import localtime, time
 import os
+import pickle
 
 date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) + ')'
 
@@ -46,7 +47,7 @@ print(edgeArr) #벽(walls=edges) 좌표 확인 배열 print
 
 img = np.zeros((spaceVerticalSize*100, spaceHorizontalSize*100), dtype = np.uint8) #1px == 1cm 크기 
 li = [] #벽정보를 담는 리스트
-xOffset, zOffset = 4.1, 5.8 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
+xOffset, zOffset = 6, 8 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
 #관람객 시작점이 상대좌표에서 (0, y, 0) 이었으나 절대좌표에서는 (-4.1, y, -5.8)
 
 for row in edgeArr:
@@ -66,6 +67,9 @@ for i in range(len(li)):
     else:
         li[i]['displayable'] = True
     print(li[i])
+
+with open('wall_list.pkl', 'wb') as f:
+    pickle.dump(li,f)
 
 #공간 데이터를 통해 생성한 img를 1/10으로 리사이즈함.
 #이를 통해 10cm 크기의 cell을 갖는 공간 배열 생성
