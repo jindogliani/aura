@@ -106,7 +106,7 @@ _figs, axes = plt.subplots(plt_row, plt_col, sharey=False)
 #전시정보 json파일 open
 with open(artwork_data_path, "r") as f:
     artwork_data = json.load(f)
-artwork_id_list = [artwork["id"] for artwork in artwork_data["exhibitionObjects"]]
+artwork_id_list = [artwork["id"] for artwork in artwork_data["exhibitionObjects"]] #TODOs
 
 process_artwork_heatmap(
     artwork_id_list, rows, cols, dict_array, artwork_visitor_data_dir, axes, plt_col
