@@ -26,13 +26,21 @@ exhibition_data_path = "Data_2022.json" #작품이 걸려있는 전시 내용 JS
 with open(artwork_data_path, "r") as f:
     artwork_data = json.load(f)
 artwork_list = [{"id": artwork["id"], "size": artwork["dimensions"]} for artwork in artwork_data["exhibitionObjects"]] #작품 id 리스트
-
 #전시된 작품 40개 리스트
 with open(exhibition_data_path, 'r', -1, encoding='utf-8') as f:
     exhibition_data = json.load(f)
-exhibited_artwork_list = [{"id": artwork["artworkIndex"], "position_x": artwork["position"]["x"], "position_z": artwork["position"]["z"]} for artwork in exhibition_data["paintings"]] #작품 id 리스트
+total_exhibited_artwork_list = [{"id": artwork["artworkIndex"], "position_x": artwork["position"]["x"], "position_z": artwork["position"]["z"]} for artwork in exhibition_data["paintings"]] #작품 id 리스트
 
-#전시된 작품 리스트 사전에 사이즈 추가 => width로 수정 필요 #TODO
+#2022년 기준 13작품만 관람객 데이터를 수집 함
+hall5_exhibited_artwork_list = ["PA-0064", "PA-0067", "PA-0027", "PA-0025", "PA-0087", "PA-0070", "PA-0066", "PA-0045", "PA-0079", "PA-0024", "PA-0085", "PA-0063", "PA-0083"]
+
+exhibited_artwork_list =[]
+
+#TODO
+for exhibited_artwork in total_exhibited_artwork_list:
+    if exhibited_artwork["id"] in hall5_exhibited_artwork_list:
+        exhibited_artwork_list.append(exhibited_artwork)
+
 for exhibited_artwork in exhibited_artwork_list:
     for artwork in artwork_list:
         if exhibited_artwork["id"] == artwork["id"]:
@@ -58,6 +66,7 @@ with open('wall_list.pkl', 'rb') as f:
 padding = 0.3 #기본적으로 작품 좌우 30cm의 여백을 줌
 
 # 13! / (24 * 3600 * 10000)= 7.2일 걸린다...
+#iteration 어떻게 할지 고민 필요...
 
 for wall in wall_list:
     wall["displayed_artworks"] = []
@@ -65,8 +74,8 @@ for wall in wall_list:
         for exhibited_artwork in exhibited_artwork_list:
             if exhibited_artwork["displayed"] == False: #작품이 배치되었는지 확인. 배치가 안되었다면 배치
                 if wall["length"] > exhibited_artwork["width"]: #너비가 벽 길이보다 작을 때
-                    padding = math.sqrt(math.pow(exhibited_artwork["width"], 2) + math.pow(exhibited_artwork["height"], 2)) #통상적으로 작품의 대각선 길이를 관람영역으로 함.
-                    wall["length"] = wall["length"] - (exhibited_artwork["width"] + 2*(padding - exhibited_artwork["width"]))
+                    # padding = math.sqrt(math.pow(exhibited_artwork["width"], 2) + math.pow(exhibited_artwork["height"], 2)) - exhibited_artwork["width"] #통상적으로 작품의 대각선 길이를 관람영역으로 함.
+                    wall["length"] = wall["length"] - (exhibited_artwork["width"] + 2*padding)
                     exhibited_artwork["displayed"] = True #작품 배치 되었다고 표시
                     wall["displayed_artworks"].append(exhibited_artwork["id"])
                     if wall["length"] < 0:

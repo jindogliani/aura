@@ -27,21 +27,18 @@ def create_empty_heatmap(space_vertical_cells, space_horizontal_cells):
 def process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, unit_cell_size):
     for data in reader:
         x_cord = (x_offset + float(data["move_x"])) / unit_cell_size
-        y_cord = (y_offset - float(data["move_y"])) / unit_cell_size #TODO #추후 수집하는 관람객 데이터 형태에 따라 수정 필요
-        gaze_target = data["lookingAt"]
+        y_cord = (y_offset + float(data["move_y"])) / unit_cell_size #TODO #추후 수집하는 관람객 데이터 형태에 따라 수정 필요
+        gaze_target = data["looking_at"]
         row, col = math.floor(y_cord), math.floor(x_cord)
         if row < 0 or col < 0 or row >= heatmap.shape[0] or col >= heatmap.shape[1]:
             continue
         dic = dict_array[row, col]
-
         if gaze_target != "wall":
             if gaze_target in dic:
                 dict_array[row, col][gaze_target] += 1
             else:
                 dict_array[row, col][gaze_target] = 1
             heatmap[row, col] += 1
-
-    print("end")
 
 def process_artwork_heatmap(
     artwork_id_list, rows, cols, dict_array, artwork_visitor_data_dir, axes, plot_column
@@ -58,7 +55,7 @@ def process_artwork_heatmap(
             np.save(save_file_path, artwork_heatmap) #TODO #2개가 더 많이 저장됨. 13번이랑 39번.
             artwork_heatmap_df = pd.DataFrame(artwork_heatmap)
             sns.heatmap(
-                 artwork_heatmap_df, cmap="Greens", vmin=0, vmax=30, ax=axes[plt_row, plt_col]
+                 artwork_heatmap_df, cmap="RdYlGn_r", vmin=0, vmax=30, ax=axes[plt_row, plt_col]
             )
             axes[plt_row, plt_col].set_title(artwork_id)
             print("processing", num, artwork_id)
@@ -69,7 +66,8 @@ def process_artwork_heatmap(
 """
 cwd = os.getcwd()
 artwork_data_path = "Daegu_new.json"
-visitor_data_path = "VisitorData/preAURA_1025_1030.csv"
+visitor_data_path = "VisitorData/preAURA_1025_1117.csv"
+exhibition_data_path = "Data_2022.json"
 artwork_data_filename, _ = os.path.splitext(os.path.basename(artwork_data_path))
 visitor_data_filename, _ = os.path.splitext(os.path.basename(visitor_data_path))
 artwork_visitor_data_dirname = f"{artwork_data_filename}_{visitor_data_filename}"
@@ -94,13 +92,12 @@ with open(visitor_data_path, "r") as f:
     heatmap = create_empty_heatmap(rows, cols)
     dict_array = np.reshape([dict() for _ in range(rows * cols)], (rows, cols)) #TODO
     reader = csv.DictReader(f)
-    x_offset, y_offset = 6+4.1, 10+5.8
+    x_offset, y_offset = 4-4.1, 10-5.8
     process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, heatmapCellSize)
 
 #내일 히트맵 찍어봐서 비교 필요함. 2023/08/06
 
-plt.figure(1)
-plt_row, plt_col = 5, 8
+plt_row, plt_col = 2, 7
 _figs, axes = plt.subplots(plt_row, plt_col, sharey=False)
 
 #전시정보 json파일 open
@@ -108,15 +105,19 @@ with open(artwork_data_path, "r") as f:
     artwork_data = json.load(f)
 artwork_id_list = [artwork["id"] for artwork in artwork_data["exhibitionObjects"]] #TODOs
 
+hall5_exhibited_artwork_list = ["PA-0064", "PA-0067", "PA-0027", "PA-0025", "PA-0087", "PA-0070", "PA-0066", "PA-0045", "PA-0079", "PA-0024", "PA-0085", "PA-0063", "PA-0083"]
+#2022년 기준 13작품만 관람객 데이터를 수집 함
+
 process_artwork_heatmap(
-    artwork_id_list, rows, cols, dict_array, artwork_visitor_data_dir, axes, plt_col
+    hall5_exhibited_artwork_list, rows, cols, dict_array, artwork_visitor_data_dir, axes, plt_col
 )
 plt.show()
+
 np.save(artwork_visitor_data_dir + "/" + visitor_data_filename + "_Heatmap" + date, heatmap)
 heatmap_csv = pd.DataFrame(heatmap)
 dict_array_csv = pd.DataFrame(dict_array)
 heatmap_csv.to_csv(artwork_visitor_data_dir + "/" + visitor_data_filename + "_Heatmap" + date + ".csv", index=False)
 dict_array_csv.to_csv(artwork_visitor_data_dir + "/" + visitor_data_filename + "_DictArray" + date + ".csv", index=False)
 
-sns.heatmap(heatmap_csv, cmap='Greens', vmin=0, vmax=100)
+sns.heatmap(heatmap_csv, cmap='RdYlGn_r', vmin=0, vmax=150)
 plt.show()
