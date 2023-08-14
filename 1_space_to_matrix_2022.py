@@ -45,7 +45,7 @@ heatmap = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = np.uint8)
  
 print(edgeArr) #벽(walls=edges) 좌표 확인 배열 print
 
-img = np.zeros((spaceVerticalSize*100, spaceHorizontalSize*100), dtype = np.uint8) #1px == 1cm 크기 
+img = np.zeros((spaceVerticalSize*100, spaceHorizontalSize*100), dtype = np.uint16) #1px == 1cm 크기 
 li = [] #벽정보를 담는 리스트
 xOffset, zOffset = 4, 10 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
 #관람객 시작점이 상대좌표에서 (0, y, 0) 이었으나 절대좌표에서는 (-4.1, y, -5.8)임.
@@ -88,5 +88,5 @@ sns.heatmap(spaceMatrixCSV, cmap='Greens', vmin=0, vmax=1)
 cv2.waitKey(0)
 plt.show()
 
-np.save("SpaceData/" + spaceDataCSVname + date, _resized_img_th)
+np.save("SpaceData/" + spaceDataCSVname + date, resized_img_th)
 spaceMatrixCSV.to_csv("SpaceData/" + spaceDataCSVname + date + '_Heatmap.csv', index=False)

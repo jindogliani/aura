@@ -52,7 +52,7 @@ def process_artwork_heatmap(
         if np.max(artwork_heatmap) != 0:
             plt_row, plt_col = divmod(num, plot_column)
             save_file_path = os.path.join(artwork_visitor_data_dir, artwork_id)
-            np.save(save_file_path, artwork_heatmap) #TODO #2개가 더 많이 저장됨. 13번이랑 39번.
+            np.save(save_file_path, artwork_heatmap)
             artwork_heatmap_df = pd.DataFrame(artwork_heatmap)
             sns.heatmap(
                  artwork_heatmap_df, cmap="RdYlGn_r", vmin=0, vmax=30, ax=axes[plt_row, plt_col]

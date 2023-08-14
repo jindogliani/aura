@@ -11,4 +11,10 @@
 # 2_csv_to_heatmap.py => 작품 데이터: Daegu_new.json, 관람객 데이터: preAURA_1025_1030. 관람객 데이터 y_coords 나중에 음수값으로 반전 시켜야 함. 오프셋 값도 재지정 필요.
 # 2.1_csv_to_heatmap_NotInUse.py => 음수값으로 반전된 형태. 사용할 때는 NotInUse 폴더에서 꺼내야 함.
 
-# 3_artwork_area_generator.py
+# 2023/08/15 홍진석 TODOs
+# 3_artwork_area_generator.py 그림 표시된 것 회전 필요. 선형대수학 회전벡터 활용
+# 4.py 배치 부분 함수 작업 필요
+
+
+# 준혁이한테 물어볼 파트
+# 4.py에 iteration 
