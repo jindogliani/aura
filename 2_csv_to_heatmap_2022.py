@@ -105,8 +105,8 @@ with open(artwork_data_path, "r") as f:
     artwork_data = json.load(f)
 artwork_id_list = [artwork["id"] for artwork in artwork_data["exhibitionObjects"]] #TODOs
 
-hall5_exhibited_artwork_list = ["PA-0064", "PA-0067", "PA-0027", "PA-0025", "PA-0087", "PA-0070", "PA-0066", "PA-0045", "PA-0079", "PA-0024", "PA-0085", "PA-0063", "PA-0083"]
 #2022년 기준 13작품만 관람객 데이터를 수집 함
+hall5_exhibited_artwork_list = ["PA-0064", "PA-0067", "PA-0027", "PA-0025", "PA-0087", "PA-0070", "PA-0066", "PA-0045", "PA-0079", "PA-0024", "PA-0085", "PA-0063", "PA-0083"]
 
 process_artwork_heatmap(
     hall5_exhibited_artwork_list, rows, cols, dict_array, artwork_visitor_data_dir, axes, plt_col

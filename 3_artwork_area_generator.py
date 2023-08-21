@@ -18,30 +18,46 @@ space_vertical_size, space_horizontal_size = 20, 20
 heatmap_cell_size = 0.1
 space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size
 space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
-zero_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.uint16)
 
 visitor_heatmap = np.load('Daegu_new_preAURA_1025_1117+(8-13)/preAURA_1025_1117_Heatmap+(8-13).npy')
-# visitor_heatmap = np.load('Daegu_new_preAURA_1025_1117/preAURA_1025_1117+66.npy')
-# _visitor_heatmap = np.concatenate((visitor_heatmap, zero_heatmap), axis=0) #6월 6일 npy는 200(cols)x100(rows)로 만들어져서 제로배열과 컨케러네이트 함.
+space_heatmap = np.load('SpaceData/2022_coords_Ha5_ver2+(8-13).npy')
+space_heatmap[space_heatmap > 0] = -10 #wall -10으로 표시해서 확인 용도
 
-with open('exhibited_artwork_list.pkl', 'rb') as f:
+with open('exhibited_artwork_list.pkl', 'rb') as f: #전시 중인 13작품 사전 로드
     exhibited_artwork_list = pickle.load(f)
 
 artwork_location_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16) #1px == 10cm 크기 
 x_offset, z_offset = 4, 10
 
-#작품들 히트맵 위에 표시
+#작품들 위치 히트맵 위에 표시
 for exhibited_artwork in exhibited_artwork_list:
+    print(exhibited_artwork)
     x1, x2, z1, z2 = exhibited_artwork["position_x"] - exhibited_artwork["width"]/2, exhibited_artwork["position_x"] + exhibited_artwork["width"]/2, exhibited_artwork["position_z"], exhibited_artwork["position_z"]
     _x1, _x2, _z1, _z2 = ((x1 + x_offset)/heatmap_cell_size), (x2 + x_offset)/heatmap_cell_size, (z1 + z_offset)/heatmap_cell_size, (z2 + z_offset)/heatmap_cell_size
     _x1, _x2, _z1, _z2 = round(_x1), round(_x2), round(_z1), round(_z2)
-    artwork_location_heatmap = cv2.line(artwork_location_heatmap, (_x1, _z1), (_x2, _z2), 255, 1) #벽 두께 10cm
+    artwork_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
+    artwork_heatmap = cv2.line(artwork_heatmap, (_x1, _z1), (_x2, _z2), 255, 1) #작품 프레임 두께 10cm
     
-_, artwork_location_heatmap = cv2.threshold(artwork_location_heatmap, 127, 255, cv2.THRESH_BINARY)
-artwork_location_heatmap[artwork_location_heatmap > 0] = -20
+    #작품이 향하고 있는 방향 표시
+    direction = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
+    direction = cv2.line(direction, (_x1, _z1), (round((_x1+_x2)/2), round((_z1+_z2)/2)), 255, 1)
+    direction_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), 90, 0.7)
+    direction = cv2.warpAffine(direction, direction_rotation, direction.shape)
+    artwork_heatmap += direction
 
-space_heatmap = np.load('SpaceData/2022_coords_Ha5_ver2+(8-13).npy')
-space_heatmap[space_heatmap > 0] = -10 #wall -100으로 표시해서 확인 용도
+    #벽 방향으로 회전
+    print(exhibited_artwork["theta"])
+    artwork_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), 360-exhibited_artwork["theta"], 1)
+    artwork_heatmap = cv2.warpAffine(artwork_heatmap, artwork_rotation, artwork_heatmap.shape)
+    
+    # _artwork_heatmap = pd.DataFrame(artwork_heatmap)
+    # sns.heatmap(_artwork_heatmap, cmap='RdYlGn_r', vmin=0, vmax=510)
+    # plt.show()
+    
+    artwork_location_heatmap += artwork_heatmap
+_, artwork_location_heatmap = cv2.threshold(artwork_location_heatmap, 127, 255, cv2.THRESH_BINARY)
+artwork_location_heatmap[artwork_location_heatmap > 0] = -20 #회화 작품 객체 -20으로 표시해서 확인 용도
+
 
 heatmap = space_heatmap + visitor_heatmap + artwork_location_heatmap
 heatmapCSV = pd.DataFrame(heatmap)

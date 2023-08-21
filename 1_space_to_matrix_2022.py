@@ -70,7 +70,7 @@ for i in range(len(li)):
         li[i]['displayable'] = True
     print(li[i])
 
-with open('wall_list.pkl', 'wb') as f:
+with open('wall_list_2022.pkl', 'wb') as f:
     pickle.dump(li,f)
 
 #공간 데이터를 통해 생성한 img를 1/10으로 리사이즈함.
