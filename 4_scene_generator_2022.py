@@ -69,7 +69,7 @@ for exhibited_artwork in exhibited_artwork_list:
                 exhibited_artwork["wall"] = wall["id"]
                 exhibited_artwork["theta"] = wall["theta"]   
         else:
-            continue #TODO
+            continue #TODO #작품에 오일러앵글 쓰자 ! 올해는!!
     # print(exhibited_artwork)
 # print()
 # print()
@@ -167,13 +167,13 @@ for wall in optimized_wall_list:
     print()
     
 optimized_artwork_heatmap += space_heatmap
-heatmapCSV = pd.DataFrame(optimized_artwork_heatmap)
-sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-20, vmax=10)
-plt.show()
+# heatmapCSV = pd.DataFrame(optimized_artwork_heatmap)
+# sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-20, vmax=10)
+# plt.show()
 
 end = time.time() #1회당 얼마 소요되는지 시간 체크
 
 print()
 print()
-print((end - start)*math.factorial(13) /(3600*24))
+print((end - start))
 
