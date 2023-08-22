@@ -23,7 +23,7 @@ visitor_heatmap = np.load('Daegu_new_preAURA_1025_1117+(8-13)/preAURA_1025_1117_
 space_heatmap = np.load('SpaceData/2022_coords_Ha5_ver2+(8-13).npy')
 space_heatmap[space_heatmap > 0] = -10 #wall -10으로 표시해서 확인 용도
 
-with open('exhibited_artwork_list.pkl', 'rb') as f: #전시 중인 13작품 사전 로드
+with open('exhibited_artwork_list_2022.pkl', 'rb') as f: #전시 중인 13작품 사전 로드
     exhibited_artwork_list = pickle.load(f)
 
 artwork_location_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16) #1px == 10cm 크기 
@@ -32,7 +32,7 @@ x_offset, z_offset = 4, 10
 #작품들 위치 히트맵 위에 표시
 for exhibited_artwork in exhibited_artwork_list:
     print(exhibited_artwork)
-    x1, x2, z1, z2 = exhibited_artwork["position_x"] - exhibited_artwork["width"]/2, exhibited_artwork["position_x"] + exhibited_artwork["width"]/2, exhibited_artwork["position_z"], exhibited_artwork["position_z"]
+    x1, x2, z1, z2 = exhibited_artwork["pos_x"] - exhibited_artwork["width"]/2, exhibited_artwork["pos_x"] + exhibited_artwork["width"]/2, exhibited_artwork["pos_z"], exhibited_artwork["pos_z"]
     _x1, _x2, _z1, _z2 = ((x1 + x_offset)/heatmap_cell_size), (x2 + x_offset)/heatmap_cell_size, (z1 + z_offset)/heatmap_cell_size, (z2 + z_offset)/heatmap_cell_size
     _x1, _x2, _z1, _z2 = round(_x1), round(_x2), round(_z1), round(_z2)
     artwork_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
@@ -46,7 +46,7 @@ for exhibited_artwork in exhibited_artwork_list:
     artwork_heatmap += direction
 
     #벽 방향으로 회전
-    print(exhibited_artwork["theta"])
+    # print(exhibited_artwork["theta"])
     artwork_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), 360-exhibited_artwork["theta"], 1)
     artwork_heatmap = cv2.warpAffine(artwork_heatmap, artwork_rotation, artwork_heatmap.shape)
     
