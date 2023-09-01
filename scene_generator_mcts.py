@@ -73,3 +73,11 @@ class DataLoader():
             with open(save_path, 'wb') as f:
                 pickle.dump(exhibited_artwork_list,f)
             self.exhibited_artwork_list = exhibited_artwork_list
+
+    def get_data(self):
+        return self.exhibited_artwork_list, self.wall_list
+
+if __name__ == "__main__":
+    dataloader = DataLoader()
+    exhibited_artwork_list, wall_list = dataloader.get_data()
+    print("end")
