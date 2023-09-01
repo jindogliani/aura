@@ -15,6 +15,10 @@ import seaborn as sns
 import matplotlib.cm as cm
 from matplotlib.colors import Normalize
 
+from MCTS import MCTS, Node
+from collections import namedtuple
+from random import choice
+
 class DataLoader():
     def __init__(self, artwork_data_path = "Daegu_new.json", exhibition_data_path = "Data_2022.json", wall_list_path = 'wall_list_2022.pkl', save_path = 'exhibited_artwork_list_2022.pkl'):
         with open(wall_list_path, 'rb') as f:
@@ -76,8 +80,30 @@ class DataLoader():
 
     def get_data(self):
         return self.exhibited_artwork_list, self.wall_list
+    
+_SCENE = namedtuple("MuseumScene", "terminal")
+class MuseumScene(_SCENE, Node):
+    def find_children(self):
+        return super().find_children()
+    
+    def find_random_child(self):
+        return super().find_random_child()
+    
+    def reward(self):
+        return super().reward()
+    
+    def is_terminal(self):
+        return super().is_terminal()
+    
+    def make_move(self):
+        pass
+    
+class Reorganize():
+    def __init__(self):
+        pass
+
+    def play(self):
+        pass
 
 if __name__ == "__main__":
-    dataloader = DataLoader()
-    exhibited_artwork_list, wall_list = dataloader.get_data()
-    print("end")
+    tmp = MuseumScene(terminal=False)
