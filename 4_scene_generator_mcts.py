@@ -79,31 +79,164 @@ class DataLoader():
             self.exhibited_artwork_list = exhibited_artwork_list
 
     def get_data(self):
-        return self.exhibited_artwork_list, self.wall_list
+        scene = {}
+        artwork_data = {}
+        wall_data = {}
+        for wall in self.wall_list:
+            wall_data[wall['id']] = wall
+
+        for artwork in self.exhibited_artwork_list:
+            wall = wall_data[artwork['wall']]
+            art_p = [artwork['pos_x']*10, artwork['pos_z']*10]
+            wall_0 = [wall['x1']*10, wall['z1']*10]
+            wall_1 = [wall['x2']*10, wall['z2']*10]
+            wall_vec = np.array([wall_1[0] - wall_0[0], wall_1[1] - wall_0[1]])
+            art_vec = np.array([art_p[0] - wall_0[0], art_p[1] - wall_0[1]])
+            theta = np.arccos(np.dot(wall_vec, art_vec) / (np.linalg.norm(wall_vec) * np.linalg.norm(art_vec)))
+            art_pos = np.linalg.norm(art_vec) * np.cos(theta)
+            art_pos = int(art_pos) #wall x1, z1을 기준으로 artwork의 위치 정수값
+
+            scene[artwork['id']] = (artwork['wall'], art_pos)
+            artwork_data[artwork['id']] = artwork
+
+        return wall_data, artwork_data, scene
     
-_SCENE = namedtuple("MuseumScene", "terminal")
+_SCENE = namedtuple("MuseumScene", "scene wall artwork terminal")
 class MuseumScene(_SCENE, Node):
+    def __init__(self):
+        super(_SCENE, self).__init__()
+        super(Node, self).__init__()
+        self.choose_target()
+
     def find_children(self):
-        return super().find_children()
+        #get all action results
+        if self.terminal:
+            return set()
+        return {
+            self.make_move(i) for i in range(4)
+        }
     
     def find_random_child(self):
-        return super().find_random_child()
+        #choose random action
+        if self.terminal:
+            return None
+        return self.make_move(choice(range(4)))
     
     def reward(self):
         return super().reward()
     
     def is_terminal(self):
-        return super().is_terminal()
+        return self.terminal
     
-    def make_move(self):
-        pass
+    def choose_target(self):
+        #0 pos + 1(random art) #1 pos - 1(random art) #2 flip all(random wall) #3 change wall(random art)
+        self.random_art = choice(list(self.artwork.keys()))
+        self.random_wall = choice(list(self.wall.keys()))
     
-class Reorganize():
-    def __init__(self):
-        pass
+    def make_move(self, idx):
+        new_scene = copy.deepcopy(self.scene)
+        #TODO do action
+        if idx == 0:
+            #Action 1. move forward
+            wall, pos = self.scene[self.random_art]
+            new_scene[self.random_art] = [wall, pos+1]
+        elif idx == 1:
+            #Action 2. move backward
+            wall, pos = self.scene[self.random_art]
+            new_scene[self.random_art] = [wall, pos-1]
+        elif idx == 2:
+            #Action 3. flip all
+            wall_len = self.wall[self.random_wall]['length']
+            for k, v in self.scene.items():
+                wall, pos = v
+                if wall == self.random_wall:
+                    new_scene[k] = [wall, wall_len - pos]
+        elif idx == 3:
+            #Action 4. change wall
+            wall, pos = self.scene[self.random_art]
+            new_scene[self.random_art] = [self.random_wall, pos]
+        else:
+            raise RuntimeError(f"Invalid action {idx}")
+        
+        new_scene = None
+        is_terminal = None
+        return MuseumScene(new_scene, self.wall, self.artwork, is_terminal)
 
-    def play(self):
-        pass
+    def print_scene(self):
+        draw = {}
+        for k, v in self.scene.items():
+            art = self.artwork[k]
+            wall = self.wall[v[0]]
+            pos = v[1]
+            
+            wall_width = int(wall['length']*10)
+            art_len = int(art['width']*10)
+            vis_list = [0] * wall_width
+            if art_len % 2 != 0:
+                vis_list[pos-int(art_len/2):pos+int(art_len/2)+1] = [1] * art_len
+            else:
+                vis_list[pos-int(art_len/2):pos+int(art_len/2)] = [1] * art_len
+
+            if v[0] not in draw.keys():
+                draw[v[0]] = np.array(vis_list)
+            else:
+                draw[v[0]] += np.array(vis_list)
+
+        for k, vis_list in draw.items():
+            vis_string = ''.join(map(str, vis_list))
+            print(k + " : " + vis_string)
+
+def new_museum_scene():
+    init_data = DataLoader()
+    art_data, wall_data, scene_data = init_data.get_data()
+    return MuseumScene(
+        scene = scene_data,
+        wall = wall_data,
+        artwork = art_data,
+        terminal = False
+    )
+    
+def reorganize():
+    tree = MCTS()
+    museum = new_museum_scene()
+    museum.print_scene()
+    while True:
+        #TODO do action and roll out
+        museum = museum.make_move()
+        if museum.terminal:
+            break
+        for _ in range(50):
+            print("Training...")
+            tree.do_rollout(museum)
+        museum = tree.choose(museum)
+        museum.print_scene()
+        if museum.terminal:
+            break
 
 if __name__ == "__main__":
-    tmp = MuseumScene(terminal=False)
+    dloader = DataLoader()
+    wall_data, art_data, scene_data = dloader.get_data()
+    print(wall_data['w1'].keys())
+    # draw = {}
+    # for k, v in scene_data.items():
+    #     art = art_data[k]
+    #     wall = wall_data[v[0]]
+    #     pos = v[1]
+        
+    #     wall_width = int(wall['length']*10)
+    #     art_len = int(art['width']*10)
+    #     vis_list = [0] * wall_width
+    #     if art_len % 2 != 0:
+    #         vis_list[pos-int(art_len/2):pos+int(art_len/2)+1] = [1] * art_len
+    #     else:
+    #         vis_list[pos-int(art_len/2):pos+int(art_len/2)] = [1] * art_len
+
+    #     if v[0] not in draw.keys():
+    #         draw[v[0]] = np.array(vis_list)
+    #     else:
+    #         draw[v[0]] += np.array(vis_list)
+
+    # for k, vis_list in draw.items():
+    #     vis_string = ''.join(map(str, vis_list))
+    #     print(k + " : " + vis_string)
+
