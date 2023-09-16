@@ -36,7 +36,7 @@ spaceVerticalSize, spaceHorizontalSize = 20, 20
 #히트맵 셀 사이즈: 0.2미터 = 20센티미터
 heatmapCellSize = 0.1
 
-#히트맵 가로 셀 개수: 20/0.2 = 100개 | 히트맵 세로 셀 개수: 20/0.2 = 100개 
+#히트맵 가로 셀 개수: 20/0.1 = 200개 | 히트맵 세로 셀 개수: 20/0.1 = 200개 
 spaceVertcalCells, spaceHorizontalCells = spaceVerticalSize / heatmapCellSize, spaceHorizontalSize / heatmapCellSize
 spaceHorizontalCells, spaceVertcalCells = round(spaceHorizontalCells), round(spaceVertcalCells)
 
@@ -45,7 +45,7 @@ heatmap = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = np.uint8)
  
 print(edgeArr) #벽(walls=edges) 좌표 확인 배열 print
 
-img = np.zeros((spaceVerticalSize*100, spaceHorizontalSize*100), dtype = np.uint16) #1px == 1cm 크기 
+img = np.zeros((spaceVerticalSize*100, spaceHorizontalSize*100), dtype = np.uint8) #1px == 1cm 크기 
 li = [] #벽정보를 담는 리스트
 xOffset, zOffset = 4, 10 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
 #관람객 시작점이 상대좌표에서 (0, y, 0) 이었으나 절대좌표에서는 (-4.1, y, -5.8)임.
@@ -75,11 +75,14 @@ with open('wall_list_2022.pkl', 'wb') as f:
 
 #공간 데이터를 통해 생성한 img를 1/10으로 리사이즈함.
 #이를 통해 10cm 크기의 cell을 갖는 공간 배열 생성
+contours, hierarchy = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+img = cv2.drawContours(img, contours, -1, 127, thickness = -1)
 resized_img = cv2.resize(img, (int(spaceHorizontalCells), int(spaceVertcalCells))) #1px == 10cm 크기
+
 _, resized_img_th = cv2.threshold(resized_img, 127, 255, cv2.THRESH_BINARY)
 _resized_img_th = np.asarray(resized_img_th, dtype = np.int16)
 
-cv2.imshow('th', resized_img_th) # 1/10로 리사이즈한 공간 이미지
+cv2.imshow('th', resized_img) # 1/10로 리사이즈한 공간 이미지
 cv2.imshow('image', img) #원본 크기의 공간 이미지
 
 spaceMatrixCSV = pd.DataFrame(resized_img_th) #공간 배열 .csv 저장용 및 plot용 데이터 변환

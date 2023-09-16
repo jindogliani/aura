@@ -43,7 +43,7 @@ for exhibited_artwork in total_exhibited_artwork_list:
     if exhibited_artwork["id"] in hall5_exhibited_artwork_list:
         exhibited_artwork_list.append(exhibited_artwork)
 
-# print("Exhibited Artwork List in 2022")
+
 for exhibited_artwork in exhibited_artwork_list:
     for artwork in artwork_list:
         if exhibited_artwork["id"] == artwork["id"]:
@@ -51,7 +51,7 @@ for exhibited_artwork in exhibited_artwork_list:
             # exhibited_artwork["height"] = round(float(artwork["size"].split("x")[0]) / 100, 3) #height 정보만 빼오기 #현재는 사용하지 않음.
             exhibited_artwork["placed"] = False
             # exhibited_artwork["size"] = round(float(artwork["size"].split("x")) / 100, 3) # split 잘 먹었는지 확인용
-    for wall in wall_list: #TODO
+    for wall in wall_list: #TODO #작품에 오일러앵글 쓰자! 올해는!! 2023년 광주시립미술관은 수정 필요
         if wall["theta"] == 0: 
             if (wall["x1"] <= exhibited_artwork["pos_x"] <= wall["x2"]) and (abs(wall["z1"] - exhibited_artwork["pos_z"]) <= 0.2):
                 exhibited_artwork["wall"] = wall["id"]
@@ -69,17 +69,14 @@ for exhibited_artwork in exhibited_artwork_list:
                 exhibited_artwork["wall"] = wall["id"]
                 exhibited_artwork["theta"] = wall["theta"]   
         else:
-            continue #TODO #작품에 오일러앵글 쓰자 ! 올해는!!
-    # print(exhibited_artwork)
-# print()
-# print()
+            continue #TODO #작품에 오일러앵글 쓰자! 올해는!! 2023년 광주시립미술관은 수정 필요
+    print(exhibited_artwork)
+print()
+print()
 
 with open('exhibited_artwork_list_2022.pkl', 'wb') as f:
     pickle.dump(exhibited_artwork_list,f)
 
-#씬생성 알고리즘
-# 13! / (24 * 3600 * 10000)= 7.2일 걸린다...
-#iteration 어떻게 할지 고민 필요... #TODO
 
 space_vertical_size, space_horizontal_size = 20, 20   #공간 세로 길이: 20미터 | 공간 가로 길이: 20미터
 heatmap_cell_size = 0.1   #히트맵 셀 사이즈: 0.1미터 = 10센티미터
@@ -142,7 +139,7 @@ for wall in optimized_wall_list:
                 if wall["length_check"] > (optimized_artwork["width"] + 2*padding): #작품 너비가 wall length_check 길이보다 작을 때
                     wall["length_check"] = wall["length_check"] - (optimized_artwork["width"] + 2*padding)
                     optimized_artwork["placed"] = True #작품 재배치 되었다고 표시
-                    wall["hanged_artworks"].append(optimized_artwork) #이거 너무 복잡한데 구조가;; 원래는 optimized_artwork["id"]만 넣었음
+                    wall["hanged_artworks"].append(optimized_artwork)
                     # optimized_artwork["new_wall"] = wall["id"] #나중에 없애도 될 것 같음 #TODO
                     # optimized_artwork["new_theta"] = wall["theta"] #나중에 없애도 될 것 같음 #TODO
     wall["length_check"] = round(wall["length_check"], 2)
@@ -164,16 +161,23 @@ for wall in optimized_wall_list:
             artwork_heatmap = heatmap_generator(hanged_artwork["width"], hanged_artwork["new_coords"][0], hanged_artwork["new_coords"][1], hanged_artwork["pos_x"], hanged_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, hanged_artwork["theta"], wall["theta"], artwork_visitor_heatmap)
             optimized_artwork_heatmap += artwork_heatmap
     print(wall)
-    print()
     
 optimized_artwork_heatmap += space_heatmap
-# heatmapCSV = pd.DataFrame(optimized_artwork_heatmap)
-# sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-20, vmax=10)
-# plt.show()
+heatmapCSV = pd.DataFrame(optimized_artwork_heatmap)
+sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-20, vmax=10)
+plt.show()
+
+with open('optimized_artwork_list_sample.pkl', 'wb') as f:
+    pickle.dump(optimized_artwork_list,f)
+
+with open('optimized_wall_list_sample.pkl', 'wb') as f:
+    pickle.dump(optimized_wall_list,f)
+
+np.save("optimized_artwork_heatmap", optimized_artwork_heatmap)
 
 end = time.time() #1회당 얼마 소요되는지 시간 체크
 
-print()
-print()
-print((end - start))
+# print()
+# print()
+# print((end - start))
 
