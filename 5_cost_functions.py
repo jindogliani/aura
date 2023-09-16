@@ -36,7 +36,7 @@ init_WCSS = 2000
 
 def goal_cost(optimized_artwork_heatmap):
     # 음수는 값에 안 넣게 필터 필요
-    variance = np.var(optimized_artwork_heatmap, ddof = 1)
+    variance = np.var(optimized_artwork_heatmap)
     return variance
 
 def regularization_cost(optimized_wall_list):
@@ -48,7 +48,7 @@ def regularization_cost(optimized_wall_list):
         j = (i+1) % len(new_artwork_positions)
         new_artwork_distance.append(math.dist(new_artwork_positions[i], new_artwork_positions[j]))
     new_artwork_distance_arr = np.array(new_artwork_distance)
-    variance = np.var(new_artwork_distance_arr, ddof = 1)
+    variance = np.var(new_artwork_distance_arr)
     return variance #노멀라이즈 이전
 
 def centroid(coordinates):
