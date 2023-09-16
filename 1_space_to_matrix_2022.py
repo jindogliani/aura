@@ -58,20 +58,21 @@ for row in edgeArr:
     img = cv2.line(img, (_x1, _z1), (_x2, _z2), 255, 8) #벽 두께 8cm
     wallDic = dict()
     wallDic = {'id': '', 'displayable': True, 'length':0, 'theta':0, 'x1': 0, 'z1': 0, 'x2': 0,'z2': 0}
-    wallDic['theta'], wallDic['length']= np.rad2deg(np.arctan2(z2 - z1, x2 - x1)), math.dist((x1, z1), (x2, z2))
+    wallDic['theta'], wallDic['length']= round(np.rad2deg(np.arctan2(z2 - z1, x2 - x1))), round(math.dist((x1, z1), (x2, z2)),2)
+    wallDic['_theta'] = abs(round(np.rad2deg(np.arctan2(z1 - z2, x1 - x2))) -180) #TODO
     wallDic['x1'], wallDic['x2'], wallDic['z1'], wallDic['z2'] = x1, x2, z1, z2
     li.append(wallDic)
 
 for i in range(len(li)):
     li[i]['id'] = 'w'+str(i)
-    if li[i]['length'] < 1.3:
+    if li[i]['length'] <= 1.3: #TODO
          li[i]['displayable'] = False
     else:
         li[i]['displayable'] = True
     print(li[i])
 
 with open('wall_list_2022.pkl', 'wb') as f:
-    pickle.dump(li,f)
+    pickle.dump(li,f) #TODO
 
 #공간 데이터를 통해 생성한 img를 1/10으로 리사이즈함.
 #이를 통해 10cm 크기의 cell을 갖는 공간 배열 생성

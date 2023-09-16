@@ -95,15 +95,13 @@ with open(visitor_data_path, "r") as f:
     x_offset, y_offset = 4-4.1, 10-5.8
     process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, heatmapCellSize)
 
-#내일 히트맵 찍어봐서 비교 필요함. 2023/08/06
-
 plt_row, plt_col = 2, 7
 _figs, axes = plt.subplots(plt_row, plt_col, sharey=False)
 
 #전시정보 json파일 open
 with open(artwork_data_path, "r") as f:
     artwork_data = json.load(f)
-artwork_id_list = [artwork["id"] for artwork in artwork_data["exhibitionObjects"]] #TODOs
+artwork_id_list = [artwork["id"] for artwork in artwork_data["exhibitionObjects"]] #TODO
 
 #2022년 기준 13작품만 관람객 데이터를 수집 함
 hall5_exhibited_artwork_list = ["PA-0064", "PA-0067", "PA-0027", "PA-0025", "PA-0087", "PA-0070", "PA-0066", "PA-0045", "PA-0079", "PA-0024", "PA-0085", "PA-0063", "PA-0083"]

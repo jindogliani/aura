@@ -15,11 +15,12 @@ import seaborn as sns
 import pandas as pd
 from time import localtime, time
 import os
+import pickle
 
 date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) + ')'
 
 #공간 x,z 좌표 데이터를 읽어온다.
-spaceDataCSV = open('SpaceData/coords_GMA2.csv', 'r', encoding='utf-8-sig') #2023년 광주시립미술관 전체 데이터
+spaceDataCSV = open('SpaceData/coords_GMA3.csv', 'r', encoding='utf-8-sig') #2023년 광주시립미술관 전체 데이터
 spaceDataCSVname = spaceDataCSV.name[10:-4]
 reader = csv.reader(spaceDataCSV)
 
@@ -31,7 +32,7 @@ edgeArr = np.concatenate((pointsArr, points2Arr), axis=1)
 spaceDataCSV.close()
 
 #공간 세로 길이: 50미터 | 공간 가로 길이: 50미터
-spaceVerticalSize, spaceHorizontalSize = 50, 50
+spaceVerticalSize, spaceHorizontalSize = 40, 30
 #히트맵 셀 사이즈: 0.1미터 = 10센티미터
 heatmapCellSize = 0.1
 
@@ -43,7 +44,7 @@ heatmap = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = np.uint8)
 
 img = np.zeros((spaceVerticalSize*10, spaceHorizontalSize*10), dtype = np.uint8) #1px == 10cm
 li = []
-xOffset, zOffset = 37, 35 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
+xOffset, zOffset = 28, 28 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
 #관람객 시작점이 상대좌표에서 (0, y, 0) 이었으나 절대좌표에서는 (-4.1, y, -5.8)
 
 for row in edgeArr:
@@ -53,16 +54,20 @@ for row in edgeArr:
     wallDic = dict()
     wallDic = {'id': '', 'displayable': True, 'length':0, 'theta':0, 'x1': 0, 'z1': 0, 'x2': 0,'z2': 0}
     wallDic['length'], wallDic['theta']= math.dist((x1, z1), (x2, z2)), np.rad2deg(np.arctan2(z2 - z1, x2 - x1))
+    wallDic['_theta'] = abs(round(np.rad2deg(np.arctan2(z1 - z2, x1 - x2))) -180) #TODO
     wallDic['x1'], wallDic['x2'], wallDic['z1'], wallDic['z2'] = x1, x2, z1, z2
     li.append(wallDic)
 
 for i in range(len(li)):
     li[i]['id'] = 'w'+str(i)
-    if li[i]['length'] < 1.5:
+    if li[i]['length'] <= 1.3:
          li[i]['displayable'] = False
     else:
         li[i]['displayable'] = True
     print(li[i])
+
+with open('wall_list_2023.pkl', 'wb') as f:
+    pickle.dump(li,f)
 
 #공간 데이터를 통해 생성한 img를 1/10으로 리사이즈함.
 #이를 통해 10cm 크기의 cell을 갖는 공간 배열 생성
