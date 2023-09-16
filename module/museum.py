@@ -195,8 +195,8 @@ class MuseumScene():
             for _art in self.art_in_wall[wall]:
                     _pos = self.scene_data[_art][1]
                     wall_len = self.wall_data[wall]['length']*10
-                    if self.artwork_data[_art]['width'] % 2 != 0:
-                        new_scene[_art] = (wall, wall_len - _pos)
+                    if self.artwork_data[_art]['width'] % 2 == 0:
+                        new_scene[_art] = (wall, wall_len - 1 - _pos)
                     else:
                         new_scene[_art] = (wall, wall_len - _pos)
             return new_scene
@@ -222,9 +222,9 @@ class MuseumScene():
             art_len = int(art['width']*10)
             vis_list = [0] * wall_width
             if art_len % 2 != 0:
-                vis_list[pos-int(art_len/2):pos+int(art_len/2)+1] = [1] * art_len
-            else:
                 vis_list[pos-int(art_len/2):pos+int(art_len/2)] = [1] * art_len
+            else:
+                vis_list[pos-int(art_len/2):pos+int(art_len/2)+1] = [1] * art_len
 
             if v[0] not in  draw.keys():
                 draw[v[0]] = np.array(vis_list)
@@ -242,7 +242,7 @@ class MuseumScene():
             art_len = int(art['width']*10)
             vis_list = [0] * wall_width
             if art_len % 2 != 0:
-                vis_list[int(pos-int(art_len/2)):int(pos+int(art_len/2)+1)] = [1] * art_len
+                vis_list[int(pos-int(art_len/2)):int(pos+int(art_len/2))+1] = [1] * art_len
                 vis_list[int(pos)] = 2
             else:
                 vis_list[int(pos-int(art_len/2)):int(pos+int(art_len/2))] = [1] * art_len
