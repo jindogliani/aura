@@ -66,17 +66,25 @@ for i in range(len(li)):
 
 #공간 데이터를 통해 생성한 img를 1/10으로 리사이즈함.
 #이를 통해 10cm 크기의 cell을 갖는 공간 배열 생성
+contours, hierarchy = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+inside_img = cv2.drawContours(img.copy(), contours, -1, 127, thickness = -1)
+
 resized_img = cv2.resize(img, (int(spaceHorizontalCells), int(spaceVertcalCells))) #1px == 10cm
+resized_inside_img = cv2.resize(inside_img, (int(spaceHorizontalCells), int(spaceVertcalCells)))
+
 _, resized_img_th = cv2.threshold(resized_img, 127, 255, cv2.THRESH_BINARY)
-_resized_img_th = np.asarray(resized_img_th, dtype = np.int8)
+
+_resized_img_th = np.asarray(resized_img_th, dtype = np.int16)
+_resized_inside_img = np.asarray(resized_inside_img, dtype = np.int16)
+_resized_img_th = _resized_img_th + _resized_inside_img
 
 cv2.imshow('th', resized_img_th)
 cv2.imshow('image', img)
-
-sMapCSV = pd.DataFrame(resized_img_th)
-sns.heatmap(sMapCSV, cmap='Greens', vmin=0, vmax=1)
-
 cv2.waitKey(0)
+
+sMapCSV = pd.DataFrame(_resized_img_th)
+sns.heatmap(sMapCSV, cmap='Greens', vmin=0, vmax=255)
+
 plt.show()
 
 np.save("SpaceData/" + spaceDataCSVname + date, _resized_img_th)
