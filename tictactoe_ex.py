@@ -17,7 +17,7 @@ corrresponds to this tuple:
 
 from collections import namedtuple
 from random import choice
-from MCTS import MCTS, Node
+from archive.MCTS import MCTS, Node
 
 _TTTB = namedtuple("TicTacToeBoard", "tup turn winner terminal")
 

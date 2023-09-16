@@ -46,6 +46,9 @@ class MCTS:
         path = []
         while True:
             path.append(node)
+            print(node)
+            print(self.children)
+            print(self.children[node])
             if node not in self.children or not self.children[node]:
                 # node is either unexplored or terminal
                 return path
