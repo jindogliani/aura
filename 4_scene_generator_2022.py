@@ -51,19 +51,19 @@ for exhibited_artwork in exhibited_artwork_list:
             exhibited_artwork["placed"] = False
             # exhibited_artwork["size"] = round(float(artwork["size"].split("x")) / 100, 3) # split 잘 먹었는지 확인용
     for wall in wall_list: #TODO #작품에 오일러앵글 쓰자! 올해는!! 2023년 광주시립미술관은 수정 필요
-        if wall["_theta"] == 0: 
+        if wall["theta"] == 0: 
             if (wall["x1"] <= exhibited_artwork["pos_x"] <= wall["x2"]) and (abs(wall["z1"] - exhibited_artwork["pos_z"]) <= 0.2):
                 exhibited_artwork["wall"] = wall["id"]
                 exhibited_artwork["theta"] = wall["_theta"]
-        elif wall["_theta"] == 180: 
+        elif wall["theta"] == 180: 
             if (wall["x2"] <= exhibited_artwork["pos_x"] <= wall["x1"]) and (abs(wall["z1"] - exhibited_artwork["pos_z"]) <= 0.2):
                 exhibited_artwork["wall"] = wall["id"]
                 exhibited_artwork["theta"] = wall["_theta"]        
-        elif wall["_theta"] == 270:
+        elif wall["theta"] == 270:
             if (wall["z1"] <= exhibited_artwork["pos_z"] <= wall["z2"]) and (abs(wall["x1"] - exhibited_artwork["pos_x"]) <= 0.2):
                 exhibited_artwork["wall"] = wall["id"]
                 exhibited_artwork["theta"] = wall["_theta"]   
-        elif wall["_theta"] == 90:
+        elif wall["theta"] == 90:
             if (wall["z2"] <= exhibited_artwork["pos_z"] <= wall["z1"]) and (abs(wall["x1"] - exhibited_artwork["pos_x"]) <= 0.2):
                 exhibited_artwork["wall"] = wall["id"]
                 exhibited_artwork["theta"] = wall["_theta"]   
@@ -164,9 +164,9 @@ for wall in optimized_wall_list:
         for hanged_artwork in wall["hanged_artworks"]:
             artwork_visitor_heatmap = np.load('Daegu_new_preAURA_1025_1117+(8-13)/'+ hanged_artwork["id"] + '.npy')
             artwork_heatmap = heatmap_generator(hanged_artwork["width"], hanged_artwork["new_coords"][0], hanged_artwork["new_coords"][1], hanged_artwork["pos_x"], hanged_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, hanged_artwork["_theta"], wall["_theta"], artwork_visitor_heatmap) #TODO
-            # optimized_artwork_heatmap += artwork_heatmap
-            if(hanged_artwork["id"] == "PA-0083"):
-                optimized_artwork_heatmap += artwork_heatmap
+            optimized_artwork_heatmap += artwork_heatmap
+            # if(hanged_artwork["id"] == "PA-0083"):
+            #     optimized_artwork_heatmap += artwork_heatmap
     print(wall)
     
 optimized_artwork_heatmap += space_heatmap

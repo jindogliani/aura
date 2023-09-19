@@ -58,7 +58,7 @@ for row in edgeArr:
     img = cv2.line(img, (_x1, _z1), (_x2, _z2), 255, 8) #벽 두께 8cm
     wallDic = dict()
     wallDic = {'id': '', 'displayable': True, 'length':0, 'theta':0, '_theta':0,  'x1': 0, 'z1': 0, 'x2': 0,'z2': 0}
-    wallDic['theta'] = round(np.rad2deg(np.arctan2(z2 - z1, x2 - x1))) #TODO
+    wallDic['theta'] = round(np.rad2deg(np.arctan2(z2 - z1, x2 - x1))) #TODO #HTW
     wallDic['length']= round(math.dist((x1, z1), (x2, z2)),2)
     wallDic['_theta'] = abs(round(np.rad2deg(np.arctan2(z1 - z2, x1 - x2))) -180) #TODO
     wallDic['x1'], wallDic['x2'], wallDic['z1'], wallDic['z2'] = x1, x2, z1, z2

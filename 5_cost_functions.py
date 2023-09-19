@@ -37,9 +37,7 @@ init_WCSS = 2000
 
 def goal_cost(optimized_artwork_heatmap):
     # 음수는 값에 안 넣게 필터 필요
-
     variance = np.var(optimized_artwork_heatmap[optimized_artwork_heatmap>=0])
-
     return variance
 
 def regularization_cost(optimized_wall_list):
