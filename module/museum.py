@@ -120,6 +120,7 @@ class MuseumScene():
         self.wall_data = dl.wall_data
         self.art_in_wall = {}
         for wall_id in self.wall_data.keys():
+            self.art_in_wall[wall_id] = []
             self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in self.scene_data.items() if wall == wall_id], key=lambda x: self.scene_data[x][1])
 
     def update_scene(self, scene_data):
@@ -132,7 +133,7 @@ class MuseumScene():
 
         swap_possible_walls = {}
         for wall_id in self.wall_data.keys():
-            wall_len = int(self.wall_data[wall_id]['length']*10) - 3
+            wall_len = int(self.wall_data[wall_id]['length']*10) - 3 -1
             swap_possible_walls[wall_id] = []
             if len(self.art_in_wall[wall_id]) == 0:
                 swap_possible_walls[wall_id].append((0, wall_len))
@@ -142,49 +143,50 @@ class MuseumScene():
                 prev_end = 0
                 for idx, art_in_wall_id in enumerate(self.art_in_wall[wall_id]):
                     try:
-                        next_start = self.scene_data[self.art_in_wall[wall_id][idx+1]][1] - int(self.artwork_data[self.art_in_wall[wall_id][idx+1]]['width']/2)*10 - 3
+                        next_start = self.scene_data[self.art_in_wall[wall_id][idx+1]][1] - int(self.artwork_data[self.art_in_wall[wall_id][idx+1]]['width']*10/2) - 3
                     except:
                         next_start = wall_len
-                    art_len = int(self.artwork_data[art_in_wall_id]['width'])*10
+                    art_len = int(self.artwork_data[art_in_wall_id]['width']*10)
                     pos = self.scene_data[art_in_wall_id][1]
                     if art_len % 2 != 0:
                         start = pos - int(art_len/2) - 3
-                        end = pos + int(art_len/2)
+                        end = pos + int(art_len/2) + 1
                     else:
                         start = pos - int(art_len/2) - 3
-                        end = pos + int(art_len/2) - 1
-                    swap_possible_walls[wall_id].append((prev_end, start))
+                        end = pos + int(art_len/2)
+                    swap_possible_walls[wall_id].append((prev_end, start - prev_end))
                     swap_possible_walls[wall_id].append((end, next_start - end))
                     prev_end = end
                 
             
         for art_id in self.artwork_data.keys():
             wall_id = self.scene_data[art_id][0]
-            wall_len = int(self.wall_data[wall_id]['length'])*10 - 3
-            art_len = int(self.artwork_data[art_id]['width'])*10
+            wall_len = int(self.wall_data[wall_id]['length']*10) - 3 - 1
+            art_len = int(self.artwork_data[art_id]['width']*10)
             pos = self.scene_data[art_id][1]
             if wall_len - sum([self.artwork_data[art]['width']*10 for art in self.art_in_wall[wall_id]]) > 13:
                 if len(self.art_in_wall[wall_id]) == 1:
-                    if wall_len - pos - int(art_len/2) > 0:
-                        possible_actions.append((SceneActions.Forward, art_id, None, wall_len - pos - int(art_len/2)))
+                    if wall_len - (pos + int(art_len/2) if art_len %2 != 0 else pos + int(art_len/2) - 1) > 0:
+                        possible_actions.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2) if art_len %2 != 0 else pos + int(art_len/2) - 1)))
                 elif len(self.art_in_wall[wall_id]) > 1: 
                     try:
-                        next_art_id = self.art_in_wall[self.art_in_wall[wall_id].index(art_id)+1]
+                        next_art_id = self.art_in_wall[wall_id][self.art_in_wall[wall_id].index(art_id)+1]
                         next_pos = self.scene_data[next_art_id][1]
-                        next_art_len = int(self.artwork_data[next_art_id]['width'])*10
-                        remain_space = (next_pos - int(next_art_len/2) - 3) - (pos + int(art_len/2))
+                        next_art_len = int(self.artwork_data[next_art_id]['width']*10)
+                        remain_space = next_pos - pos - int(next_art_len/2) - (int(art_len/2) if art_len %2 != 0 else int(art_len/2) - 1) - 3
                         if remain_space > 0:
                             possible_actions.append((SceneActions.Forward, art_id, None, remain_space))
                     except:
-                        if wall_len - pos - int(art_len/2) > 0:
-                            possible_actions.append((SceneActions.Forward, art_id, None, wall_len - pos - int(art_len/2)))
+                        if wall_len - (pos + int(art_len/2) if art_len %2 != 0 else pos + int(art_len/2) - 1) > 0:
+                            possible_actions.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2) if art_len %2 != 0 else pos + int(art_len/2) - 1)))
 
             for possible_wall_id, possible_space in swap_possible_walls.items():
                 if possible_wall_id != wall_id:
-                    for (possible_start, possible_length) in possible_space:
-                        if possible_length >= art_len + 3:
+                    while len(possible_space) >= 1:
+                        possible_start, possible_length = possible_space.pop(0)
+                        if possible_length >= art_len - 1 + 3:
                             possible_actions.append((SceneActions.Swap, art_id, possible_wall_id, possible_start+3+int(art_len/2)))
-
+                            break
             
         return possible_actions
     
@@ -194,11 +196,11 @@ class MuseumScene():
             assert art == None
             for _art in self.art_in_wall[wall]:
                     _pos = self.scene_data[_art][1]
-                    wall_len = self.wall_data[wall]['length']*10
-                    if self.artwork_data[_art]['width'] % 2 != 0:
+                    wall_len = self.wall_data[wall]['length']*10 
+                    if self.artwork_data[_art]['width'] % 2 == 0:
                         new_scene[_art] = (wall, wall_len - _pos)
                     else:
-                        new_scene[_art] = (wall, wall_len - _pos)
+                        new_scene[_art] = (wall, wall_len - 1 - _pos)
             return new_scene
         
         if action == SceneActions.Swap:
@@ -233,6 +235,10 @@ class MuseumScene():
         
     def print_scene(self):
         self.draw = {}
+        for k, v in self.wall_data.items():
+            vis_list = [0] * int(v['length']*10)
+            self.draw[k] = np.array(vis_list)
+            
         for k, v in self.scene_data.items():
             art = self.artwork_data[k]
             wall = self.wall_data[v[0]]
@@ -241,31 +247,43 @@ class MuseumScene():
             wall_width = int(wall['length']*10)
             art_len = int(art['width']*10)
             vis_list = [0] * wall_width
+            assert len(vis_list) == wall_width
             if art_len % 2 != 0:
-                vis_list[int(pos-int(art_len/2)):int(pos+int(art_len/2)+1)] = [1] * art_len
-                vis_list[int(pos)] = 2
+                # print(vis_list)
+                vis_list[int(pos-int(art_len/2)):int(pos+int(art_len/2))+1] = [1] * art_len
+                # print(vis_list)
+                vis_list[int(pos)] = 5
+                # print(vis_list)
+                assert len(vis_list) == wall_width
             else:
+                # print(vis_list)
                 vis_list[int(pos-int(art_len/2)):int(pos+int(art_len/2))] = [1] * art_len
-                vis_list[int(pos)] = 2
+                # print(vis_list)
+                vis_list[int(pos)] = 5
+                # print(vis_list)
+                assert len(vis_list) == wall_width
 
-            if v[0] not in  self.draw.keys():
-                self.draw[v[0]] = np.array(vis_list)
-            else:
-                self.draw[v[0]] += np.array(vis_list)
+            
+            self.draw[v[0]] += np.array(vis_list)
 
         for k, vis_list in self.draw.items():
+            if 2 in vis_list:
+                raise "KILL ME"
             vis_string = ''.join(map(str, vis_list))
             print(k + " : " + vis_string)
 
 if __name__ == "__main__":
     scene = MuseumScene()
-    legal_moves = scene.get_legal_actions()
-    for _ in range(1):
-        scene.print_scene()
-        print("##################################################")
+    scene.print_scene()
+    print("=====================================")
+    # for moves in legal_moves:
+    #     print(moves)
+    for idx in range(1000000):
+        legal_moves = scene.get_legal_actions()
         action_tup = choice(legal_moves)
-        print(action_tup)
-        scene.do_action(SceneActions.Flip, None, 'w0', 0)
+        new_scene = scene.do_action(*action_tup)
+        scene.update_scene(new_scene)
+        print("************************************")
         scene.print_scene()
-
+        
 
