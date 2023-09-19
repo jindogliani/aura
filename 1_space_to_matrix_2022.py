@@ -57,8 +57,9 @@ for row in edgeArr:
     _x1, _x2, _z1, _z2= int(100*(x1+xOffset)), int(100*(x2+xOffset)), int(100*(z1+zOffset)), int(100*(z2+zOffset)) #z축 뒤집히는 것은 유동적 수정 필요
     img = cv2.line(img, (_x1, _z1), (_x2, _z2), 255, 8) #벽 두께 8cm
     wallDic = dict()
-    wallDic = {'id': '', 'displayable': True, 'length':0, 'theta':0, 'x1': 0, 'z1': 0, 'x2': 0,'z2': 0}
-    wallDic['theta'], wallDic['length']= round(np.rad2deg(np.arctan2(z2 - z1, x2 - x1))), round(math.dist((x1, z1), (x2, z2)),2)
+    wallDic = {'id': '', 'displayable': True, 'length':0, 'theta':0, '_theta':0,  'x1': 0, 'z1': 0, 'x2': 0,'z2': 0}
+    wallDic['theta'] = round(np.rad2deg(np.arctan2(z2 - z1, x2 - x1))) #TODO
+    wallDic['length']= round(math.dist((x1, z1), (x2, z2)),2)
     wallDic['_theta'] = abs(round(np.rad2deg(np.arctan2(z1 - z2, x1 - x2))) -180) #TODO
     wallDic['x1'], wallDic['x2'], wallDic['z1'], wallDic['z2'] = x1, x2, z1, z2
     li.append(wallDic)

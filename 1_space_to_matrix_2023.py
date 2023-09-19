@@ -32,7 +32,7 @@ edgeArr = np.concatenate((pointsArr, points2Arr), axis=1)
 spaceDataCSV.close()
 
 #공간 세로 길이: 50미터 | 공간 가로 길이: 50미터
-spaceVerticalSize, spaceHorizontalSize = 40, 30
+spaceVerticalSize, spaceHorizontalSize = 40, 40
 #히트맵 셀 사이즈: 0.1미터 = 10센티미터
 heatmapCellSize = 0.1
 
@@ -44,7 +44,7 @@ heatmap = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = np.uint8)
 
 img = np.zeros((spaceVerticalSize*10, spaceHorizontalSize*10), dtype = np.uint8) #1px == 10cm
 li = []
-xOffset, zOffset = 28, 28 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
+xOffset, zOffset = 33, 28 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
 #관람객 시작점이 상대좌표에서 (0, y, 0) 이었으나 절대좌표에서는 (-4.1, y, -5.8)
 
 for row in edgeArr:

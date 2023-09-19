@@ -82,12 +82,13 @@ heatmap_cell_size = 0.1   #히트맵 셀 사이즈: 0.1미터 = 10센티미터
 space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size #히트맵 가로 셀 개수: 20/0.1 = 200개 | 히트맵 세로 셀 개수: 20/0.1 = 200개 
 space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
 
-space_heatmap = np.load('SpaceData/2022_coords_Ha5_ver2+(8-13).npy')
-space_heatmap[space_heatmap > 0] = -10 #wall -10으로 표시해서 확인 용도
+space_heatmap = np.load('SpaceData/2022_coords_Ha5_ver2+(9-19).npy')
+space_heatmap[space_heatmap > 254] = -10 #공간 벽을 -10으로 변환
+space_heatmap[space_heatmap == 0] = -15 #공간 외부 값을 0에서 -15으로 전환
+space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
 
 x_offset, z_offset = 4, 10
 padding = 0.3 #기본적으로 작품 좌우 30cm의 여백을 줌
-
 
 def heatmap_generator(
     artwork_width, new_pos_x, new_pos_z, old_pos_x, old_pos_z, x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap
@@ -109,7 +110,7 @@ def heatmap_generator(
     #작품 새로운 벽 방향으로 회전
     artwork_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta, 1)
     artwork_heatmap = cv2.warpAffine(artwork_heatmap, artwork_rotation, artwork_heatmap.shape)
-    artwork_heatmap[artwork_heatmap > 0] = -20
+    artwork_heatmap[artwork_heatmap > 0] = -30
 
     #작품 관람객 히트맵 회전 #TODO
     
@@ -170,7 +171,7 @@ for wall in optimized_wall_list:
     
 optimized_artwork_heatmap += space_heatmap
 heatmapCSV = pd.DataFrame(optimized_artwork_heatmap)
-sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-20, vmax=10)
+sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-30, vmax=10)
 plt.show()
 
 with open('optimized_artwork_list_sample.pkl', 'wb') as f:

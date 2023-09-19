@@ -26,9 +26,10 @@ with open('optimized_artwork_list_sample.pkl', 'rb') as f:
 # 작가 정보를 아트워크 리스트에 안 넣어서 일단 넣음
 for artwork in optimized_artwork_list:
     artwork['artist'] = 'not_set'
-    print(artwork)
+    #print(artwork)
 for wall in optimized_wall_list:
-    print(wall)
+    # print(wall)
+    pass
 
 init_cell_variance = 2000
 init_regulation_variance = 2000
@@ -36,7 +37,9 @@ init_WCSS = 2000
 
 def goal_cost(optimized_artwork_heatmap):
     # 음수는 값에 안 넣게 필터 필요
-    variance = np.var(optimized_artwork_heatmap)
+
+    variance = np.var(optimized_artwork_heatmap[optimized_artwork_heatmap>=0])
+
     return variance
 
 def regularization_cost(optimized_wall_list):
@@ -83,7 +86,37 @@ def similarity_cost(optimized_artwork_list):
 
     return WCSS
 
-WCSS = similarity_cost(optimized_artwork_list)
-norm_WCSS = WCSS / init_WCSS
-if (norm_WCSS >= 1):
-    norm_WCSS = 1
+# WCSS = similarity_cost(optimized_artwork_list)
+# norm_WCSS = WCSS / init_WCSS
+# if (norm_WCSS >= 1):
+#     norm_WCSS = 1
+
+#개삽질
+
+arr4 = np.array([[1,2,0],[1,-1,0],[-1,-1,0]])
+
+def _goal_cost(optimized_artwork_heatmap):
+    # 음수는 값에 안 넣게 필터 필요
+    
+    leng = sum(sum(optimized_artwork_heatmap >= 0))
+    optimized_artwork_heatmap_copy = np.where(optimized_artwork_heatmap >=0, optimized_artwork_heatmap, 0)
+
+    mean = sum(sum(optimized_artwork_heatmap_copy)) / leng
+
+    print(leng)
+    print(mean)
+    variance0 = sum(sum((optimized_artwork_heatmap - mean)**2))/leng
+    variance0 = np.var(optimized_artwork_heatmap[optimized_artwork_heatmap >=0])
+    print(optimized_artwork_heatmap[optimized_artwork_heatmap >=0])
+
+    
+    variance1 = np.var(optimized_artwork_heatmap[optimized_artwork_heatmap>=0])
+    
+    
+    variance2 = np.var(optimized_artwork_heatmap[optimized_artwork_heatmap>=0])
+    
+    print(variance0)
+    print(variance1)
+    print(variance2)
+
+_goal_cost(arr4)
