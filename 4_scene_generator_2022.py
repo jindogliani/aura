@@ -111,11 +111,16 @@ def heatmap_generator(
     artwork_heatmap = cv2.warpAffine(artwork_heatmap, artwork_rotation, artwork_heatmap.shape)
     artwork_heatmap[artwork_heatmap > 0] = -20
 
-    #작품 관람객 히트맵 회전 #TODO 맞는 회전을 위해 쎄타 값 여러번 조정 필요.. 
-    artwork_visitor_transform = np.float32([[1, 0, old_pos_x - new_pos_x], [0, 1, old_pos_z - new_pos_z]])
+    #작품 관람객 히트맵 회전 #TODO
+    
+    #artwork_visitor_rotation = cv2.getRotationMatrix2D((round(old_pos_x/heatmap_cell_size), round(old_pos_z/heatmap_cell_size)), 0, 1)
+    #artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_rotation, artwork_visitor_heatmap.shape)
+
+    artwork_visitor_transform = np.float32([[1, 0, round((new_pos_x - old_pos_x)/heatmap_cell_size)], [0, 1, round((new_pos_z - old_pos_z)/heatmap_cell_size)]])
     artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_transform, artwork_visitor_heatmap.shape)
     artwork_visitor_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta - old_theta, 1)
     artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_rotation, artwork_visitor_heatmap.shape)
+
     artwork_heatmap += artwork_visitor_heatmap
 
     return artwork_heatmap
@@ -158,9 +163,9 @@ for wall in optimized_wall_list:
         for hanged_artwork in wall["hanged_artworks"]:
             artwork_visitor_heatmap = np.load('Daegu_new_preAURA_1025_1117+(8-13)/'+ hanged_artwork["id"] + '.npy')
             artwork_heatmap = heatmap_generator(hanged_artwork["width"], hanged_artwork["new_coords"][0], hanged_artwork["new_coords"][1], hanged_artwork["pos_x"], hanged_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, hanged_artwork["_theta"], wall["_theta"], artwork_visitor_heatmap) #TODO
-            optimized_artwork_heatmap += artwork_heatmap
-            # if(hanged_artwork["id"] == "PA-0067"):
-            #     optimized_artwork_heatmap += artwork_heatmap
+            # optimized_artwork_heatmap += artwork_heatmap
+            if(hanged_artwork["id"] == "PA-0083"):
+                optimized_artwork_heatmap += artwork_heatmap
     print(wall)
     
 optimized_artwork_heatmap += space_heatmap
@@ -176,9 +181,6 @@ with open('optimized_wall_list_sample.pkl', 'wb') as f:
 
 np.save("optimized_artwork_heatmap", optimized_artwork_heatmap)
 
-end = time.time() #1회당 얼마 소요되는지 시간 체크
+end = time.time() 
 
-# print()
-# print()
-# print((end - start))
 
