@@ -34,7 +34,7 @@ artwork_list = [{"id": artwork["id"], "size": artwork["dimensions"]} for artwork
 #전시된 작품 40개 리스트
 with open(exhibition_data_path, 'r', -1, encoding='utf-8') as f:
     exhibition_data = json.load(f)
-total_exhibited_artwork_list = [{"id": artwork["artworkIndex"], "pos_x": round(artwork["position"]["x"], 3), "pos_z": round(artwork["position"]["z"], 3), "_theta": round(artwork["rotation"]["eulerAngles"]["y"])} for artwork in exhibition_data["paintings"]] #작품 id 리스트 #TODO 태욱이형 꺼에 내용 추가 필요
+total_exhibited_artwork_list = [{"id": artwork["artworkIndex"], "pos_x": round(artwork["position"]["x"], 3), "pos_z": round(artwork["position"]["z"], 3), "theta": round(artwork["rotation"]["eulerAngles"]["y"])} for artwork in exhibition_data["paintings"]] #작품 id 리스트 #TODO 태욱이형 꺼에 내용 추가 필요
 #2022년 기준 13작품만 관람객 데이터를 수집 함
 hall5_exhibited_artwork_list = ["PA-0064", "PA-0067", "PA-0027", "PA-0025", "PA-0087", "PA-0070", "PA-0066", "PA-0045", "PA-0079", "PA-0024", "PA-0085", "PA-0063", "PA-0083"]
 
@@ -50,26 +50,27 @@ for exhibited_artwork in exhibited_artwork_list:
             # exhibited_artwork["height"] = round(float(artwork["size"].split("x")[0]) / 100, 3) #height 정보만 빼오기 #현재는 사용하지 않음.
             exhibited_artwork["placed"] = False
             # exhibited_artwork["size"] = round(float(artwork["size"].split("x")) / 100, 3) # split 잘 먹었는지 확인용
+    exhibited_artwork["theta"] = (round(exhibited_artwork["theta"], -1)) % 360 #TODO
     for wall in wall_list: #TODO #작품에 오일러앵글 쓰자! 올해는!! 2023년 광주시립미술관은 수정 필요
-        if wall["theta"] == 0: 
-            if (wall["x1"] <= exhibited_artwork["pos_x"] <= wall["x2"]) and (abs(wall["z1"] - exhibited_artwork["pos_z"]) <= 0.2):
-                exhibited_artwork["wall"] = wall["id"]
-                exhibited_artwork["theta"] = wall["_theta"]
-        elif wall["theta"] == 180: 
-            if (wall["x2"] <= exhibited_artwork["pos_x"] <= wall["x1"]) and (abs(wall["z1"] - exhibited_artwork["pos_z"]) <= 0.2):
-                exhibited_artwork["wall"] = wall["id"]
-                exhibited_artwork["theta"] = wall["_theta"]        
-        elif wall["theta"] == 270:
-            if (wall["z1"] <= exhibited_artwork["pos_z"] <= wall["z2"]) and (abs(wall["x1"] - exhibited_artwork["pos_x"]) <= 0.2):
-                exhibited_artwork["wall"] = wall["id"]
-                exhibited_artwork["theta"] = wall["_theta"]   
-        elif wall["theta"] == 90:
-            if (wall["z2"] <= exhibited_artwork["pos_z"] <= wall["z1"]) and (abs(wall["x1"] - exhibited_artwork["pos_x"]) <= 0.2):
-                exhibited_artwork["wall"] = wall["id"]
-                exhibited_artwork["theta"] = wall["_theta"]   
-        else:
-            continue 
-    exhibited_artwork["_theta"] = (round(exhibited_artwork["_theta"], -1)) % 360 #TODO 
+        if exhibited_artwork["theta"] == wall["theta"]:
+            exhibited_artwork["_theta"] = wall["theta"]
+            exhibited_artwork["wall"] = wall["id"]
+        # if wall["_theta"] == 0: 
+        #     if (wall["x1"] <= exhibited_artwork["pos_x"] <= wall["x2"]) and (abs(wall["z1"] - exhibited_artwork["pos_z"]) <= 0.2):
+        #         exhibited_artwork["wall"] = wall["id"]
+        #         exhibited_artwork["theta"] = wall["_theta"]
+        # elif wall["_theta"] == 180: 
+        #     if (wall["x2"] <= exhibited_artwork["pos_x"] <= wall["x1"]) and (abs(wall["z1"] - exhibited_artwork["pos_z"]) <= 0.2):
+        #         exhibited_artwork["wall"] = wall["id"]
+        #         exhibited_artwork["theta"] = wall["_theta"]        
+        # elif wall["_theta"] == 270:
+        #     if (wall["z1"] <= exhibited_artwork["pos_z"] <= wall["z2"]) and (abs(wall["x1"] - exhibited_artwork["pos_x"]) <= 0.2):
+        #         exhibited_artwork["wall"] = wall["id"]
+        #         exhibited_artwork["theta"] = wall["_theta"]   
+        # elif wall["_theta"] == 90:
+        #     if (wall["z2"] <= exhibited_artwork["pos_z"] <= wall["z1"]) and (abs(wall["x1"] - exhibited_artwork["pos_x"]) <= 0.2):
+        #         exhibited_artwork["wall"] = wall["id"]
+        #         exhibited_artwork["theta"] = wall["_theta"]   
     print(exhibited_artwork)
 print()
 print()
@@ -163,11 +164,11 @@ for wall in optimized_wall_list:
                 temp_ratio += hanged_artwork["width"] / temp_len
         for hanged_artwork in wall["hanged_artworks"]:
             artwork_visitor_heatmap = np.load('Daegu_new_preAURA_1025_1117+(8-13)/'+ hanged_artwork["id"] + '.npy')
-            artwork_heatmap = heatmap_generator(hanged_artwork["width"], hanged_artwork["new_coords"][0], hanged_artwork["new_coords"][1], hanged_artwork["pos_x"], hanged_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, hanged_artwork["_theta"], wall["_theta"], artwork_visitor_heatmap) #TODO
+            artwork_heatmap = heatmap_generator(hanged_artwork["width"], hanged_artwork["new_coords"][0], hanged_artwork["new_coords"][1], hanged_artwork["pos_x"], hanged_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, hanged_artwork["theta"], wall["theta"], artwork_visitor_heatmap) #TODO
             optimized_artwork_heatmap += artwork_heatmap
             # if(hanged_artwork["id"] == "PA-0083"):
             #     optimized_artwork_heatmap += artwork_heatmap
-    print(wall)
+    # print(wall)
     
 optimized_artwork_heatmap += space_heatmap
 heatmapCSV = pd.DataFrame(optimized_artwork_heatmap)

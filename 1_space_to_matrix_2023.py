@@ -20,7 +20,7 @@ import pickle
 date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) + ')'
 
 #공간 x,z 좌표 데이터를 읽어온다.
-spaceDataCSV = open('SpaceData/coords_GMA3.csv', 'r', encoding='utf-8-sig') #2023년 광주시립미술관 전체 데이터
+spaceDataCSV = open('SpaceData/coords_GMA2.csv', 'r', encoding='utf-8-sig') #2023년 광주시립미술관 전체 데이터
 spaceDataCSVname = spaceDataCSV.name[10:-4]
 reader = csv.reader(spaceDataCSV)
 
@@ -44,17 +44,19 @@ heatmap = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = np.uint8)
 
 img = np.zeros((spaceVerticalSize*10, spaceHorizontalSize*10), dtype = np.uint8) #1px == 10cm
 li = []
-xOffset, zOffset = 33, 28 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
+xOffset, zOffset = 7, 12 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
 #관람객 시작점이 상대좌표에서 (0, y, 0) 이었으나 절대좌표에서는 (-4.1, y, -5.8)
 
 for row in edgeArr:
-    x1, x2, z1, z2 = float(row[0]), float(row[3]), float(row[2]), float(row[5])
-    _x1, _x2, _z1, _z2= int(10*(x1+xOffset)), int(10*(x2+xOffset)), int(10*(-z1+zOffset)), int(10*(-z2+zOffset)) #z축 뒤집히는 것은 유동적 수정 필요
+    x1, x2, z1, z2 = -float(row[0]), -float(row[3]), float(row[2]), float(row[5])
+    _x1, _x2, _z1, _z2= int(10*(x1+xOffset)), int(10*(x2+xOffset)), int(10*(z1+zOffset)), int(10*(z2+zOffset)) #z축 뒤집히는 것은 유동적 수정 필요
     img = cv2.line(img, (_x1, _z1), (_x2, _z2), 255, 1)
     wallDic = dict()
     wallDic = {'id': '', 'displayable': True, 'length':0, 'theta':0, 'x1': 0, 'z1': 0, 'x2': 0,'z2': 0}
-    wallDic['length'], wallDic['theta']= math.dist((x1, z1), (x2, z2)), np.rad2deg(np.arctan2(z2 - z1, x2 - x1))
-    wallDic['_theta'] = abs(round(np.rad2deg(np.arctan2(z1 - z2, x1 - x2))) -180) #TODO
+    wallDic['length']= math.dist((x1, z1), (x2, z2))
+    wallDic['theta'] = abs(round(np.rad2deg(np.arctan2(z1 - z2, x1 - x2))) - 180) #TODO 2023
+    if abs(wallDic['theta'] - 360) <= 5:
+        wallDic['theta'] = 0
     wallDic['x1'], wallDic['x2'], wallDic['z1'], wallDic['z2'] = x1, x2, z1, z2
     li.append(wallDic)
 
@@ -83,9 +85,9 @@ _resized_img_th = np.asarray(resized_img_th, dtype = np.int16)
 _resized_inside_img = np.asarray(resized_inside_img, dtype = np.int16)
 _resized_img_th = _resized_img_th + _resized_inside_img
 
-cv2.imshow('th', resized_img_th)
-cv2.imshow('image', img)
-cv2.waitKey(0)
+# cv2.imshow('th', resized_img_th)
+# cv2.imshow('image', img)
+# cv2.waitKey(0)
 
 sMapCSV = pd.DataFrame(_resized_img_th)
 sns.heatmap(sMapCSV, cmap='Greens', vmin=0, vmax=255)
