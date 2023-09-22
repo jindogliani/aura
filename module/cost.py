@@ -23,9 +23,9 @@ space_heatmap[space_heatmap > 254] = -55 #공간 벽을 -10으로 변환
 space_heatmap[space_heatmap == 0] = -50 #공간 외부 값을 0에서 -15으로 전환
 space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
 
-init_cell_variance = 27.82147715320017
-init_regulation_variance = 5.97139935301553
-init_WCSS = 53.4656034303642
+init_cell_variance = 28.1937360458682
+init_regulation_variance = 5.866548641795766
+init_WCSS = 52.517175423485185
 
 def heatmap_generator(
     artwork_width, new_pos_x, new_pos_z, old_pos_x, old_pos_z, x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap

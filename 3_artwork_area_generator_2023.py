@@ -25,10 +25,9 @@ space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), rou
 with open('wall_list_2023.pkl', 'rb') as f:
     wall_list = pickle.load(f)
 
-visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-20)/preAURA_2023_Heatmap+(9-20).npy')
 space_heatmap = np.load('SpaceData/coords_GMA3+(9-20).npy')
-space_heatmap[space_heatmap > 254] = -55 #공간 벽을 -10으로 변환
-space_heatmap[space_heatmap == 0] = -50 #공간 외부 값을 0에서 -15으로 전환
+space_heatmap[space_heatmap > 254] = -6 #공간 벽을 -10으로 변환
+space_heatmap[space_heatmap == 0] = -3 #공간 외부 값을 0에서 -15으로 전환
 space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
 
 artwork_data_path = "Daegu_new.json" #작품의 메타데이터가 있는 JSON 파일 => 작품의 size 값 추출
@@ -38,11 +37,11 @@ exhibition_data_path = "Data_2023.json" #작품이 걸려있는 전시 내용 JS
 with open(artwork_data_path, "r") as f:
     artwork_data = json.load(f)
 
-exhibited_artwork_order = ["PA-0023", "PA-0026", "PA-0095", "PA-0098", "PA-0074", "PA-0075", "PA-0077", "KO-0010", "KO-0008", "PA-0101", "PA-0052", "PA-0061", "PA-0001", "PA-0003", "PA-0004", "PA-0082", "PA-0084", "PA-0083", "PA-0063", "PA-0067", "PA-0064", "PA-0024", "PA-0087", "PA-0027", "PA-0025", "PA-0036", "PA-0085", "PA-0086", "PA-0070", "PA-0065", "PA-0031", "PA-0088", "PA-0100", "PA-0099", "KO-0007", "KO-0006", "KO-0004", "KO-0005", "PA-0090", "PA-0089"]
+exhibited_artwork_order = ["PA-0023", "PA-0026", "KO-0009", "PA-0095", "PA-0098", "PA-0076", "PA-0074", "PA-0075", "PA-0077", "KO-0010", "KO-0008", "PA-0101", "PA-0057", "PA-0052", "PA-0061", "PA-0001", "PA-0003", "PA-0004", "PA-0082", "PA-0084", "PA-0083", "PA-0063", "PA-0067", "PA-0064", "PA-0024", "PA-0087", "PA-0027", "PA-0025", "PA-0036", "PA-0085", "PA-0086", "PA-0070", "PA-0065", "PA-0031", "PA-0088", "PA-0100", "PA-0099", "KO-0007", "KO-0006", "KO-0004", "KO-0005", "PA-0090", "PA-0089"]
 
 artwork_list = [{"id": artwork["id"], "size": artwork["dimensions"], "artist": artwork["artists"][0]} for artwork in artwork_data["exhibitionObjects"]] #작품 id 리스트
 
-#전시된 작품 40개 리스트
+#전시된 작품 43개 리스트
 exhibited_artwork_list =[]
 with open(exhibition_data_path, 'r', -1, encoding='utf-8') as f:
     exhibition_data = json.load(f)
@@ -122,7 +121,7 @@ def heatmap_generator(
     #작품 새로운 벽 방향으로 회전
     artwork_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta, 1)
     artwork_heatmap = cv2.warpAffine(artwork_heatmap, artwork_rotation, artwork_heatmap.shape)
-    #artwork_heatmap[artwork_heatmap > 0] = -6 # 확인용
+    #artwork_heatmap[artwork_heatmap > 0] = -10 # 확인용
     artwork_heatmap[artwork_heatmap > 0] = 0 # 분산 계산용
 
     #작품 관람객 히트맵 회전 #TODO
@@ -144,9 +143,8 @@ artwork_location_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells
 x_offset, z_offset = 7, 12
 
 for exhibited_artwork in exhibited_artwork_list:
-    artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-20)/'+ exhibited_artwork["id"] + '.npy')
+    artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-22)/'+ exhibited_artwork["id"] + '.npy')
     artwork_heatmap = heatmap_generator(exhibited_artwork["width"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, 0, exhibited_artwork["_theta"], artwork_visitor_heatmap) #TODO
-    # if(exhibited_artwork["id"] == "PA-0024"):
     artwork_location_heatmap += artwork_heatmap
 
 for wall in wall_list:
@@ -157,18 +155,19 @@ for wall in wall_list:
         if order in wall["hanged_artwork"]:
             if order not in wall["artwork"]:
                 wall["artwork"].append(order)
+    # del wall["hanged_artwork"]
     print(wall)
 
 with open('wall_list_2023.pkl', 'wb') as f:
     pickle.dump(wall_list,f)
 
-# with open('exhibited_artwork_list_2023.pkl', 'wb') as f:
-#     pickle.dump(exhibited_artwork_list,f)
+with open('exhibited_artwork_list_2023.pkl', 'wb') as f:
+    pickle.dump(exhibited_artwork_list,f)
 
 heatmap = space_heatmap + artwork_location_heatmap
 np.save("initial_heatmap_2023", heatmap)
 heatmapCSV = pd.DataFrame(heatmap)
-sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-6, vmax=50)
+sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
 plt.show()
 
 

@@ -99,7 +99,7 @@ with open(visitor_data_path, "r") as f:
     x_offset, y_offset = 7, 12
     process_heatmap(heatmap, dict_array, reader, x_offset, y_offset, heatmapCellSize)
 
-plt_row, plt_col = 5, 8
+plt_row, plt_col = 5, 9
 _figs, axes = plt.subplots(plt_row, plt_col, sharey=False)
 
 #전시정보 json파일 open
