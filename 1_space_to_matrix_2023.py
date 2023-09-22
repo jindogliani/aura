@@ -20,7 +20,7 @@ import pickle
 date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) + ')'
 
 #공간 x,z 좌표 데이터를 읽어온다.
-spaceDataCSV = open('SpaceData/coords_GMA2.csv', 'r', encoding='utf-8-sig') #2023년 광주시립미술관 전체 데이터
+spaceDataCSV = open('SpaceData/coords_GMA3.csv', 'r', encoding='utf-8-sig') #2023년 광주시립미술관 전체 데이터
 spaceDataCSVname = spaceDataCSV.name[10:-4]
 reader = csv.reader(spaceDataCSV)
 
@@ -34,14 +34,14 @@ spaceDataCSV.close()
 #공간 세로 길이: 50미터 | 공간 가로 길이: 50미터
 spaceVerticalSize, spaceHorizontalSize = 40, 40
 #히트맵 셀 사이즈: 0.1미터 = 10센티미터
-heatmapCellSize = 0.1
+heatmapCellSize = 0.2
 
 spaceVertcalCells, spaceHorizontalCells = spaceVerticalSize / heatmapCellSize, spaceHorizontalSize / heatmapCellSize
 spaceHorizontalCells, spaceVertcalCells = round(spaceHorizontalCells), round(spaceVertcalCells)
 heatmap = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = np.uint8)
 #히트맵 numpy 이중배열
 
-img = np.zeros((spaceVerticalSize/heatmapCellSize, spaceHorizontalSize/heatmapCellSize), dtype = np.uint8) #1px == 10cm
+img = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = np.uint8) #1px == 10cm
 li = []
 xOffset, zOffset = 7, 12 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
 #관람객 시작점이 상대좌표에서 (0, y, 0) 이었으나 절대좌표에서는 (-4.1, y, -5.8)

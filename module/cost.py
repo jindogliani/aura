@@ -13,7 +13,7 @@ import random
 import math
 
 space_vertical_size, space_horizontal_size = 40, 40
-heatmap_cell_size = 0.1
+heatmap_cell_size = 0.2
 space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size
 space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
 
@@ -23,7 +23,7 @@ with open('wall_list_2023.pkl', 'rb') as f:
 with open('exhibited_artwork_list_2023.pkl', 'rb') as f:
     exhibited_artwork_list = pickle.load(f)
 
-space_heatmap = np.load('SpaceData/coords_GMA3+(9-20).npy')
+space_heatmap = np.load('SpaceData/coords_GMA3+(9-23).npy')
 space_heatmap[space_heatmap > 254] = -55 #공간 벽을 -10으로 변환
 space_heatmap[space_heatmap == 0] = -50 #공간 외부 값을 0에서 -15으로 전환
 space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
@@ -32,7 +32,7 @@ init_scene_data = {'PA-0023': ['w5', 28], 'PA-0026': ['w5', 65], 'KO-0009': ['w6
 init_wall_data = wall_list
 init_artwork_data = exhibited_artwork_list
 
-init_cell_variance = 28.96355947950509
+init_cell_variance = 130.7980201483807
 init_regulation_variance = 5.866548641795766
 init_WCSS = 52.517175423485185
 
@@ -76,7 +76,7 @@ def heatmap_generator(
 
 def goal_cost(scene_data, artwork_data, wall_data):
     # 음수는 값에 안 넣게 필터 필요
-    scene_heatmap = np.zeros((400, 400), dtype = np.int16)
+    scene_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
     x_offset, z_offset = 7, 12
     
     for k, v in scene_data.items():
@@ -92,7 +92,7 @@ def goal_cost(scene_data, artwork_data, wall_data):
         new_theta = wall["theta"]
         old_theta = art["theta"]
 
-        artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-22)/'+ k + '.npy')
+        artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ k + '.npy')
         artwork_heatmap = heatmap_generator(art["width"], new_art_pos[0], new_art_pos[1], old_art_pos[0], old_art_pos[1], x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap)
         scene_heatmap += artwork_heatmap
     
