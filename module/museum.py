@@ -38,7 +38,8 @@ class DataLoader():
         artwork_data = {}
         wall_data = {}
         for wall in self.wall_list:
-            wall_data[wall['id']] = wall
+            if wall['displayable'] == True:
+                wall_data[wall['id']] = wall
 
         for artwork in self.exhibited_artwork_list:
             wall = wall_data[artwork['wall']]
@@ -163,18 +164,20 @@ class MuseumScene():
     def evaluation(self):
         draw = {}
 
-        g_weight = 0.6
-        r_weight = 0.2
-        s_weight = 0.2
+        g_weight = 1.0
+        r_weight = 0.0
+        s_weight = 0.4
 
         g_cost = goal_cost(self.scene_data, self.artwork_data, self.wall_data)
-        r_cost = regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
-        s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
+        r_cost = 0
+        s_cost = 0
+        # r_cost = regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
+        # s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
 
         total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost
 
         costs = [g_cost, r_cost, s_cost] 
-        return costs
+        return total_cost
                     
     def print_scene(self):
         self.draw = {}

@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import random
 import math
+import time
 
 with open('wall_list_2023.pkl', 'rb') as f:
     wall_list = pickle.load(f)
@@ -66,14 +67,12 @@ def heatmap_generator(
     artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_rotation, artwork_visitor_heatmap.shape)
 
     artwork_heatmap += artwork_visitor_heatmap
-
     return artwork_heatmap
 
 def goal_cost(scene_data, artwork_data, wall_data):
     # 음수는 값에 안 넣게 필터 필요
     scene_heatmap = np.zeros((400, 400), dtype = np.int16)
     x_offset, z_offset = 7, 12
-    
     for k, v in scene_data.items():
         art = artwork_data[k]
         wall = wall_data[v[0]]

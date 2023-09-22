@@ -8,6 +8,7 @@ class SceneState(object):
     def __init__(self, state: MuseumScene):
         self.scene = state
         self.terminal = False
+        self.threshold = 0.1
 
     def get_legal_actions(self):
         legal_actions = self.scene.get_legal_actions()
@@ -15,7 +16,7 @@ class SceneState(object):
     
     @property
     def get_reward(self):
-        reward = self.scene.evaluation()
+        reward = (1-self.scene.evaluation()) if (1-self.scene.evaluation()) > 0 else 0
         return reward
     
     def move(self, action_tup):
@@ -24,5 +25,6 @@ class SceneState(object):
         self.scene.update_scene(new_scene)
         return SceneState(self.scene)
     
+
     def is_terminal(self):
         return self.terminal
