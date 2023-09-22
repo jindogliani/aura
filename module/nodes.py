@@ -4,6 +4,7 @@ sys.path.insert(0,os.path.join(os.getcwd(), 'module'))
 import numpy as np
 from collections import defaultdict
 from scene import SceneState
+from tqdm import tqdm
 
 class MCTSNode(object):
     def __init__(self, state: SceneState, parent=None):
@@ -40,14 +41,14 @@ class MCTSNode(object):
     
     def rollout(self):
         current_rollout_state = self.state
-        for idx in range(100):
-            print("Rollout: ", idx)
+        for idx in tqdm(range(10)):
+            # print("Rollout: ", idx)
             possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)
             current_rollout_state = current_rollout_state.move(action)
             # current_rollout_state.scene.print_scene()
             reward = current_rollout_state.get_reward
-            print("Random Reward: ", reward)
+            # print("Random Reward: ", reward)
         return reward
 
 
