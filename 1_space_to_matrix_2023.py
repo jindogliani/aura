@@ -38,18 +38,17 @@ heatmapCellSize = 0.1
 
 spaceVertcalCells, spaceHorizontalCells = spaceVerticalSize / heatmapCellSize, spaceHorizontalSize / heatmapCellSize
 spaceHorizontalCells, spaceVertcalCells = round(spaceHorizontalCells), round(spaceVertcalCells)
-#히트맵 가로 셀 개수: 10/0.2 = 50개 | 히트맵 세로 셀 개수: 20/0.2 = 100개 
 heatmap = np.zeros((spaceVertcalCells, spaceHorizontalCells), dtype = np.uint8)
 #히트맵 numpy 이중배열
 
-img = np.zeros((spaceVerticalSize*10, spaceHorizontalSize*10), dtype = np.uint8) #1px == 10cm
+img = np.zeros((spaceVerticalSize/heatmapCellSize, spaceHorizontalSize/heatmapCellSize), dtype = np.uint8) #1px == 10cm
 li = []
 xOffset, zOffset = 7, 12 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
 #관람객 시작점이 상대좌표에서 (0, y, 0) 이었으나 절대좌표에서는 (-4.1, y, -5.8)
 
 for row in edgeArr:
     x1, x2, z1, z2 = -float(row[0]), -float(row[3]), float(row[2]), float(row[5])
-    _x1, _x2, _z1, _z2= int(10*(x1+xOffset)), int(10*(x2+xOffset)), int(10*(z1+zOffset)), int(10*(z2+zOffset)) #z축 뒤집히는 것은 유동적 수정 필요
+    _x1, _x2, _z1, _z2= int((x1+xOffset)/heatmapCellSize), int((x2+xOffset)/heatmapCellSize), int((z1+zOffset)/heatmapCellSize), int((z2+zOffset)/heatmapCellSize) #z축 뒤집히는 것은 유동적 수정 필요
     img = cv2.line(img, (_x1, _z1), (_x2, _z2), 255, 1)
     wallDic = dict()
     wallDic = {'id': '', 'displayable': True, 'length':0, 'theta':0, 'x1': 0, 'z1': 0, 'x2': 0,'z2': 0}
