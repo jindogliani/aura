@@ -173,14 +173,17 @@ class MuseumScene():
 
         total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost
 
-        return total_cost
+        costs = [g_cost, r_cost, s_cost] 
+        return costs
                     
     def print_scene(self):
         self.draw = {}
         for k, v in self.wall_data.items():
             vis_list = [0] * int(v['length']*10)
             self.draw[k] = np.array(vis_list)
-            
+        
+        #print(self.scene_data)
+
         for k, v in self.scene_data.items():
             art = self.artwork_data[k]
             wall = self.wall_data[v[0]]
@@ -217,15 +220,17 @@ class MuseumScene():
 if __name__ == "__main__":
     scene = MuseumScene()
     scene.print_scene()
+    
+    total_cost = scene.evaluation()
+    print(total_cost)
+
     print("=====================================")
     # for moves in legal_moves:
     #     print(moves)
-    for idx in range(1000000):
-        legal_moves = scene.get_legal_actions()
-        action_tup = choice(legal_moves)
-        new_scene = scene.do_action(*action_tup)
-        scene.update_scene(new_scene)
-        print("************************************")
-        scene.print_scene()
-        
-
+    # for idx in range(1):
+    #     legal_moves = scene.get_legal_actions()
+    #     action_tup = choice(legal_moves)
+    #     new_scene = scene.do_action(*action_tup)
+    #     scene.update_scene(new_scene)
+    #     print("************************************")
+    #     scene.print_scene()

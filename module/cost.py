@@ -12,16 +12,20 @@ import seaborn as sns
 import random
 import math
 
-with open('../wall_list_2023.pkl', 'rb') as f:
+with open('wall_list_2023.pkl', 'rb') as f:
     wall_list = pickle.load(f)
 
-with open('../exhibited_artwork_list_2023.pkl', 'rb') as f:
+with open('exhibited_artwork_list_2023.pkl', 'rb') as f:
     exhibited_artwork_list = pickle.load(f)
 
-space_heatmap = np.load('../SpaceData/coords_GMA3+(9-20).npy')
-space_heatmap[space_heatmap > 254] = -55 #°ø°£ º®À» -10À¸·Î º¯È¯
-space_heatmap[space_heatmap == 0] = -50 #°ø°£ ¿ÜºÎ °ªÀ» 0¿¡¼­ -15À¸·Î ÀüÈ¯
-space_heatmap[space_heatmap == 127] = 0 #°ø°£ ³»ºÎ °ªÀ» 127¿¡¼­ 0À¸·Î ÀüÈ¯
+space_heatmap = np.load('SpaceData/coords_GMA3+(9-20).npy')
+space_heatmap[space_heatmap > 254] = -55 #ê³µê°„ ë²½ì„ -10ìœ¼ë¡œ ë³€í™˜
+space_heatmap[space_heatmap == 0] = -50 #ê³µê°„ ì™¸ë¶€ ê°’ì„ 0ì—ì„œ -15ìœ¼ë¡œ ì „í™˜
+space_heatmap[space_heatmap == 127] = 0 #ê³µê°„ ë‚´ë¶€ ê°’ì„ 127ì—ì„œ 0ìœ¼ë¡œ ì „í™˜
+
+init_scene_data = {'PA-0023': ['w5', 28], 'PA-0026': ['w5', 65], 'KO-0009': ['w6', 29], 'PA-0095': ['w8', 12], 'PA-0098': ['w8', 33], 'PA-0076': ['w8', 49], 'PA-0074': ['w9', 16], 'PA-0075': ['w9', 31], 'PA-0077': ['w9', 49], 'KO-0010': ['w9', 80], 'KO-0008': ('w9', 116), 'PA-0101': ['w9', 132], 'PA-0057': ['w10', 11], 'PA-0052': ['w10', 29], 'PA-0061': ['w10', 49], 'PA-0001': ['w14', 33], 'PA-0003': ['w18', 41], 'PA-0004': ['w18', 93], 'PA-0082': ['w24', 17], 'PA-0084': ['w24', 48], 'PA-0083': ['w26', 21], 'PA-0063': ['w26', 46], 'PA-0067': ['w27', 22], 'PA-0064': ['w27', 49], 'PA-0024': ['w31', 53], 'PA-0087': ['w41', 28], 'PA-0027': ['w42', 16], 'PA-0025': ['w42', 46], 'PA-0036': ['w43', 19], 'PA-0085': ['w43', 40], 'PA-0086': ['w43', 55], 'PA-0070': ['w45', 12], 'PA-0065': ['w45', 50], 'PA-0031': ['w46', 35], 'PA-0088': ['w50', 34], 'PA-0100': ['w52', 29], 'PA-0099': ['w52', 58], 'KO-0007': ['w56', 33], 'KO-0006': ['w57', 49], 'KO-0004': ['w57', 86], 'KO-0005': ['w57', 112], 'PA-0090': ['w57', 154], 'PA-0089': ['w58', 34]}
+init_wall_data = wall_list
+init_artwork_data = exhibited_artwork_list
 
 init_cell_variance = 28.96355947950509
 init_regulation_variance = 5.866548641795766
@@ -30,31 +34,32 @@ init_WCSS = 52.517175423485185
 def heatmap_generator(
     artwork_width, new_pos_x, new_pos_z, old_pos_x, old_pos_z, x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap
 ):
-    #ÀÛÇ° °´Ã¼ indicate heatmap »ı¼º
+    #ì‘í’ˆ ê°ì²´ indicate heatmap ìƒì„±
     x1, x2, z1, z2 = new_pos_x - artwork_width/2, new_pos_x + artwork_width/2, new_pos_z, new_pos_z
     _x1, _x2, _z1, _z2 = ((x1 + x_offset)/heatmap_cell_size), (x2 + x_offset)/heatmap_cell_size, (z1 + z_offset)/heatmap_cell_size, (z2 + z_offset)/heatmap_cell_size
     _x1, _x2, _z1, _z2 = round(_x1), round(_x2), round(_z1), round(_z2)
     artwork_heatmap = np.zeros((400, 400), dtype = np.int16)
-    artwork_heatmap = cv2.line(artwork_heatmap, (_x1, _z1), (_x2, _z2), 255, 1) #ÀÛÇ° ÇÁ·¹ÀÓ µÎ²² 10cm
+    artwork_heatmap = cv2.line(artwork_heatmap, (_x1, _z1), (_x2, _z2), 255, 1) #ì‘í’ˆ í”„ë ˆì„ ë‘ê»˜ 10cm
     
-    #ÀÛÇ°ÀÌ ÇâÇÏ°í ÀÖ´Â ¹æÇâ Ç¥½Ã
+    #ì‘í’ˆì´ í–¥í•˜ê³  ìˆëŠ” ë°©í–¥ í‘œì‹œ
     direction = np.zeros((400, 400), dtype = np.int16)
     direction = cv2.line(direction, (_x1, _z1), (round((_x1+_x2)/2), round((_z1+_z2)/2)), 255, 1)
     direction_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), 90, 0.7)
     direction = cv2.warpAffine(direction, direction_rotation, direction.shape)
     artwork_heatmap += direction
 
-    #ÀÛÇ° »õ·Î¿î º® ¹æÇâÀ¸·Î È¸Àü
+    #ì‘í’ˆ ìƒˆë¡œìš´ ë²½ ë°©í–¥ìœ¼ë¡œ íšŒì „
     artwork_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta, 1)
     artwork_heatmap = cv2.warpAffine(artwork_heatmap, artwork_rotation, artwork_heatmap.shape)
-    #artwork_heatmap[artwork_heatmap > 0] = -6 # È®ÀÎ¿ë
-    artwork_heatmap[artwork_heatmap > 0] = 0 # ºĞ»ê °è»ê¿ë
+    #artwork_heatmap[artwork_heatmap > 0] = -6 # í™•ì¸ìš©
+    artwork_heatmap[artwork_heatmap > 0] = 0 # ë¶„ì‚° ê³„ì‚°ìš©
 
-    #ÀÛÇ° °ü¶÷°´ È÷Æ®¸Ê È¸Àü #TODO
+    #ì‘í’ˆ ê´€ëŒê° íˆíŠ¸ë§µ íšŒì „ #TODO
     
     #artwork_visitor_rotation = cv2.getRotationMatrix2D((round(old_pos_x/heatmap_cell_size), round(old_pos_z/heatmap_cell_size)), 0, 1)
     #artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_rotation, artwork_visitor_heatmap.shape)
 
+    # if ((new_pos_x - old_pos_x)/heatmap_cell_size > 2) or ((new_pos_x - old_pos_x)/heatmap_cell_size > 2) or abs(new_theta - old_theta) > 10:
     artwork_visitor_transform = np.float32([[1, 0, round((new_pos_x - old_pos_x)/heatmap_cell_size)], [0, 1, round((new_pos_z - old_pos_z)/heatmap_cell_size)]])
     artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_transform, artwork_visitor_heatmap.shape)
     artwork_visitor_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta - old_theta, 1)
@@ -65,7 +70,7 @@ def heatmap_generator(
     return artwork_heatmap
 
 def goal_cost(scene_data, artwork_data, wall_data):
-    # À½¼ö´Â °ª¿¡ ¾È ³Ö°Ô ÇÊÅÍ ÇÊ¿ä
+    # ìŒìˆ˜ëŠ” ê°’ì— ì•ˆ ë„£ê²Œ í•„í„° í•„ìš”
     scene_heatmap = np.zeros((400, 400), dtype = np.int16)
     x_offset, z_offset = 7, 12
     
@@ -74,7 +79,7 @@ def goal_cost(scene_data, artwork_data, wall_data):
         wall = wall_data[v[0]]
         pos = v[1]
         
-        ratio1, ratio2 = (wall["length"]-pos)/wall["length"], pos/wall["length"]
+        ratio1, ratio2 = (wall["length"]-pos*0.1)/wall["length"], (pos*0.1)/wall["length"]
         new_art_pos = (wall["x1"]*ratio1+wall["x2"]*ratio2, wall["z1"]*ratio1+wall["z2"]*ratio2)
         old_art_pos = (art["pos_x"], art["pos_z"])
 
@@ -83,49 +88,35 @@ def goal_cost(scene_data, artwork_data, wall_data):
 
         heatmap_cell_size = 0.1
 
-        artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-20)/'+ k + '.npy')
+        artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-22)/'+ k + '.npy')
         artwork_heatmap = heatmap_generator(art["width"], new_art_pos[0], new_art_pos[1], old_art_pos[0], old_art_pos[1], x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap)
         scene_heatmap += artwork_heatmap
     
     scene_heatmap += space_heatmap
+
+    heatmapCSV = pd.DataFrame(scene_heatmap)
+    sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
+    plt.show()
+
     variance = np.var(scene_heatmap[scene_heatmap>=0])
     cost = variance / init_cell_variance
     
     return cost
 
-def regularization_cost(scene_data, artwork_data, wall_data): #»ı¼ºµÈ ¾ÀÀÇ ÀÛÇ°µéÀÇ coords
-    ordered_scene_data = []
-    
-    for wall in wall_data:
-        for k, v in scene_data.items():
-            art = artwork_data[k]
-            hanged_wall = wall_data[v[0]]
-            pos = v[1]
-            
-            ratio1, ratio2 = (hanged_wall["length"]-pos)/hanged_wall["length"], pos/hanged_wall["length"]
-            new_art_pos = (hanged_wall["x1"]*ratio1+hanged_wall["x2"]*ratio2, hanged_wall["z1"]*ratio1+hanged_wall["z2"]*ratio2)
-            
-            if wall["id"] == hanged_wall["id"]:
-                dic = [art["id"], wall["id"], pos, new_art_pos]
-                if ordered_scene_data == []:
-                    ordered_scene_data.append(dic)
-                else:
-                    for i, e in enumerate(reversed(ordered_scene_data)):
-                        if e[1] == dic[1]:
-                            if e[2] <= dic[2]:
-                                if i > 0:
-                                    # reversed(ordered_scene_data).insert(dic, i-1)
-                                    ordered_scene_data.insert(dic, -i) # ¹¹°¡ ¸Â´ÂÁö ¸ğ¸£°ÚÀ½..
-                                else:
-                                    ordered_scene_data.append(dic)
-                        else:
-                            ordered_scene_data.append(dic)
-                        
+def regularization_cost(scene_data, artwork_data, wall_data): #ìƒì„±ëœ ì”¬ì˜ ì‘í’ˆë“¤ì˜ coords
+    keys, values = list(scene_data.keys()), list(scene_data.values())
+    ordered_scene_data = {k:v for v, k in sorted(zip(values, keys), key=(lambda x : (x[0][0], x[0][1])))}
+
     new_artwork_positions = []
     new_artwork_distance = []
-    
-    for art in ordered_scene_data:
-        new_artwork_positions.append(art[3]) 
+
+    for k, v in ordered_scene_data.items():
+        art = artwork_data[k]
+        wall = wall_data[v[0]]
+        pos = v[1]
+        ratio1, ratio2 = (wall["length"]-pos*0.1)/wall["length"], (pos*0.1)/wall["length"]
+        new_art_pos = (wall["x1"]*ratio1+wall["x2"]*ratio2, wall["z1"]*ratio1+wall["z2"]*ratio2)
+        new_artwork_positions.append(new_art_pos)
     
     for i in range(len(new_artwork_positions)):
         j = (i+1) % len(new_artwork_positions)
@@ -145,7 +136,7 @@ def centroid(coordinates):
     return (centroid_x, centroid_y)
 
 def similarity_cost(scene_data, artwork_data, wall_data):
-    artist_list = ["Â÷Çö¿í", "¹éÁöÈÆ", "ÀÌÁÖÈñ", "½ÅÁØ¹Î", "¹ÚÁö¿¬", "È²Áö¿µ", "ÀÌ¿¬ÁÖ", "½ÉÀ±", "±èµµ°æ"] #ÀÛ°¡ ¼ö°¡ 10 ¹Ì¸¸ÀÌ¶ó ±×³É ¸®½ºÆ® ¸¸µé°í ÁøÇà, ³ªÁß¿¡ µ¹¸®±â Àü¿¡ ÁöÁ¤
+    artist_list = ["ì°¨í˜„ìš±", "ë°±ì§€í›ˆ", "ì´ì£¼í¬", "ì‹ ì¤€ë¯¼", "ë°•ì§€ì—°", "í™©ì§€ì˜", "ì´ì—°ì£¼", "ì‹¬ìœ¤", "ê¹€ë„ê²½"] #ì‘ê°€ ìˆ˜ê°€ 10 ë¯¸ë§Œì´ë¼ ê·¸ëƒ¥ ë¦¬ìŠ¤íŠ¸ ë§Œë“¤ê³  ì§„í–‰, ë‚˜ì¤‘ì— ëŒë¦¬ê¸° ì „ì— ì§€ì •
     cluster_variance_list = []
     
     for artist in artist_list:
@@ -157,7 +148,7 @@ def similarity_cost(scene_data, artwork_data, wall_data):
             wall = wall_data[v[0]]
             pos = v[1]
             
-            ratio1, ratio2 = (wall["length"]-pos)/wall["length"], pos/wall["length"]
+            ratio1, ratio2 = (wall["length"]-pos*0.1)/wall["length"], (pos*0.1)/wall["length"]
             new_art_pos = (wall["x1"]*ratio1+wall["x2"]*ratio2, wall["z1"]*ratio1+wall["z2"]*ratio2)
 
             if art["artist"] == artist:
@@ -176,3 +167,45 @@ def similarity_cost(scene_data, artwork_data, wall_data):
     cost = WCSS / init_WCSS
 
     return cost
+
+
+# g_cost = goal_cost(init_scene_data, init_artwork_data, init_wall_data)
+# r_cost = regularization_cost(init_scene_data, init_artwork_data, init_wall_data)
+# s_cost = similarity_cost(init_scene_data, init_artwork_data, init_wall_data)
+
+# print(g_cost)
+# print(r_cost)
+# print(s_cost)
+
+
+'''
+ordered_scene_data = []
+for w in wall_list:
+    for k, v in scene_data.items():
+        art = artwork_data[k]
+        hanged_wall = wall_data[v[0]]
+        pos = v[1]
+        
+        ratio1, ratio2 = (hanged_wall["length"]-pos)/hanged_wall["length"], pos/hanged_wall["length"]
+        new_art_pos = (hanged_wall["x1"]*ratio1+hanged_wall["x2"]*ratio2, hanged_wall["z1"]*ratio1+hanged_wall["z2"]*ratio2)
+        
+        if w["id"] == hanged_wall["id"]:
+            dic = [art["id"], w["id"], pos, new_art_pos]
+            if ordered_scene_data == []:
+                ordered_scene_data.append(dic)
+            else:
+                for i, e in enumerate(reversed(ordered_scene_data)):
+                    if e[1] == dic[1]:
+                        if e[2] < dic[2]:
+                            if i > 0:
+                                # reversed(ordered_scene_data).insert(dic, i-1)
+                                ordered_scene_data.insert(i-1, dic) # ë­ê°€ ë§ëŠ”ì§€ ëª¨ë¥´ê² ìŒ..
+                            else:
+                                ordered_scene_data.append(dic)
+                        if e[2] == dic[2]:
+                            ordered_scene_data.append(dic)
+                        if e[2] > dic[2]:
+                            ordered_scene_data.insert(i+1, dic)
+                    else:
+                        ordered_scene_data.append(dic)
+'''          

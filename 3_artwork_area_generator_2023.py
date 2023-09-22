@@ -92,7 +92,7 @@ for exhibited_artwork in exhibited_artwork_list:
                 if exhibited_artwork['id'] not in wall["hanged_artwork"]:
                     wall["hanged_artwork"].append(exhibited_artwork['id'])
 
-    # print(exhibited_artwork)
+    print(exhibited_artwork)
 
 def heatmap_generator(
     artwork_width, new_pos_x, new_pos_z, old_pos_x, old_pos_z, x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap
