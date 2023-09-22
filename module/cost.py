@@ -23,7 +23,7 @@ space_heatmap[space_heatmap > 254] = -55 #공간 벽을 -10으로 변환
 space_heatmap[space_heatmap == 0] = -50 #공간 외부 값을 0에서 -15으로 전환
 space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
 
-init_cell_variance = 28.1937360458682
+init_cell_variance = 28.96355947950509
 init_regulation_variance = 5.866548641795766
 init_WCSS = 52.517175423485185
 
