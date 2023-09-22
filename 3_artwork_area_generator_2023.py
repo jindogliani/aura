@@ -83,13 +83,6 @@ for exhibited_artwork in exhibited_artwork_list:
         exhibited_artwork['wall'] = 'w45'
 
     for wall in wall_list: #TODO #작품에 오일러앵글 쓰자! 올해는!! 2023년 광주시립미술관은 수정 필요
-        #angle1 = np.rad2deg(np.arctan2(wall["z1"] - wall["z2"], wall["x1"] - wall["x2"]))
-        #angle2 = np.rad2deg(np.arctan2(exhibited_artwork["pos_z"] - wall["z2"], exhibited_artwork["pos_x"] - wall["x2"]))
-        #if abs(angle1 - angle2) < 10:
-        #wall_coord_1 = np.array([wall["x1"], wall["z1"]])
-        #wall_coord_2 = np.array([wall["x2"], wall["z2"]])
-        #artwork_coord = np.array([exhibited_artwork["pos_x"], exhibited_artwork["pos_z"]])
-        #wall_vector = wall_coord_2 - wall_coord_1
         #wall["hanged_artwork"] = []
         distance = cal_dist(wall["x1"], wall["z1"], wall["x2"], wall["z2"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"])
         if (distance < 0.1) and (abs(exhibited_artwork["theta"] - wall["theta"])<5):
@@ -161,8 +154,16 @@ for wall in wall_list:
 with open('wall_list_2023.pkl', 'wb') as f:
     pickle.dump(wall_list,f)
 
+ordered_exhibited_artwork_list = []
+for order in exhibited_artwork_order:
+    for exhibited_artwork in exhibited_artwork_list:
+        if order == exhibited_artwork["id"]:
+            ordered_exhibited_artwork_list.append(exhibited_artwork)
+
 with open('exhibited_artwork_list_2023.pkl', 'wb') as f:
-    pickle.dump(exhibited_artwork_list,f)
+    pickle.dump(ordered_exhibited_artwork_list,f)
+
+
 
 heatmap = space_heatmap + artwork_location_heatmap
 np.save("initial_heatmap_2023", heatmap)
