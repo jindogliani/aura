@@ -84,7 +84,7 @@ os.makedirs(artwork_visitor_data_dir, exist_ok=True)
 #히트맵 셀 사이즈: 0.1미터 = 10센티미터
 #히트맵 가로 셀 개수: 20/0.1 = 200개 | 히트맵 세로 셀 개수: 20/0.1 = 200개 
 spaceVerticalSize, spaceHorizontalSize = 40, 40
-heatmapCellSize = 0.1
+heatmapCellSize = 0.2
 spaceVertcalCells, spaceHorizontalCells = spaceVerticalSize / heatmapCellSize, spaceHorizontalSize / heatmapCellSize
 rows, cols = round(spaceVertcalCells), round(spaceHorizontalCells)
 

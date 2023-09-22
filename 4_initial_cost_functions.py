@@ -85,7 +85,6 @@ def similarity_cost(optimized_artwork_list):
     return WCSS
 
 init_cell_variance = goal_cost(initial_heatmap)
-_init_regulation_variance = regularization_cost(exhibited_artwork_list)
 init_regulation_variance = regularization_cost(ordered_exhibited_artwork_list)
 init_WCSS = similarity_cost(exhibited_artwork_list)
 
@@ -95,35 +94,3 @@ print("Initial WCSS: " + str(init_WCSS))
 
 with open('exhibited_artwork_list_2023.pkl', 'wb') as f:
     pickle.dump(ordered_exhibited_artwork_list,f)
-
-
-'''
-#개삽질
-arr4 = np.array([[1,2,0],[1,-1,0],[-1,-1,0]])
-
-def _goal_cost(optimized_artwork_heatmap):
-    # 음수는 값에 안 넣게 필터 필요
-    
-    leng = sum(sum(optimized_artwork_heatmap >= 0))
-    optimized_artwork_heatmap_copy = np.where(optimized_artwork_heatmap >=0, optimized_artwork_heatmap, 0)
-
-    mean = sum(sum(optimized_artwork_heatmap_copy)) / leng
-
-    print(leng)
-    print(mean)
-    variance0 = sum(sum((optimized_artwork_heatmap - mean)**2))/leng
-    variance0 = np.var(optimized_artwork_heatmap[optimized_artwork_heatmap >=0])
-    print(optimized_artwork_heatmap[optimized_artwork_heatmap >=0])
-
-    
-    variance1 = np.var(optimized_artwork_heatmap[optimized_artwork_heatmap>=0])
-    
-    
-    variance2 = np.var(optimized_artwork_heatmap[optimized_artwork_heatmap>=0])
-    
-    print(variance0)
-    print(variance1)
-    print(variance2)
-
-_goal_cost(arr4)
-'''

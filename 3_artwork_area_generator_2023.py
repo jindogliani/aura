@@ -17,7 +17,7 @@ currentPath = os.getcwd()
 date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) + ')'
 
 space_vertical_size, space_horizontal_size = 40, 40
-heatmap_cell_size = 0.1
+heatmap_cell_size = 0.2
 space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size
 space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
 
@@ -25,9 +25,9 @@ space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), rou
 with open('wall_list_2023.pkl', 'rb') as f:
     wall_list = pickle.load(f)
 
-space_heatmap = np.load('SpaceData/coords_GMA3+(9-20).npy')
-space_heatmap[space_heatmap > 254] = -6 #공간 벽을 -10으로 변환
-space_heatmap[space_heatmap == 0] = -3 #공간 외부 값을 0에서 -15으로 전환
+space_heatmap = np.load('SpaceData/coords_GMA3+(9-23).npy')
+space_heatmap[space_heatmap > 254] = -10 #공간 벽을 -10으로 변환
+space_heatmap[space_heatmap == 0] = -20 #공간 외부 값을 0에서 -15으로 전환
 space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
 
 artwork_data_path = "Daegu_new.json" #작품의 메타데이터가 있는 JSON 파일 => 작품의 size 값 추출
@@ -101,11 +101,11 @@ def heatmap_generator(
     x1, x2, z1, z2 = new_pos_x - artwork_width/2, new_pos_x + artwork_width/2, new_pos_z, new_pos_z
     _x1, _x2, _z1, _z2 = ((x1 + x_offset)/heatmap_cell_size), (x2 + x_offset)/heatmap_cell_size, (z1 + z_offset)/heatmap_cell_size, (z2 + z_offset)/heatmap_cell_size
     _x1, _x2, _z1, _z2 = round(_x1), round(_x2), round(_z1), round(_z2)
-    artwork_heatmap = np.zeros((400, 400), dtype = np.int16)
+    artwork_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
     artwork_heatmap = cv2.line(artwork_heatmap, (_x1, _z1), (_x2, _z2), 255, 1) #작품 프레임 두께 10cm
     
     #작품이 향하고 있는 방향 표시
-    direction = np.zeros((400, 400), dtype = np.int16)
+    direction = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
     direction = cv2.line(direction, (_x1, _z1), (round((_x1+_x2)/2), round((_z1+_z2)/2)), 255, 1)
     direction_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), 90, 0.7)
     direction = cv2.warpAffine(direction, direction_rotation, direction.shape)
@@ -136,7 +136,7 @@ artwork_location_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells
 x_offset, z_offset = 7, 12
 
 for exhibited_artwork in exhibited_artwork_list:
-    artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-22)/'+ exhibited_artwork["id"] + '.npy')
+    artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ exhibited_artwork["id"] + '.npy')
     artwork_heatmap = heatmap_generator(exhibited_artwork["width"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, 0, exhibited_artwork["_theta"], artwork_visitor_heatmap) #TODO
     artwork_location_heatmap += artwork_heatmap
 
@@ -168,7 +168,7 @@ with open('exhibited_artwork_list_2023.pkl', 'wb') as f:
 heatmap = space_heatmap + artwork_location_heatmap
 np.save("initial_heatmap_2023", heatmap)
 heatmapCSV = pd.DataFrame(heatmap)
-sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
+sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-20, vmax=50)
 plt.show()
 
 
