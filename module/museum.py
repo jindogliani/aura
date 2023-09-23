@@ -17,6 +17,7 @@ from matplotlib.colors import Normalize
 from random import choice
 from enum import Enum
 from cost import *
+from visualization import *
 
 class SceneActions(Enum):
     Forward = 0
@@ -178,6 +179,10 @@ class MuseumScene():
         # costs = [g_cost, r_cost, s_cost]
         # print(costs)
         return total_cost
+
+    def visualize(self):
+        visualization(best_scene_data, self.artwork_data, self.wall_data)
+        
                     
     def print_scene(self):
         self.draw = {}
@@ -222,10 +227,12 @@ class MuseumScene():
 
 if __name__ == "__main__":
     scene = MuseumScene()
-    scene.print_scene()
+    #scene.print_scene()
     
-    total_cost = scene.evaluation()
-    print(total_cost)
+    #total_cost = scene.evaluation()
+    #print(total_cost)
+
+    scene.visualize()
 
     print("=====================================")
     # for moves in legal_moves:
