@@ -1,3 +1,13 @@
+import os
+from time import localtime, time
+import json
+import math
+import pickle
+import cv2
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # import os
 
@@ -24,3 +34,15 @@ for v in values:
 ordered_scene_data = {k:v for v, k in sorted(zip(values, keys), key=(lambda x : [int(x[0][0][1:]), x[0][1]]))}
 
 print(ordered_scene_data)
+
+
+visual_heatmap = np.load("initial_heatmap_2023_visualize.npy")
+initial_heatmap = np.load("initial_heatmap_2023.npy")
+
+_visual_heatmap = pd.DataFrame(visual_heatmap)
+_initial_heatmap = pd.DataFrame(initial_heatmap)
+
+sns.heatmap(_visual_heatmap, cmap='RdYlGn_r', vmin=-20, vmax=50)
+plt.show()
+sns.heatmap(_initial_heatmap, cmap='RdYlGn_r', vmin=-20, vmax=50)
+plt.show()

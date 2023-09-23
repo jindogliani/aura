@@ -19,6 +19,8 @@ with open('wall_list_2023.pkl', 'rb') as f:
 with open('exhibited_artwork_list_2023.pkl', 'rb') as f:
     exhibited_artwork_list = pickle.load(f)
 
+print (best_scene_data)
+
 space_heatmap = np.load('SpaceData/coords_GMA3+(9-23).npy')
 space_heatmap[space_heatmap > 254] = -6 #���� ���� -10���� ��ȯ
 space_heatmap[space_heatmap == 0] = -3 #���� �ܺ� ���� 0���� -15���� ��ȯ
