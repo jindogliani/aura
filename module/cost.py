@@ -109,7 +109,7 @@ def goal_cost(scene_data, artwork_data, wall_data):
 
 def regularization_cost(scene_data, artwork_data, wall_data): #생성된 씬의 작품들의 coords
     keys, values = list(scene_data.keys()), list(scene_data.values())
-    ordered_scene_data = {k:v for v, k in sorted(zip(values, keys), key=(lambda x : (x[0][0], x[0][1])))}
+    ordered_scene_data = {k:v for v, k in sorted(zip(values, keys), key=(lambda x : (int(x[0][0][1:]), x[0][1])))}
 
     new_artwork_positions = []
     new_artwork_distance = []

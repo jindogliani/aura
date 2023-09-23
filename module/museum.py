@@ -176,8 +176,8 @@ class MuseumScene():
 
         total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost
 
-        #costs = [g_cost, r_cost, s_cost] 
-        return total_cost
+        costs = [g_cost, r_cost, s_cost] 
+        return costs
                     
     def print_scene(self):
         self.draw = {}
