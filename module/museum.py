@@ -77,7 +77,7 @@ class MuseumScene():
     def update_scene(self, scene_data):
         for k, v in scene_data.items():
             if type(v[1]) == float or v[1] < 0 or v[1] > int(self.wall_data[v[0]]['length']*10):
-                raise k
+                raise "fuck your self"
         self.scene_data = scene_data
         for wall_id in self.wall_data.keys():
             self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in self.scene_data.items() if wall == wall_id], key=lambda x: self.scene_data[x][1])
@@ -107,6 +107,8 @@ class MuseumScene():
                     if art_len % 2 != 0:
                         art_len -= 1
                     start = pos - int(art_len/2) - 3
+                    if start < 0:
+                        start = 0
                     end = pos + int(art_len/2)
 
                     if type(start) == float or type(end) == float or type(prev_end) == float or type(next_start) == float:
@@ -144,7 +146,6 @@ class MuseumScene():
                         if remain_space > 0:
                             possible_actions.append((SceneActions.Forward, art_id, None, remain_space))
                     except:
-                        raise None
                         if wall_len - (pos + int(art_len/2)) > 0:
                             possible_actions.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
 
@@ -159,7 +160,7 @@ class MuseumScene():
         return possible_actions
     
     def do_action(self, action, art, wall, value):
-        new_scene = self.scene_data
+        new_scene = copy.deepcopy(self.scene_data)
         if action == SceneActions.Flip:
             assert art == None
             for _art in self.art_in_wall[wall]:
@@ -169,6 +170,9 @@ class MuseumScene():
                         new_scene[_art] = (wall, wall_len - _pos)
                     else:
                         new_scene[_art] = (wall, wall_len - _pos - 1)
+            for k, v in new_scene.items():
+                if type(v[1]) == float or v[1] < 0 or v[1] > int(self.wall_data[v[0]]['length']*10):
+                    raise "fuck your self"
             return new_scene
         
         if action == SceneActions.Swap:
@@ -179,6 +183,9 @@ class MuseumScene():
             assert wall == None
             _wall, _pos = self.scene_data[art]
             new_scene[art] = (_wall, _pos+value)
+            for k, v in new_scene.items():
+                if type(v[1]) == float or v[1] < 0 or v[1] > int(self.wall_data[v[0]]['length']*10):
+                    raise "fuck your self"
             return new_scene
         
         
@@ -201,8 +208,8 @@ class MuseumScene():
         # print(costs)
         return total_cost
 
-    def visualize(self, scene_data, num):
-        visualization(scene_data, self.artwork_data, self.wall_data, num)
+    def visualize(self, num):
+        visualization(best_scene_data, self.artwork_data, self.wall_data, num)
         
                     
     # def print_scene(self):
@@ -252,18 +259,19 @@ if __name__ == "__main__":
     
     #total_cost = scene.evaluation()
     #print(total_cost)
-
+    idx = 900
+    scene.visualize(idx)
     
 
     # print("=====================================")
     # for moves in legal_moves:
     #     print(moves)
-    for _ in range(1000):
-        legal_moves = scene.get_legal_actions()
-        # action_tup = choice(legal_moves)
-        for idx, action_tup in enumerate(legal_moves):
-            new_scene = scene.do_action(*action_tup)
-            scene.update_scene(new_scene)
-            print("************************************")
+    # for _ in range(1000):
+    #     legal_moves = scene.get_legal_actions()
+    #     # action_tup = choice(legal_moves)
+    #     for idx, action_tup in enumerate(legal_moves):
+    #         new_scene = scene.do_action(*action_tup)
+    #         print("************************************")
+    #     scene.update_scene(new_scene)
         # scene.print_scene()
         # scene.visualize(new_scene, idx)
