@@ -10,7 +10,7 @@ import random
 import math
 import time
 
-with open('best_scene.pickle', 'rb') as f:
+with open('best_scene_0.6.pickle', 'rb') as f:
     best_scene_data = pickle.load(f)
 
 with open('wall_list_2023.pkl', 'rb') as f:

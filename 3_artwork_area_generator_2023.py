@@ -26,8 +26,8 @@ with open('wall_list_2023.pkl', 'rb') as f:
     wall_list = pickle.load(f)
 
 space_heatmap = np.load('SpaceData/coords_GMA3+(9-23).npy')
-space_heatmap[space_heatmap > 254] = -10 #공간 벽을 -10으로 변환
-space_heatmap[space_heatmap == 0] = -20 #공간 외부 값을 0에서 -15으로 전환
+space_heatmap[space_heatmap > 254] = -6 #공간 벽을 -10으로 변환
+space_heatmap[space_heatmap == 0] = -3 #공간 외부 값을 0에서 -15으로 전환
 space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
 
 artwork_data_path = "Daegu_new.json" #작품의 메타데이터가 있는 JSON 파일 => 작품의 size 값 추출
@@ -114,8 +114,8 @@ def heatmap_generator(
     #작품 새로운 벽 방향으로 회전
     artwork_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta, 1)
     artwork_heatmap = cv2.warpAffine(artwork_heatmap, artwork_rotation, artwork_heatmap.shape)
-    #artwork_heatmap[artwork_heatmap > 0] = -10 # 확인용
-    artwork_heatmap[artwork_heatmap > 0] = 0 # 분산 계산용
+    artwork_heatmap[artwork_heatmap > 0] = -10 # 확인용
+    #artwork_heatmap[artwork_heatmap > 0] = 0 # 분산 계산용
 
     #작품 관람객 히트맵 회전 #TODO
     
@@ -164,11 +164,10 @@ with open('exhibited_artwork_list_2023.pkl', 'wb') as f:
     pickle.dump(ordered_exhibited_artwork_list,f)
 
 
-
 heatmap = space_heatmap + artwork_location_heatmap
-np.save("initial_heatmap_2023", heatmap)
+np.save("initial_heatmap_2023_visualize", heatmap)
 heatmapCSV = pd.DataFrame(heatmap)
-sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-20, vmax=50)
+sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
 plt.show()
 
 
