@@ -3,6 +3,8 @@ import csv
 import json
 import math
 import os
+import sys
+sys.path.insert(0,os.path.join(os.getcwd(), 'module'))
 from time import localtime, time
 import time
 
@@ -53,7 +55,7 @@ class DataLoader():
             art_pos = np.linalg.norm(art_vec) * np.cos(theta)
             art_pos = int(art_pos) #wall x1, z1을 기준으로 artwork의 위치 정수값
 
-            scene[artwork['id']] = [artwork['wall'], art_pos]
+            scene[artwork['id']] = [artwork['wall'], art_pos, ]
             artwork_data[artwork['id']] = artwork
 
         self.scene_data = scene
@@ -73,16 +75,19 @@ class MuseumScene():
             self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in self.scene_data.items() if wall == wall_id], key=lambda x: self.scene_data[x][1])
 
     def update_scene(self, scene_data):
+        for k, v in scene_data.items():
+            if type(v[1]) == float or v[1] < 0 or v[1] > int(self.wall_data[v[0]]['length']*10):
+                raise k
         self.scene_data = scene_data
         for wall_id in self.wall_data.keys():
             self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in self.scene_data.items() if wall == wall_id], key=lambda x: self.scene_data[x][1])
 
     def get_legal_actions(self):
         possible_actions = []
-
         swap_possible_walls = {}
+            
         for wall_id in self.wall_data.keys():
-            wall_len = int(self.wall_data[wall_id]['length']*10) - 3 -1
+            wall_len = int(self.wall_data[wall_id]['length']*10) - 3
             swap_possible_walls[wall_id] = []
             if len(self.art_in_wall[wall_id]) == 0:
                 swap_possible_walls[wall_id].append((0, wall_len))
@@ -92,48 +97,61 @@ class MuseumScene():
                 prev_end = 0
                 for idx, art_in_wall_id in enumerate(self.art_in_wall[wall_id]):
                     try:
-                        next_start = self.scene_data[self.art_in_wall[wall_id][idx+1]][1] - int(self.artwork_data[self.art_in_wall[wall_id][idx+1]]['width']*10/2) - 3
+                        _art_len = int(self.artwork_data[self.art_in_wall[wall_id][idx+1]]['width']*10/2) if int(self.artwork_data[self.art_in_wall[wall_id][idx+1]]['width']*10) % 2 == 0 else int(self.artwork_data[self.art_in_wall[wall_id][idx+1]]['width']*10/2) + 1
+                        next_start = self.scene_data[self.art_in_wall[wall_id][idx+1]][1] - _art_len- 3
                     except:
                         next_start = wall_len
+                    
                     art_len = int(self.artwork_data[art_in_wall_id]['width']*10)
                     pos = self.scene_data[art_in_wall_id][1]
                     if art_len % 2 != 0:
-                        start = pos - int(art_len/2) - 3
-                        end = pos + int(art_len/2) + 1
+                        art_len -= 1
+                    start = pos - int(art_len/2) - 3
+                    end = pos + int(art_len/2)
+
+                    if type(start) == float or type(end) == float or type(prev_end) == float or type(next_start) == float:
+                        raise None
+                    if start < 0 or end < 0 or prev_end < 0 or next_start < 0:
+                        raise None
+                    
+                    if prev_end == 0:
+                        swap_possible_walls[wall_id].append((prev_end, start - prev_end))
+                        swap_possible_walls[wall_id].append((end, next_start - end))
+                        prev_end = end
                     else:
-                        start = pos - int(art_len/2) - 3
-                        end = pos + int(art_len/2)
-                    swap_possible_walls[wall_id].append((prev_end, start - prev_end))
-                    swap_possible_walls[wall_id].append((end, next_start - end))
-                    prev_end = end
+                        swap_possible_walls[wall_id].append((end, next_start - end))
                 
             
         for art_id in self.artwork_data.keys():
             wall_id = self.scene_data[art_id][0]
-            wall_len = int(self.wall_data[wall_id]['length']*10) - 3 - 1
+            wall_len = int(self.wall_data[wall_id]['length']*10) - 3
             art_len = int(self.artwork_data[art_id]['width']*10)
+            if art_len % 2 != 0:
+                art_len -= 1
             pos = self.scene_data[art_id][1]
             if wall_len - sum([self.artwork_data[art]['width']*10 for art in self.art_in_wall[wall_id]]) > 13:
                 if len(self.art_in_wall[wall_id]) == 1:
-                    if wall_len - (pos + int(art_len/2) if art_len %2 != 0 else pos + int(art_len/2) - 1) > 0:
-                        possible_actions.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2) if art_len %2 != 0 else pos + int(art_len/2) - 1)))
+                    if wall_len - (pos + int(art_len/2)) > 0:
+                        possible_actions.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
                 elif len(self.art_in_wall[wall_id]) > 1: 
                     try:
                         next_art_id = self.art_in_wall[wall_id][self.art_in_wall[wall_id].index(art_id)+1]
                         next_pos = self.scene_data[next_art_id][1]
                         next_art_len = int(self.artwork_data[next_art_id]['width']*10)
-                        remain_space = next_pos - pos - int(next_art_len/2) - (int(art_len/2) if art_len %2 != 0 else int(art_len/2) - 1) - 3
+                        if next_art_len % 2 != 0:
+                            next_art_len -= 1
+                        remain_space = next_pos - pos - int(next_art_len/2) - (int(art_len/2))
                         if remain_space > 0:
                             possible_actions.append((SceneActions.Forward, art_id, None, remain_space))
                     except:
-                        if wall_len - (pos + int(art_len/2) if art_len %2 != 0 else pos + int(art_len/2) - 1) > 0:
-                            possible_actions.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2) if art_len %2 != 0 else pos + int(art_len/2) - 1)))
+                        if wall_len - (pos + int(art_len/2)) > 0:
+                            possible_actions.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
 
             for possible_wall_id, possible_space in swap_possible_walls.items():
                 if possible_wall_id != wall_id:
                     while len(possible_space) >= 1:
                         possible_start, possible_length = possible_space.pop(0)
-                        if possible_length >= art_len - 1 + 3:
+                        if possible_length >= art_len + 3:
                             possible_actions.append((SceneActions.Swap, art_id, possible_wall_id, possible_start+3+int(art_len/2)))
                             break
             
@@ -145,11 +163,11 @@ class MuseumScene():
             assert art == None
             for _art in self.art_in_wall[wall]:
                     _pos = self.scene_data[_art][1]
-                    wall_len = self.wall_data[wall]['length']*10 
-                    if self.artwork_data[_art]['width'] % 2 == 0:
+                    wall_len = int(self.wall_data[wall]['length']*10 )
+                    if int(self.artwork_data[_art]['width']*10) % 2 == 0:
                         new_scene[_art] = (wall, wall_len - _pos)
                     else:
-                        new_scene[_art] = (wall, wall_len - 1 - _pos)
+                        new_scene[_art] = (wall, wall_len - _pos - 1)
             return new_scene
         
         if action == SceneActions.Swap:
@@ -161,6 +179,8 @@ class MuseumScene():
             _wall, _pos = self.scene_data[art]
             new_scene[art] = (_wall, _pos+value)
             return new_scene
+        
+        
         
     def evaluation(self):
         draw = {}
@@ -180,50 +200,50 @@ class MuseumScene():
         # print(costs)
         return total_cost
 
-    def visualize(self):
-        visualization(best_scene_data, self.artwork_data, self.wall_data)
+    def visualize(self, scene_data, num):
+        visualization(scene_data, self.artwork_data, self.wall_data, num)
         
                     
-    def print_scene(self):
-        self.draw = {}
-        for k, v in self.wall_data.items():
-            vis_list = [0] * int(v['length']*10)
-            self.draw[k] = np.array(vis_list)
+    # def print_scene(self):
+    #     self.draw = {}
+    #     for k, v in self.wall_data.items():
+    #         vis_list = [0] * int(v['length']*10)
+    #         self.draw[k] = np.array(vis_list)
         
-        #print(self.scene_data)
+    #     #print(self.scene_data)
 
-        for k, v in self.scene_data.items():
-            art = self.artwork_data[k]
-            wall = self.wall_data[v[0]]
-            pos = v[1]
+    #     for k, v in self.scene_data.items():
+    #         art = self.artwork_data[k]
+    #         wall = self.wall_data[v[0]]
+    #         pos = v[1]
             
-            wall_width = int(wall['length']*10)
-            art_len = int(art['width']*10)
-            vis_list = [0] * wall_width
-            assert len(vis_list) == wall_width
-            if art_len % 2 != 0:
-                # print(vis_list)
-                vis_list[int(pos-int(art_len/2)):int(pos+int(art_len/2))+1] = [1] * art_len
-                # print(vis_list)
-                vis_list[int(pos)] = 5
-                # print(vis_list)
-                assert len(vis_list) == wall_width
-            else:
-                # print(vis_list)
-                vis_list[int(pos-int(art_len/2)):int(pos+int(art_len/2))] = [1] * art_len
-                # print(vis_list)
-                vis_list[int(pos)] = 5
-                # print(vis_list)
-                assert len(vis_list) == wall_width
+    #         wall_width = int(wall['length']*10)
+    #         art_len = int(art['width']*10)
+    #         vis_list = [0] * wall_width
+    #         assert len(vis_list) == wall_width
+    #         if art_len % 2 != 0:
+    #             # print(vis_list)
+    #             vis_list[int(pos-int(art_len/2)):int(pos+int(art_len/2))+1] = [1] * art_len
+    #             # print(vis_list)
+    #             vis_list[int(pos)] = 5
+    #             # print(vis_list)
+    #             assert len(vis_list) == wall_width
+    #         else:
+    #             # print(vis_list)
+    #             vis_list[int(pos-int(art_len/2)):int(pos+int(art_len/2))] = [1] * art_len
+    #             # print(vis_list)
+    #             vis_list[int(pos)] = 5
+    #             # print(vis_list)
+    #             assert len(vis_list) == wall_width
 
             
-            self.draw[v[0]] += np.array(vis_list)
+    #         self.draw[v[0]] += np.array(vis_list)
 
-        for k, vis_list in self.draw.items():
-            if 2 in vis_list:
-                raise "KILL ME"
-            vis_string = ''.join(map(str, vis_list))
-            print(k + " : " + vis_string)
+    #     for k, vis_list in self.draw.items():
+    #         if 2 in vis_list:
+    #             raise "KILL ME"
+    #         vis_string = ''.join(map(str, vis_list))
+    #         print(k + " : " + vis_string)
 
 if __name__ == "__main__":
     scene = MuseumScene()
@@ -232,15 +252,17 @@ if __name__ == "__main__":
     #total_cost = scene.evaluation()
     #print(total_cost)
 
-    scene.visualize()
+    
 
-    print("=====================================")
+    # print("=====================================")
     # for moves in legal_moves:
     #     print(moves)
-    # for idx in range(1):
-    #     legal_moves = scene.get_legal_actions()
-    #     action_tup = choice(legal_moves)
-    #     new_scene = scene.do_action(*action_tup)
-    #     scene.update_scene(new_scene)
-    #     print("************************************")
-    #     scene.print_scene()
+    for _ in range(1000):
+        legal_moves = scene.get_legal_actions()
+        # action_tup = choice(legal_moves)
+        for idx, action_tup in enumerate(legal_moves):
+            new_scene = scene.do_action(*action_tup)
+            scene.update_scene(new_scene)
+            print("************************************")
+        # scene.print_scene()
+        # scene.visualize(new_scene, idx)

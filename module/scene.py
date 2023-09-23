@@ -23,8 +23,8 @@ class SceneState(object):
     def move(self, action_tup):
         #action (Action, art_id, wall_id)
         new_scene = self.scene.do_action(*action_tup)
-        self.scene.update_scene(new_scene)
-        return SceneState(self.scene)
+        # self.scene.update_scene(new_scene)
+        return SceneState(new_scene)
     
 
     def is_terminal(self):

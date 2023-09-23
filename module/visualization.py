@@ -10,8 +10,8 @@ import random
 import math
 import time
 
-with open('best_scene_0.6.pickle', 'rb') as f:
-    best_scene_data = pickle.load(f)
+# with open('best_scene_600.pickle', 'rb') as f:
+#     best_scene_data = pickle.load(f)
 
 with open('wall_list_2023.pkl', 'rb') as f:
     wall_list = pickle.load(f)
@@ -20,9 +20,9 @@ with open('exhibited_artwork_list_2023.pkl', 'rb') as f:
     exhibited_artwork_list = pickle.load(f)
 
 space_heatmap = np.load('SpaceData/coords_GMA3+(9-23).npy')
-space_heatmap[space_heatmap > 254] = -6 #°ø°£ º®À» -10À¸·Î º¯È¯
-space_heatmap[space_heatmap == 0] = -3 #°ø°£ ¿ÜºÎ °ªÀ» 0¿¡¼­ -15À¸·Î ÀüÈ¯
-space_heatmap[space_heatmap == 127] = 0 #°ø°£ ³»ºÎ °ªÀ» 127¿¡¼­ 0À¸·Î ÀüÈ¯
+space_heatmap[space_heatmap > 254] = -6 #ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ -10ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
+space_heatmap[space_heatmap == 0] = -3 #ï¿½ï¿½ï¿½ï¿½ ï¿½Üºï¿½ ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ -15ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
+space_heatmap[space_heatmap == 127] = 0 #ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 127ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
 
 space_vertical_size, space_horizontal_size = 40, 40
 heatmap_cell_size = 0.2
@@ -32,27 +32,27 @@ space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), rou
 def heatmap_generator(
     artwork_width, new_pos_x, new_pos_z, old_pos_x, old_pos_z, x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap
 ):
-    #ÀÛÇ° °´Ã¼ indicate heatmap »ý¼º
+    #ï¿½ï¿½Ç° ï¿½ï¿½Ã¼ indicate heatmap ï¿½ï¿½ï¿½ï¿½
     x1, x2, z1, z2 = new_pos_x - artwork_width/2, new_pos_x + artwork_width/2, new_pos_z, new_pos_z
     _x1, _x2, _z1, _z2 = ((x1 + x_offset)/heatmap_cell_size), (x2 + x_offset)/heatmap_cell_size, (z1 + z_offset)/heatmap_cell_size, (z2 + z_offset)/heatmap_cell_size
     _x1, _x2, _z1, _z2 = round(_x1), round(_x2), round(_z1), round(_z2)
     artwork_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
-    artwork_heatmap = cv2.line(artwork_heatmap, (_x1, _z1), (_x2, _z2), 255, 1) #ÀÛÇ° ÇÁ·¹ÀÓ µÎ²² 10cm
+    artwork_heatmap = cv2.line(artwork_heatmap, (_x1, _z1), (_x2, _z2), 255, 1) #ï¿½ï¿½Ç° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î²ï¿½ 10cm
     
-    #ÀÛÇ°ÀÌ ÇâÇÏ°í ÀÖ´Â ¹æÇâ Ç¥½Ã
+    #ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
     direction = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
     direction = cv2.line(direction, (_x1, _z1), (round((_x1+_x2)/2), round((_z1+_z2)/2)), 255, 1)
     direction_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), 90, 0.7)
     direction = cv2.warpAffine(direction, direction_rotation, direction.shape)
     artwork_heatmap += direction
 
-    #ÀÛÇ° »õ·Î¿î º® ¹æÇâÀ¸·Î È¸Àü
+    #ï¿½ï¿½Ç° ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
     artwork_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta, 1)
     artwork_heatmap = cv2.warpAffine(artwork_heatmap, artwork_rotation, artwork_heatmap.shape)
-    artwork_heatmap[artwork_heatmap > 0] = -10 # È®ÀÎ¿ë
-    #artwork_heatmap[artwork_heatmap > 0] = 0 # ºÐ»ê °è»ê¿ë
+    artwork_heatmap[artwork_heatmap > 0] = -10 # È®ï¿½Î¿ï¿½
+    #artwork_heatmap[artwork_heatmap > 0] = 0 # ï¿½Ð»ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-    #ÀÛÇ° °ü¶÷°´ È÷Æ®¸Ê È¸Àü #TODO
+    #ï¿½ï¿½Ç° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ È¸ï¿½ï¿½ #TODO
     
     #artwork_visitor_rotation = cv2.getRotationMatrix2D((round(old_pos_x/heatmap_cell_size), round(old_pos_z/heatmap_cell_size)), 0, 1)
     #artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_rotation, artwork_visitor_heatmap.shape)
@@ -65,8 +65,8 @@ def heatmap_generator(
     artwork_heatmap += artwork_visitor_heatmap
     return artwork_heatmap
 
-def visualization(scene_data, artwork_data, wall_data):
-    # À½¼ö´Â °ª¿¡ ¾È ³Ö°Ô ÇÊÅÍ ÇÊ¿ä
+def visualization(scene_data, artwork_data, wall_data, num):
+    # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½
     scene_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
     x_offset, z_offset = 7, 12
 
@@ -90,4 +90,5 @@ def visualization(scene_data, artwork_data, wall_data):
 
     heatmapCSV = pd.DataFrame(scene_heatmap)
     sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
-    plt.show()
+    plt.savefig('visualization_%d.png'%num)
+    plt.close()
