@@ -19,6 +19,8 @@ with open('wall_list_2023.pkl', 'rb') as f:
 with open('exhibited_artwork_list_2023.pkl', 'rb') as f:
     exhibited_artwork_list = pickle.load(f)
 
+print (best_scene_data)
+
 space_heatmap = np.load('SpaceData/coords_GMA3+(9-23).npy')
 space_heatmap[space_heatmap > 254] = -6 #공간 벽을 -10으로 변환
 space_heatmap[space_heatmap == 0] = -3 #공간 외부 값을 0에서 -15으로 전환
