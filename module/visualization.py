@@ -10,8 +10,8 @@ import random
 import math
 import time
 
-# with open('best_scene_600.pickle', 'rb') as f:
-#     best_scene_data = pickle.load(f)
+with open('best_scene_700.pickle', 'rb') as f:
+    best_scene_data = pickle.load(f)
 
 with open('wall_list_2023.pkl', 'rb') as f:
     wall_list = pickle.load(f)
@@ -94,3 +94,6 @@ def visualization(scene_data, artwork_data, wall_data, num):
     sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
     plt.savefig('visualization_%d.png'%num)
     plt.close()
+
+if __name__ == "__main__":
+    visualization(best_scene_data, exhibited_artwork_list, wall_list, 600)

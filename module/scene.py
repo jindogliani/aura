@@ -24,7 +24,9 @@ class SceneState(object):
         #action (Action, art_id, wall_id)
         new_scene = self.scene.do_action(*action_tup)
         # self.scene.update_scene(new_scene)
-        return SceneState(new_scene)
+        new_state = MuseumScene()
+        new_state.update_scene(new_scene)
+        return SceneState(new_state)
     
 
     def is_terminal(self):
