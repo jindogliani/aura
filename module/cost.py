@@ -98,9 +98,9 @@ def goal_cost(scene_data, artwork_data, wall_data):
     
     scene_heatmap += space_heatmap
 
-    heatmapCSV = pd.DataFrame(scene_heatmap)
-    sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
-    plt.show()
+    # heatmapCSV = pd.DataFrame(scene_heatmap)
+    # sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
+    # plt.show()
 
     variance = np.var(scene_heatmap[scene_heatmap>=0])
     cost = variance / init_cell_variance
