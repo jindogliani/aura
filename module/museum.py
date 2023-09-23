@@ -144,7 +144,7 @@ class MuseumScene():
                         if remain_space > 0:
                             possible_actions.append((SceneActions.Forward, art_id, None, remain_space))
                     except:
-                        raise None
+                        # raise None
                         if wall_len - (pos + int(art_len/2)) > 0:
                             possible_actions.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
 
