@@ -16,8 +16,8 @@ class SceneState(object):
     
     @property
     def get_reward(self):
-        # reward = (1-self.scene.evaluation()) if (1-self.scene.evaluation()) > 0 else 0
-        reward = self.scene.evaluation()
+        reward = (1-self.scene.evaluation()) if (1-self.scene.evaluation()) > 0 else 0
+        # reward = self.scene.evaluation()
         return reward
     
     def move(self, action_tup):

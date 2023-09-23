@@ -102,8 +102,8 @@ def goal_cost(scene_data, artwork_data, wall_data):
     # plt.show()
 
     variance = np.var(scene_heatmap[scene_heatmap>=0])
-    # cost = variance / init_cell_variance
-    cost = init_cell_variance - variance
+    cost = variance / init_cell_variance
+    # cost = init_cell_variance - variance
     
     return cost
 
