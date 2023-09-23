@@ -164,9 +164,9 @@ class MuseumScene():
     def evaluation(self):
         draw = {}
 
-        g_weight = 1
-        r_weight = 0
-        s_weight = 0
+        g_weight = 1.0
+        r_weight = 0.0
+        s_weight = 0.0
 
         g_cost = goal_cost(self.scene_data, self.artwork_data, self.wall_data)
         r_cost = 0
@@ -175,9 +175,9 @@ class MuseumScene():
         # s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
 
         total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost
-
-        costs = [g_cost, r_cost, s_cost] 
-        return costs
+        # costs = [g_cost, r_cost, s_cost]
+        # print(costs)
+        return total_cost
                     
     def print_scene(self):
         self.draw = {}

@@ -9,11 +9,12 @@ import time
 
 class MCTSNode(object):
     def __init__(self, state: SceneState, parent=None):
-        self._number_of_visits = 0.
-        self.cost_value = 0.
-        self.state = state #Museum Scene what do i need?
+        self.state = state
         self.parent = parent 
         self.children = []
+        self.is_visit = False
+        self.potential_score = 0.
+        self.self_score = 0.
 
     @property
     def all_actions(self):
@@ -23,55 +24,56 @@ class MCTSNode(object):
     
     @property
     def q(self):
-        print("Cost: ", self.cost_value)
-        return self.cost_value
-
-    @property
-    def n(self):
-        return self._number_of_visits
+        print("Cost: ", self.potential_score)
+        return self.potential_score
 
     def expand(self):
         action = self.all_actions.pop()
         next_state = self.state.move(action)
         child_node = MCTSNode(next_state, parent=self)
+        if not child_node.is_visit:
+            child_node.self_score = child_node.state.get_reward
+            child_node.is_visit = True
         self.children.append(child_node)
         return child_node
     
     def is_terminal_node(self):
-        return self.state.is_terminal()
+        return self.is_visit
     
     def rollout(self):
         current_rollout_state = self.state
+        max_reward = self.self_score
+        parent_node = self
         for idx in range(10):
             # print("Rollout: ", idx)
             possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)
-            current_rollout_state = current_rollout_state.move(action)
-            # current_rollout_state.scene.print_scene()
-            reward = current_rollout_state.get_reward
-            # print("Random Reward: ", reward)
+            next_rollout_state = current_rollout_state.move(action)
+            reward = next_rollout_state.get_reward
+            if reward > max_reward:
+                max_reward = reward
         
-        return reward
+        return max_reward
 
 
     def rollout_policy(self, possible_moves):
         return possible_moves[np.random.randint(len(possible_moves))]
     
-    def backpropagate(self, result):
-        self._number_of_visits += 1.
-        self.cost_value += result
+    def backpropagate(self, max_reward):
+        if self.potential_score < max_reward:
+            self.potential_score = max_reward
         if self.parent:
-            self.parent.backpropagate(result)
+            self.parent.backpropagate(max_reward)
 
     def is_fully_expanded(self):
         return len(self.all_actions) == 0
     
     def best_child(self, c_param=1.4):
         choices_weights = [
-            (c.q / (c.n)) + c_param * np.sqrt((2 * np.log(self.n) / (c.n)))
+            c.potential_score
             for c in self.children
         ]
         weight = np.argmax(choices_weights)
-        print("Weight: ", weight)
+        print("Best Node: ", self.children[weight].potential_score)
         return self.children[weight]
 

@@ -78,6 +78,7 @@ def goal_cost(scene_data, artwork_data, wall_data):
     # 음수는 값에 안 넣게 필터 필요
     scene_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
     x_offset, z_offset = 7, 12
+
     for k, v in scene_data.items():
         art = artwork_data[k]
         wall = wall_data[v[0]]
@@ -90,7 +91,6 @@ def goal_cost(scene_data, artwork_data, wall_data):
 
         new_theta = wall["theta"]
         old_theta = art["theta"]
-
         artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ k + '.npy')
         artwork_heatmap = heatmap_generator(art["width"], new_art_pos[0], new_art_pos[1], old_art_pos[0], old_art_pos[1], x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap)
         scene_heatmap += artwork_heatmap

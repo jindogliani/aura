@@ -25,17 +25,23 @@ class MonteCarloTreeSearch:
 
     def tree_policy(self):
         current_node = self.root
-        while not current_node.is_terminal_node():
-            if not current_node.is_fully_expanded():
-                return current_node.expand()
-            else:
-                current_node = current_node.best_child()
-        return current_node
+        if not current_node.is_fully_expanded():
+            return current_node.expand()
+        else:
+            raise "Fully expanded Tree"
     
 if __name__ == "__main__":
-    for epoch in range(100):
-        print("Epoch: %d / %d "%(epoch, 200))
+    best_node = None
+    pbar = tqdm(range(200))
+    for epoch in pbar:
+        pbar.set_description("Epoch: %d / %d "%(epoch, 200))
         currnet_node = MCTSNode(state=SceneState(MuseumScene()))
         mcts = MonteCarloTreeSearch(currnet_node)
-        best_node = mcts.best_action()
-        currnet_node = best_node
+        potential_node = mcts.best_action() #potentia score 가 가장 큰 노드
+        if best_node == None:
+            best_node = potential_node
+        else:
+            if potential_node.self_score > best_node.self_score:
+                best_node = potential_node
+        pbar.set_description("Best Score: %f"%best_node.self_score)
+        currnet_node = potential_node
