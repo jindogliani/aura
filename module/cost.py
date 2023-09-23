@@ -37,6 +37,11 @@ init_cell_variance = 130.7980201483807
 init_regulation_variance = 5.866548641795766
 init_WCSS = 52.517175423485185
 
+heatmap_dict = {}
+for k, v in init_scene_data.items():
+    artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ k + '.npy')
+    heatmap_dict[k] = artwork_visitor_heatmap
+
 def heatmap_generator(
     artwork_width, new_pos_x, new_pos_z, old_pos_x, old_pos_z, x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap
 ):
@@ -91,8 +96,8 @@ def goal_cost(scene_data, artwork_data, wall_data):
 
         new_theta = wall["theta"]
         old_theta = art["theta"]
-        artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ k + '.npy')
-        artwork_heatmap = heatmap_generator(art["width"], new_art_pos[0], new_art_pos[1], old_art_pos[0], old_art_pos[1], x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap)
+        heatmap = heatmap_dict[k]
+        artwork_heatmap = heatmap_generator(art["width"], new_art_pos[0], new_art_pos[1], old_art_pos[0], old_art_pos[1], x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, heatmap)
         scene_heatmap += artwork_heatmap
     
     scene_heatmap += space_heatmap

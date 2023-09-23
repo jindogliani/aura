@@ -6,42 +6,46 @@ from scene import SceneState
 from museum import MuseumScene
 import time
 from tqdm import tqdm
+import pickle
 
 
 class MonteCarloTreeSearch:
     def __init__(self, node: MCTSNode):
         self.root = node
+        self.root.is_leap = False
 
-    def best_action(self):
-        simulations_number = len(self.root.all_actions)
+    def best_action(self, simulations_number):
         pbar = tqdm(range(0, simulations_number))
+        best_state = None
+        best_reward = 0.
         for idx in pbar:
             v = self.tree_policy()
-            reward = v.rollout()
-            pbar.set_description("Reward: %f"%reward)
+            cur_depth = v.depth
+            reward, max_state = v.rollout()
+            if reward > best_reward:
+                print("Update Best Reward: ", reward)
+                best_reward = reward
+                best_state = max_state
+            pbar.set_description("Depth : %d, Reward: %f"%(cur_depth, reward))
             v.backpropagate(reward)
+            if cur_depth > 20:
+                break 
         # exploitation only
-        return self.root.best_child(c_param=0.0)
+        return best_state
 
     def tree_policy(self):
         current_node = self.root
-        if not current_node.is_fully_expanded():
-            return current_node.expand()
-        else:
-            raise "Fully expanded Tree"
+        while not current_node.is_terminate():
+            if not current_node.is_fully_expanded():
+                return current_node.expand()
+            else:
+                current_node = current_node.best_child()
+        return current_node
     
 if __name__ == "__main__":
-    best_node = None
-    pbar = tqdm(range(200))
-    for epoch in pbar:
-        pbar.set_description("Epoch: %d / %d "%(epoch, 200))
-        currnet_node = MCTSNode(state=SceneState(MuseumScene()))
-        mcts = MonteCarloTreeSearch(currnet_node)
-        potential_node = mcts.best_action() #potentia score 가 가장 큰 노드
-        if best_node == None:
-            best_node = potential_node
-        else:
-            if potential_node.self_score > best_node.self_score:
-                best_node = potential_node
-        pbar.set_description("Best Score: %f"%best_node.self_score)
-        currnet_node = potential_node
+    Tree = MonteCarloTreeSearch(MCTSNode(SceneState(MuseumScene())))
+    best_state = Tree.best_action(600)
+    best_scene = best_state.scene.scene_data
+    #dictionary to pickle data
+    with open('best_scene_600.pickle', 'wb') as f:
+        pickle.dump(best_scene, f, pickle.HIGHEST_PROTOCOL)
