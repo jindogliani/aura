@@ -54,10 +54,7 @@ class MCTSNode(object):
         return self.is_leap
     
     def is_terminate(self):
-        if self.depth > 20:
-            return True
-        else:
-            return False
+        return False
     
     def rollout(self):
         current_rollout_state = self.state
