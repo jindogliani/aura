@@ -22,7 +22,10 @@ class MCTSNode(object):
     @property
     def all_actions(self):
         if not hasattr(self, '_all_actions'):
-            self._all_actions = self.state.get_legal_actions()
+            legal_moves_dict = self.state.get_legal_actions()
+            self._all_actions = []
+            for v in legal_moves_dict.values():
+                self._all_actions += v
         return self._all_actions
     
     @property
