@@ -45,5 +45,5 @@ if __name__ == "__main__":
     best_state = Tree.best_action(10000)
     best_scene = best_state.scene.scene_data
     #dictionary to pickle data
-    with open('best_scene_100.pickle', 'wb') as f:
+    with open('best_scene_diff.pickle', 'wb') as f:
         pickle.dump(best_scene, f, pickle.HIGHEST_PROTOCOL)
