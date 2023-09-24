@@ -211,7 +211,7 @@ class MuseumScene():
         s_cost = 0
 
         total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost
-        # costs = [g_cost, r_cost, s_cost]
+        costs = [g_cost, r_cost, s_cost]
         # print(costs)
         return total_cost
 
