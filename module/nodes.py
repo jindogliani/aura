@@ -54,16 +54,13 @@ class MCTSNode(object):
         return self.is_leap
     
     def is_terminate(self):
-        if self.depth > 20:
-            return True
-        else:
-            return False
+        return False
     
     def rollout(self):
         current_rollout_state = self.state
         max_reward = 0.
         max_state = None
-        for idx in range(1):
+        for idx in range(10):
             # print("Rollout: ", idx)
             possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)

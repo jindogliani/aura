@@ -195,7 +195,7 @@ class MuseumScene():
 
         g_weight = 1.0
         r_weight = 0.0
-        s_weight = 0.0
+        s_weight = 0.9
 
         g_cost = goal_cost(self.scene_data, self.artwork_data, self.wall_data)
         r_cost = 0

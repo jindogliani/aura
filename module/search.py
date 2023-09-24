@@ -28,8 +28,6 @@ class MonteCarloTreeSearch:
                 best_state = max_state
             pbar.set_description("Depth : %d, Reward: %f"%(cur_depth, reward))
             v.backpropagate(reward)
-            if cur_depth > 20:
-                break 
         # exploitation only
         return best_state
 
@@ -44,8 +42,8 @@ class MonteCarloTreeSearch:
     
 if __name__ == "__main__":
     Tree = MonteCarloTreeSearch(MCTSNode(SceneState(MuseumScene())))
-    best_state = Tree.best_action(700)
+    best_state = Tree.best_action(10000)
     best_scene = best_state.scene.scene_data
     #dictionary to pickle data
-    with open('best_scene_700.pickle', 'wb') as f:
+    with open('best_scene_100.pickle', 'wb') as f:
         pickle.dump(best_scene, f, pickle.HIGHEST_PROTOCOL)
