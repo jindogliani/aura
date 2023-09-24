@@ -37,7 +37,7 @@ class MCTSNode(object):
         next_state = self.state.move(action)
         child_node = MCTSNode(next_state, parent=self)
         self.is_leap = False
-        child_node.self_score = child_node.state.get_reward
+        child_node.self_score, _ = child_node.state.get_reward
         child_node.depth = self.depth + 1
         self.children.append(child_node)
         return child_node
@@ -65,18 +65,19 @@ class MCTSNode(object):
         current_rollout_state = self.state
         max_reward = 0.
         max_state = None
+        max_costs = [0, 0, 0]
         for idx in range(10):
-            # print("Rollout: ", idx)
             possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)
             next_rollout_state = current_rollout_state.move(action)
-            reward = next_rollout_state.get_reward
+            reward, costs = next_rollout_state.get_reward
             current_rollout_state = next_rollout_state
-            if reward > max_reward:
+            if reward >= max_reward:
                 max_reward = reward
                 max_state = next_rollout_state
+                max_costs = costs
         
-        return max_reward, max_state
+        return max_reward, max_state, max_costs
 
 
     def rollout_policy(self, possible_moves):

@@ -16,9 +16,10 @@ class SceneState(object):
     
     @property
     def get_reward(self):
-        reward = (1-self.scene.evaluation()) if (1-self.scene.evaluation()) > 0 else 0
+        total_cost, costs = self.scene.evaluation()
+        reward = (1-total_cost) if (1-total_cost) > 0 else 0
         # reward = self.scene.evaluation()
-        return reward
+        return reward, costs
     
     def move(self, action_tup):
         #action (Action, art_id, wall_id)

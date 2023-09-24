@@ -214,7 +214,7 @@ class MuseumScene():
         costs = [g_cost, r_cost, s_cost]
         # print(costs)
 
-        return total_cost
+        return total_cost, costs
 
     def visualize(self, num):
         visualization(best_scene_data, self.artwork_data, self.wall_data, num)
