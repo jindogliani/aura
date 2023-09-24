@@ -83,7 +83,10 @@ class MuseumScene():
             self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in self.scene_data.items() if wall == wall_id], key=lambda x: self.scene_data[x][1])
 
     def get_legal_actions(self):
-        possible_actions = []
+        possible_actions = {}
+        Flip = []
+        Forward = []
+        Swap = []
         swap_possible_walls = {}
             
         for wall_id in self.wall_data.keys():
@@ -93,7 +96,7 @@ class MuseumScene():
                 swap_possible_walls[wall_id].append((0, wall_len))
 
             elif len(self.art_in_wall[wall_id]) >= 1:
-                possible_actions.append((SceneActions.Flip, None , wall_id, 0))
+                Flip.append((SceneActions.Flip, None , wall_id, 0))
                 prev_end = 0
                 for idx, art_in_wall_id in enumerate(self.art_in_wall[wall_id]):
                     try:
@@ -134,7 +137,7 @@ class MuseumScene():
             if wall_len - sum([self.artwork_data[art]['width']*10 for art in self.art_in_wall[wall_id]]) > 13:
                 if len(self.art_in_wall[wall_id]) == 1:
                     if wall_len - (pos + int(art_len/2)) > 0:
-                        possible_actions.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
+                        Forward.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
                 elif len(self.art_in_wall[wall_id]) > 1: 
                     try:
                         next_art_id = self.art_in_wall[wall_id][self.art_in_wall[wall_id].index(art_id)+1]
@@ -144,19 +147,22 @@ class MuseumScene():
                             next_art_len -= 1
                         remain_space = next_pos - pos - int(next_art_len/2) - (int(art_len/2))
                         if remain_space > 0:
-                            possible_actions.append((SceneActions.Forward, art_id, None, remain_space))
+                            Forward.append((SceneActions.Forward, art_id, None, remain_space))
                     except:
                         if wall_len - (pos + int(art_len/2)) > 0:
-                            possible_actions.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
+                            Forward.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
 
             for possible_wall_id, possible_space in swap_possible_walls.items():
                 if possible_wall_id != wall_id:
                     while len(possible_space) >= 1:
                         possible_start, possible_length = possible_space.pop(0)
                         if possible_length >= art_len + 3:
-                            possible_actions.append((SceneActions.Swap, art_id, possible_wall_id, possible_start+3+int(art_len/2)))
+                            Swap.append((SceneActions.Swap, art_id, possible_wall_id, possible_start+3+int(art_len/2)))
                             break
-            
+        
+        possible_actions["Flip"] = Flip
+        possible_actions["Forward"] = Forward
+        possible_actions["Swap"] = Swap
         return possible_actions
     
     def do_action(self, action, art, wall, value):
@@ -256,15 +262,20 @@ if __name__ == "__main__":
     
     #total_cost = scene.evaluation()
     #print(total_cost)
-    idx = 700
+    idx = 415
     scene.visualize(idx)
     
 
     # print("=====================================")
     # for moves in legal_moves:
     #     print(moves)
-    # for _ in range(1000):
-    #     legal_moves = scene.get_legal_actions()
+    for _ in range(1):
+        legal_moves_dict = scene.get_legal_actions() #dict
+        legal_moves = []
+        for v in legal_moves_dict.values():
+            legal_moves += v
+        print(legal_moves)
+        # legal_moves = legal_moves_dict.values()
     #     # action_tup = choice(legal_moves)
     #     for idx, action_tup in enumerate(legal_moves):
     #         new_scene = scene.do_action(*action_tup)

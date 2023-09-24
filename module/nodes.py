@@ -6,6 +6,8 @@ from collections import defaultdict
 from scene import SceneState
 from tqdm import tqdm
 import time
+import random
+
 
 class MCTSNode(object):
     def __init__(self, state: SceneState, parent=None):
@@ -75,7 +77,11 @@ class MCTSNode(object):
 
 
     def rollout_policy(self, possible_moves):
-        return possible_moves[np.random.randint(len(possible_moves))]
+        action_list = ['Forward', 'Flip', 'Swap']
+        action_weight = [0.4, 0.2, 0.4]
+        selected_action = random.choices(action_list, weights=action_weight, k=1)[0]
+        selected_moves = possible_moves[selected_action]
+        return selected_moves[np.random.randint(len(selected_moves))]
     
     def backpropagate(self, max_reward):
         self.potential_score = max_reward
