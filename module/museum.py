@@ -200,23 +200,25 @@ class MuseumScene():
     def evaluation(self):
         draw = {}
 
-        g_weight = 1.0
-        r_weight = 0.0
-        s_weight = 0.9
+        g_weight = 0.7
+        r_weight = 0.1
+        s_weight = 0.2
 
         g_cost = goal_cost(self.scene_data, self.artwork_data, self.wall_data)
-        # r_cost = regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
-        # s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
-        r_cost = 0
-        s_cost = 0
+        r_cost = regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
+        s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
+        #r_cost = 0
+        #s_cost = 0
 
         total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost
         costs = [g_cost, r_cost, s_cost]
         # print(costs)
+
         return total_cost
 
     def visualize(self, num):
         visualization(best_scene_data, self.artwork_data, self.wall_data, num)
+        convert_scene_json(best_scene_data, self.artwork_data, self.wall_data, num)
              
     # def print_scene(self):
     #     self.draw = {}
@@ -250,7 +252,6 @@ class MuseumScene():
     #             # print(vis_list)
     #             assert len(vis_list) == wall_width
 
-            
     #         self.draw[v[0]] += np.array(vis_list)
 
     #     for k, vis_list in self.draw.items():
@@ -265,19 +266,20 @@ if __name__ == "__main__":
     
     #total_cost = scene.evaluation()
     #print(total_cost)
-    idx = 415
+    idx = 712
     scene.visualize(idx)
-    
 
     # print("=====================================")
     # for moves in legal_moves:
     #     print(moves)
-    for _ in range(1):
-        legal_moves_dict = scene.get_legal_actions() #dict
-        legal_moves = []
-        for v in legal_moves_dict.values():
-            legal_moves += v
-        print(legal_moves)
+
+    # for _ in range(1):
+    #     legal_moves_dict = scene.get_legal_actions() #dict
+    #     legal_moves = []
+    #     for v in legal_moves_dict.values():
+    #         legal_moves += v
+    #     print(legal_moves)
+
         # legal_moves = legal_moves_dict.values()
     #     # action_tup = choice(legal_moves)
     #     for idx, action_tup in enumerate(legal_moves):

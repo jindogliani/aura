@@ -9,6 +9,7 @@ import seaborn as sns
 import random
 import math
 import time
+import json
 
 with open('best_scene_700.pickle', 'rb') as f:
     best_scene_data = pickle.load(f)
@@ -18,6 +19,10 @@ with open('wall_list_2023.pkl', 'rb') as f:
 
 with open('exhibited_artwork_list_2023.pkl', 'rb') as f:
     exhibited_artwork_list = pickle.load(f)
+
+exhibition_data_path = "Data_2023.json"
+with open(exhibition_data_path, 'r', -1, encoding='utf-8') as f:
+    exhibition_data = json.load(f)
 
 # print (best_scene_data)
 
@@ -95,5 +100,30 @@ def visualization(scene_data, artwork_data, wall_data, num):
     plt.savefig('visualization_%d.png'%num)
     plt.close()
 
-if __name__ == "__main__":
-    visualization(best_scene_data, exhibited_artwork_list, wall_list, 600)
+def convert_scene_json(scene_data, artwork_data, wall_data, num):
+    for k, v in scene_data.items():
+        art = artwork_data[k]
+        wall = wall_data[v[0]]
+        pos = v[1]
+        
+        temp_heatmap_cell_size = 0.1
+        ratio1, ratio2 = (wall["length"]-pos*temp_heatmap_cell_size)/wall["length"], (pos*temp_heatmap_cell_size)/wall["length"]
+        new_art_pos = (wall["x1"]*ratio1+wall["x2"]*ratio2, wall["z1"]*ratio1+wall["z2"]*ratio2)
+        new_theta = wall["theta"]
+
+        for exhibited_artwork in exhibition_data["paintings"]:
+            if art["id"] == exhibited_artwork["artworkIndex"]:
+                exhibited_artwork["position"]["x"] = new_art_pos[0]
+                exhibited_artwork["position"]["z"] = new_art_pos[1]
+                exhibited_artwork["rotation"]["eulerAngles"]["y"] = new_theta
+    
+    with open("Data_2023_optimized_%d.json"%num, "w") as f:
+        json.dump(exhibition_data, f)
+
+
+
+
+
+
+# if __name__ == "__main__":
+#     visualization(best_scene_data, exhibited_artwork_list, wall_list, 600)
