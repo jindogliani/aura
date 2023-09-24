@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 currentPath = os.getcwd()
-date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) + ')'
+date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_hour) + ')'
 
 space_vertical_size, space_horizontal_size = 40, 40
 heatmap_cell_size = 0.2
@@ -34,7 +34,7 @@ artwork_data_path = "Daegu_new.json" #작품의 메타데이터가 있는 JSON �
 exhibition_data_path = "Data_2023.json" #작품이 걸려있는 전시 내용 JSON 파일 => 작품의 positions 값 추출
 
 #전체 작품 111개 리스트
-with open(artwork_data_path, "r") as f:
+with open(artwork_data_path, "r", encoding='UTF8') as f:
     artwork_data = json.load(f)
 
 exhibited_artwork_order = ["PA-0023", "PA-0026", "KO-0009", "PA-0095", "PA-0098", "PA-0076", "PA-0074", "PA-0075", "PA-0077", "KO-0010", "KO-0008", "PA-0101", "PA-0057", "PA-0052", "PA-0061", "PA-0001", "PA-0003", "PA-0004", "PA-0082", "PA-0084", "PA-0083", "PA-0063", "PA-0067", "PA-0064", "PA-0024", "PA-0087", "PA-0027", "PA-0025", "PA-0036", "PA-0085", "PA-0086", "PA-0070", "PA-0065", "PA-0031", "PA-0088", "PA-0100", "PA-0099", "KO-0007", "KO-0006", "KO-0004", "KO-0005", "PA-0090", "PA-0089"]

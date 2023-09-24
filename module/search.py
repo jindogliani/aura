@@ -1,5 +1,6 @@
 import os
 import sys
+from time import localtime, time
 sys.path.insert(0,os.path.join(os.getcwd(), 'module'))
 from nodes import MCTSNode
 from scene import SceneState
@@ -8,6 +9,7 @@ import time
 from tqdm import tqdm
 import pickle
 
+#date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_min) + ')'
 
 class MonteCarloTreeSearch:
     def __init__(self, node: MCTSNode):
@@ -45,5 +47,5 @@ if __name__ == "__main__":
     best_state = Tree.best_action(10000)
     best_scene = best_state.scene.scene_data
     #dictionary to pickle data
-    with open('best_scene_diff.pickle', 'wb') as f:
+    with open('best_scene_HJS.pickle', 'wb') as f:
         pickle.dump(best_scene, f, pickle.HIGHEST_PROTOCOL)

@@ -204,10 +204,8 @@ class MuseumScene():
         s_weight = 0.9
 
         g_cost = goal_cost(self.scene_data, self.artwork_data, self.wall_data)
-        r_cost = 0
-        s_cost = 0
-        # r_cost = regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
-        # s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
+        r_cost = regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
+        s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
 
         total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost
         # costs = [g_cost, r_cost, s_cost]
