@@ -77,7 +77,7 @@ class MuseumScene():
     def update_scene(self, scene_data):
         for k, v in scene_data.items():
             if type(v[1]) == float or v[1] < 0 or v[1] > int(self.wall_data[v[0]]['length']*10):
-                raise "fuck your self"
+                raise "fuck yourself"
         self.scene_data = scene_data
         for wall_id in self.wall_data.keys():
             self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in self.scene_data.items() if wall == wall_id], key=lambda x: self.scene_data[x][1])
@@ -192,7 +192,7 @@ class MuseumScene():
             new_scene[art] = (_wall, _pos+value)
             for k, v in new_scene.items():
                 if type(v[1]) == float or v[1] < 0 or v[1] > int(self.wall_data[v[0]]['length']*10):
-                    raise "fuck your self"
+                    raise "fuck yourself"
             return new_scene
         
         
@@ -217,8 +217,7 @@ class MuseumScene():
 
     def visualize(self, num):
         visualization(best_scene_data, self.artwork_data, self.wall_data, num)
-        
-                    
+             
     # def print_scene(self):
     #     self.draw = {}
     #     for k, v in self.wall_data.items():
