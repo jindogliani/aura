@@ -14,17 +14,18 @@ import math
 import time
 
 space_vertical_size, space_horizontal_size = 40, 40
-heatmap_cell_size = 0.2
+heatmap_cell_size = 0.1
 space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size
 space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
 
-with open('wall_list_2023.pkl', 'rb') as f:
+with open('_wall_list_2023.pkl', 'rb') as f:
     wall_list = pickle.load(f)
 
-with open('exhibited_artwork_list_2023.pkl', 'rb') as f:
+with open('_exhibited_artwork_list_2023.pkl', 'rb') as f:
     exhibited_artwork_list = pickle.load(f)
 
-space_heatmap = np.load('SpaceData/coords_GMA3+(9-23).npy')
+# space_heatmap = np.load('SpaceData/coords_GMA3+(9-23).npy') #cell size 0.2
+space_heatmap = np.load('SpaceData/coords_GMA3+(9-24-17-21).npy') #cell size 0.1
 space_heatmap[space_heatmap > 254] = -1000 #공간 벽을 -10으로 변환
 space_heatmap[space_heatmap == 0] = -1000 #공간 외부 값을 0에서 -15으로 전환
 space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
@@ -33,13 +34,15 @@ init_scene_data = {'PA-0023': ['w5', 28], 'PA-0026': ['w5', 65], 'KO-0009': ['w6
 init_wall_data = wall_list
 init_artwork_data = exhibited_artwork_list
 
-init_cell_variance = 130.7980201483807
-init_regulation_variance = 5.866548641795766
-init_WCSS = 52.517175423485185
+init_cell_variance = 28.96517894078864  # cell size 10cm
+# init_cell_variance = 130.7980201483807 # cell size 20cm
+init_regulation_variance = 5.97139935301553
+init_WCSS = 53.46560343036421
 
 heatmap_dict = {}
 for k, v in init_scene_data.items():
-    artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ k + '.npy')
+    artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-24-17-25)/'+ k + '.npy') # cell size 10cm
+    # artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ k + '.npy') # cell size 20cm
     heatmap_dict[k] = artwork_visitor_heatmap
 
 def heatmap_generator(

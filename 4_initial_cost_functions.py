@@ -12,13 +12,14 @@ import seaborn as sns
 import random
 import math
 
-with open('wall_list_2023.pkl', 'rb') as f:
+with open('_wall_list_2023.pkl', 'rb') as f:
     wall_list = pickle.load(f)
 
-with open('exhibited_artwork_list_2023.pkl', 'rb') as f:
+with open('_exhibited_artwork_list_2023.pkl', 'rb') as f:
     exhibited_artwork_list = pickle.load(f)
 
-initial_heatmap = np.load("initial_heatmap_2023.npy")
+#initial_heatmap = np.load("initial_heatmap_2023_20cm.npy") #cell size 0.2
+initial_heatmap = np.load("_initial_heatmap_2023_10cm.npy") #cell size 0.1
 
 init_cell_variance = 2000
 init_regulation_variance = 2000

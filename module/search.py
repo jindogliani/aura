@@ -46,8 +46,8 @@ class MonteCarloTreeSearch:
     
 if __name__ == "__main__":
     Tree = MonteCarloTreeSearch(MCTSNode(SceneState(MuseumScene())))
-    best_state = Tree.best_action(30000)
+    best_state = Tree.best_action(10000)
     best_scene = best_state.scene.scene_data
     #dictionary to pickle data
-    with open('best_scene_901_30000' + date +'.pickle', 'wb') as f:
+    with open('_best_scene_100_10000_10cm' + date +'.pickle', 'wb') as f:
         pickle.dump(best_scene, f, pickle.HIGHEST_PROTOCOL)

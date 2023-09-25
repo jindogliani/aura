@@ -27,7 +27,7 @@ class SceneActions(Enum):
     Flip = 2
 
 class DataLoader():
-    def __init__(self, artwork_data_path = "Daegu_new.json", exhibition_data_path = "Data_2023.json", wall_list_path = 'wall_list_2023.pkl', save_path = 'exhibited_artwork_list_2023.pkl'):
+    def __init__(self, artwork_data_path = "Daegu_new.json", exhibition_data_path = "_Data_2023.json", wall_list_path = '_wall_list_2023.pkl', save_path = '_exhibited_artwork_list_2023.pkl'):
         with open(wall_list_path, 'rb') as f:
                 wall_list = pickle.load(f)
         self.wall_list = wall_list
@@ -135,7 +135,7 @@ class MuseumScene():
             if art_len % 2 != 0:
                 art_len -= 1
             pos = self.scene_data[art_id][1]
-            if wall_len - sum([self.artwork_data[art]['width']*10 for art in self.art_in_wall[wall_id]]) > 13:
+            if wall_len - sum([self.artwork_data[art]['width']*10 for art in self.art_in_wall[wall_id]]) > 3:
                 if len(self.art_in_wall[wall_id]) == 1:
                     if wall_len - (pos + int(art_len/2)) > 0:
                         Forward.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
@@ -200,15 +200,15 @@ class MuseumScene():
     def evaluation(self):
         draw = {}
 
-        g_weight = 0.9
+        g_weight = 1
         r_weight = 0
-        s_weight = 0.1
+        s_weight = 0
 
         g_cost = goal_cost(self.scene_data, self.artwork_data, self.wall_data)
         #r_cost = regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
-        s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
+        #s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
         r_cost = 0
-        #s_cost = 0
+        s_cost = 0
 
         total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost
         costs = [g_cost, r_cost, s_cost]
@@ -219,6 +219,7 @@ class MuseumScene():
     def visualize(self, num):
         visualization(best_scene_data, self.artwork_data, self.wall_data, num)
         convert_scene_json(best_scene_data, self.artwork_data, self.wall_data, num)
+        print(wall_list)
              
     # def print_scene(self):
     #     self.draw = {}
@@ -264,9 +265,9 @@ if __name__ == "__main__":
     scene = MuseumScene()
     #scene.print_scene()
     
-    #total_cost = scene.evaluation()
-    #print(total_cost)
-    idx = 712
+    # total_cost = scene.evaluation()
+    # print(total_cost)
+    idx = 100
     scene.visualize(idx)
 
     # print("=====================================")

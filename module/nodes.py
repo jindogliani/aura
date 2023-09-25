@@ -82,7 +82,7 @@ class MCTSNode(object):
 
     def rollout_policy(self, possible_moves):
         action_list = ['Forward', 'Flip', 'Swap']
-        action_weight = [0.4, 0.2, 0.4]
+        action_weight = [0, 0, 1]
         selected_action = random.choices(action_list, weights=action_weight, k=1)[0]
         selected_moves = possible_moves[selected_action]
         return selected_moves[np.random.randint(len(selected_moves))]

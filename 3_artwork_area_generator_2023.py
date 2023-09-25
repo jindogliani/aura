@@ -17,21 +17,22 @@ currentPath = os.getcwd()
 date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_hour) + ')'
 
 space_vertical_size, space_horizontal_size = 40, 40
-heatmap_cell_size = 0.2
+heatmap_cell_size = 0.1
 space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size
 space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
 
 #2022년도 하정웅 미술관 벽 정보 리스트 로드
-with open('wall_list_2023.pkl', 'rb') as f:
+with open('_wall_list_2023.pkl', 'rb') as f:
     wall_list = pickle.load(f)
 
-space_heatmap = np.load('SpaceData/coords_GMA3+(9-23).npy')
+#space_heatmap = np.load('SpaceData/coords_GMA3+(9-23).npy') #cell size 0.2 
+space_heatmap = np.load('SpaceData/coords_GMA3+(9-24-17-21).npy') #cell size 0.1
 space_heatmap[space_heatmap > 254] = -500 #공간 벽을 -10으로 변환
 space_heatmap[space_heatmap == 0] = -500 #공간 외부 값을 0에서 -15으로 전환
 space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
 
 artwork_data_path = "Daegu_new.json" #작품의 메타데이터가 있는 JSON 파일 => 작품의 size 값 추출
-exhibition_data_path = "Data_2023.json" #작품이 걸려있는 전시 내용 JSON 파일 => 작품의 positions 값 추출
+exhibition_data_path = "_Data_2023.json" #작품이 걸려있는 전시 내용 JSON 파일 => 작품의 positions 값 추출
 
 #전체 작품 111개 리스트
 with open(artwork_data_path, "r", encoding='UTF8') as f:
@@ -92,7 +93,7 @@ for exhibited_artwork in exhibited_artwork_list:
                 if exhibited_artwork['id'] not in wall["hanged_artwork"]:
                     wall["hanged_artwork"].append(exhibited_artwork['id'])
 
-    print(exhibited_artwork)
+    #print(exhibited_artwork)
 
 def heatmap_generator(
     artwork_width, new_pos_x, new_pos_z, old_pos_x, old_pos_z, x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap
@@ -114,8 +115,8 @@ def heatmap_generator(
     #작품 새로운 벽 방향으로 회전
     artwork_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta, 1)
     artwork_heatmap = cv2.warpAffine(artwork_heatmap, artwork_rotation, artwork_heatmap.shape)
-    #artwork_heatmap[artwork_heatmap > 0] = -10 # 확인용
-    artwork_heatmap[artwork_heatmap > 0] = 0 # 분산 계산용
+    artwork_heatmap[artwork_heatmap > 0] = -10 # 확인용
+    #artwork_heatmap[artwork_heatmap > 0] = 0 # 분산 계산용
 
     #작품 관람객 히트맵 회전 #TODO
     
@@ -124,8 +125,8 @@ def heatmap_generator(
 
     artwork_visitor_transform = np.float32([[1, 0, round((new_pos_x - old_pos_x)/heatmap_cell_size)], [0, 1, round((new_pos_z - old_pos_z)/heatmap_cell_size)]])
     artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_transform, artwork_visitor_heatmap.shape)
-    #artwork_visitor_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta - old_theta, 1)
-    #artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_rotation, artwork_visitor_heatmap.shape)
+    artwork_visitor_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta - old_theta, 1)
+    artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_rotation, artwork_visitor_heatmap.shape)
 
     artwork_heatmap += artwork_visitor_heatmap
 
@@ -136,8 +137,9 @@ artwork_location_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells
 x_offset, z_offset = 7, 12
 
 for exhibited_artwork in exhibited_artwork_list:
-    artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ exhibited_artwork["id"] + '.npy')
-    artwork_heatmap = heatmap_generator(exhibited_artwork["width"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, 0, exhibited_artwork["_theta"], artwork_visitor_heatmap) #TODO
+    artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-24-17-25)/'+ exhibited_artwork["id"] + '.npy') #cell size 0.1
+    #artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ exhibited_artwork["id"] + '.npy') #cell size 0.2
+    artwork_heatmap = heatmap_generator(exhibited_artwork["width"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, exhibited_artwork["_theta"], exhibited_artwork["_theta"], artwork_visitor_heatmap) #TODO
     artwork_location_heatmap += artwork_heatmap
 
 for wall in wall_list:
@@ -151,8 +153,7 @@ for wall in wall_list:
     # del wall["hanged_artwork"]
     print(wall)
 
-with open('wall_list_2023.pkl', 'wb') as f:
-    pickle.dump(wall_list,f)
+
 
 ordered_exhibited_artwork_list = []
 for order in exhibited_artwork_order:
@@ -160,23 +161,20 @@ for order in exhibited_artwork_order:
         if order == exhibited_artwork["id"]:
             ordered_exhibited_artwork_list.append(exhibited_artwork)
 
-with open('exhibited_artwork_list_2023.pkl', 'wb') as f:
-    pickle.dump(ordered_exhibited_artwork_list,f)
+for a in ordered_exhibited_artwork_list:
+    print(a)
 
+# with open('_exhibited_artwork_list_2023.pkl', 'wb') as f:
+#     pickle.dump(ordered_exhibited_artwork_list,f)
+
+# with open('_wall_list_2023.pkl', 'wb') as f:
+#     pickle.dump(wall_list,f)
 
 heatmap = space_heatmap + artwork_location_heatmap
-np.save("initial_heatmap_2023", heatmap)
+np.save("_initial_heatmap_2023_10cm", heatmap)
 heatmapCSV = pd.DataFrame(heatmap)
 sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
 plt.show()
-
-
-
-
-
-
-
-
 
 
 

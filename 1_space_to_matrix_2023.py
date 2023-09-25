@@ -17,10 +17,10 @@ from time import localtime, time
 import os
 import pickle
 
-date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) + ')'
+date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_min) + ')'
 
 #공간 x,z 좌표 데이터를 읽어온다.
-spaceDataCSV = open('SpaceData/coords_GMA3.csv', 'r', encoding='utf-8-sig') #2023년 광주시립미술관 전체 데이터
+spaceDataCSV = open('SpaceData/coords_GMA2.csv', 'r', encoding='utf-8-sig') #2023년 광주시립미술관 전체 데이터
 spaceDataCSVname = spaceDataCSV.name[10:-4]
 reader = csv.reader(spaceDataCSV)
 
@@ -34,7 +34,7 @@ spaceDataCSV.close()
 #공간 세로 길이: 50미터 | 공간 가로 길이: 50미터
 spaceVerticalSize, spaceHorizontalSize = 40, 40
 #히트맵 셀 사이즈: 0.1미터 = 10센티미터
-heatmapCellSize = 0.2
+heatmapCellSize = 0.1
 
 spaceVertcalCells, spaceHorizontalCells = spaceVerticalSize / heatmapCellSize, spaceHorizontalSize / heatmapCellSize
 spaceHorizontalCells, spaceVertcalCells = round(spaceHorizontalCells), round(spaceVertcalCells)
@@ -67,8 +67,8 @@ for i in range(len(li)):
         li[i]['displayable'] = True
     print(li[i])
 
-# with open('wall_list_2023.pkl', 'wb') as f:
-#     pickle.dump(li,f)
+with open('_wall_list_2023.pkl', 'wb') as f:
+    pickle.dump(li,f)
 
 #공간 데이터를 통해 생성한 img를 1/10으로 리사이즈함.
 #이를 통해 10cm 크기의 cell을 갖는 공간 배열 생성
@@ -93,5 +93,5 @@ sns.heatmap(sMapCSV, cmap='Greens', vmin=0, vmax=255)
 
 plt.show()
 
-np.save("SpaceData/" + spaceDataCSVname + date, _resized_img_th)
+#np.save("SpaceData/" + spaceDataCSVname + date, _resized_img_th)
 sMapCSV.to_csv("SpaceData/" + spaceDataCSVname + date + '_Heatmap.csv', index=False)

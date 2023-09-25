@@ -17,7 +17,7 @@ import seaborn as sns
 import matplotlib.cm as cm
 from matplotlib.colors import Normalize
 
-date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) + ')'
+date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_min) + ')'
 user_list = []
 
 # Function to create an empty heatmap
@@ -84,14 +84,14 @@ os.makedirs(artwork_visitor_data_dir, exist_ok=True)
 #히트맵 셀 사이즈: 0.1미터 = 10센티미터
 #히트맵 가로 셀 개수: 20/0.1 = 200개 | 히트맵 세로 셀 개수: 20/0.1 = 200개 
 spaceVerticalSize, spaceHorizontalSize = 40, 40
-heatmapCellSize = 0.2
+heatmapCellSize = 0.1
 spaceVertcalCells, spaceHorizontalCells = spaceVerticalSize / heatmapCellSize, spaceHorizontalSize / heatmapCellSize
 rows, cols = round(spaceVertcalCells), round(spaceHorizontalCells)
 
 #현재는 공간데이터에 오프셋 값을 줌 # xOffset, yOffset = -4.1, -5.8
 #2022년 공간데이터와 관람객 데이터 사이의 위치 차이
 #관람객 시작점이 상대좌표에서 (0, y, 0) 이었으나 절대좌표에서는 (-4.1, y, -5.8)
-with open(visitor_data_path, "r") as f:
+with open(visitor_data_path, "r", encoding='utf-8-sig') as f:
     heatmap = create_empty_heatmap(rows, cols)
     dict_array = np.reshape([dict() for _ in range(rows * cols)], (rows, cols)) #TODO
     reader = csv.DictReader(f)
