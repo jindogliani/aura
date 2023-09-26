@@ -25,12 +25,16 @@ class MonteCarloTreeSearch:
         for idx in pbar:
             v = self.tree_policy()
             cur_depth = v.depth
-            reward, max_state, max_costs = v.rollout()
+            reward, max_state, max_costs, best_action_path = v.rollout()
+            art_num = len(max_state.scene.scene_data)
             if reward > best_reward:
-                print("Update Best Reward: ", reward)
                 best_reward = reward
                 best_state = max_state
-            pbar.set_description("Depth : %d, Reward: %f [Goal : %f, Regularization : %f, Similarity : %f]"%(cur_depth, reward, max_costs[0], max_costs[1], max_costs[2]))
+                best_art_num = len(best_state.scene.scene_data)
+                print("Update Best Reward: %f  Number: %d [Goal : %f, Regularization : %f, Similarity : %f, Num : %f]"%(best_reward, best_art_num, max_costs[0], max_costs[1], max_costs[2], max_costs[3]))
+            pbar.set_description("Depth : %d, Reward: %f, Art Num: %d [Goal : %f, Regularization : %f, Similarity : %f, Num : %f]"%(cur_depth, reward, art_num, max_costs[0], max_costs[1], max_costs[2], max_costs[3]))
+            if best_reward > 0.9:
+                return best_state
             v.backpropagate(reward)
         # exploitation only
         return best_state

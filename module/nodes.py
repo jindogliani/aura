@@ -66,24 +66,29 @@ class MCTSNode(object):
         max_reward = 0.
         max_state = None
         max_costs = [0, 0, 0]
+        action_path = []
         for idx in range(10):
             possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)
             next_rollout_state = current_rollout_state.move(action)
+            action_path.append(action)
             reward, costs = next_rollout_state.get_reward
             current_rollout_state = next_rollout_state
             if reward >= max_reward:
                 max_reward = reward
                 max_state = next_rollout_state
                 max_costs = costs
+                best_action_path = action_path
         
-        return max_reward, max_state, max_costs
+        return max_reward, max_state, max_costs, best_action_path
 
 
     def rollout_policy(self, possible_moves):
-        action_list = ['Forward', 'Flip', 'Swap']
-        action_weight = [0, 0, 1]
+        action_list = ['Forward', 'Flip', 'Swap', 'Add', 'Delete']
+        action_weight = [0.1, 0.1, 0.4, 0.3, 0.1]
         selected_action = random.choices(action_list, weights=action_weight, k=1)[0]
+        while len(possible_moves[selected_action]) == 0:
+            selected_action = random.choices(action_list, weights=action_weight, k=1)[0]
         selected_moves = possible_moves[selected_action]
         return selected_moves[np.random.randint(len(selected_moves))]
     

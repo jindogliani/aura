@@ -25,6 +25,8 @@ class SceneActions(Enum):
     Forward = 0
     Swap = 1
     Flip = 2
+    Add = 3
+    Delete = 4
 
 class DataLoader():
     def __init__(self, artwork_data_path = "Daegu_new.json", exhibition_data_path = "_Data_2023.json", wall_list_path = '_wall_list_2023.pkl', save_path = '_exhibited_artwork_list_2023.pkl'):
@@ -67,6 +69,7 @@ class MuseumScene():
         dl = DataLoader()
         dl._get_data()
         self.scene_data = dl.scene_data
+        self.origin_num = len(self.scene_data)
         self.artwork_data = dl.artwork_data
         self.wall_data = dl.wall_data
         self.art_in_wall = {}
@@ -88,6 +91,8 @@ class MuseumScene():
         Flip = []
         Forward = []
         Swap = []
+        Delete = []
+        Add = []
         swap_possible_walls = {}
             
         for wall_id in self.wall_data.keys():
@@ -129,41 +134,50 @@ class MuseumScene():
                 
             
         for art_id in self.artwork_data.keys():
-            wall_id = self.scene_data[art_id][0]
-            wall_len = int(self.wall_data[wall_id]['length']*10) - 3
             art_len = int(self.artwork_data[art_id]['width']*10)
             if art_len % 2 != 0:
                 art_len -= 1
-            pos = self.scene_data[art_id][1]
-            if wall_len - sum([self.artwork_data[art]['width']*10 for art in self.art_in_wall[wall_id]]) > 3:
-                if len(self.art_in_wall[wall_id]) == 1:
-                    if wall_len - (pos + int(art_len/2)) > 0:
-                        Forward.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
-                elif len(self.art_in_wall[wall_id]) > 1: 
-                    try:
-                        next_art_id = self.art_in_wall[wall_id][self.art_in_wall[wall_id].index(art_id)+1]
-                        next_pos = self.scene_data[next_art_id][1]
-                        next_art_len = int(self.artwork_data[next_art_id]['width']*10)
-                        if next_art_len % 2 != 0:
-                            next_art_len -= 1
-                        remain_space = next_pos - pos - int(next_art_len/2) - (int(art_len/2))
-                        if remain_space > 0:
-                            Forward.append((SceneActions.Forward, art_id, None, remain_space))
-                    except:
+            if art_id in self.scene_data.keys():
+                wall_id = self.scene_data[art_id][0]
+                wall_len = int(self.wall_data[wall_id]['length']*10) - 3
+                Delete.append((SceneActions.Delete, art_id, None, None))
+                pos = self.scene_data[art_id][1]
+                if wall_len - sum([self.artwork_data[art]['width']*10 for art in self.art_in_wall[wall_id]]) > 3:
+                    if len(self.art_in_wall[wall_id]) == 1:
                         if wall_len - (pos + int(art_len/2)) > 0:
                             Forward.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
-
-            for possible_wall_id, possible_space in swap_possible_walls.items():
-                if possible_wall_id != wall_id:
-                    while len(possible_space) >= 1:
-                        possible_start, possible_length = possible_space.pop(0)
-                        if possible_length >= art_len + 3:
-                            Swap.append((SceneActions.Swap, art_id, possible_wall_id, possible_start+3+int(art_len/2)))
-                            break
+                    elif len(self.art_in_wall[wall_id]) > 1: 
+                        try:
+                            next_art_id = self.art_in_wall[wall_id][self.art_in_wall[wall_id].index(art_id)+1]
+                            next_pos = self.scene_data[next_art_id][1]
+                            next_art_len = int(self.artwork_data[next_art_id]['width']*10)
+                            if next_art_len % 2 != 0:
+                                next_art_len -= 1
+                            remain_space = next_pos - pos - int(next_art_len/2) - (int(art_len/2))
+                            if remain_space > 0:
+                                Forward.append((SceneActions.Forward, art_id, None, remain_space))
+                        except:
+                            if wall_len - (pos + int(art_len/2)) > 0:
+                                Forward.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
+                for possible_wall_id, possible_space in swap_possible_walls.items():
+                    if possible_wall_id != wall_id:
+                        while len(possible_space) >= 1:
+                            possible_start, possible_length = possible_space.pop(0)
+                            if possible_length >= art_len + 3:
+                                Swap.append((SceneActions.Swap, art_id, possible_wall_id, possible_start+3+int(art_len/2)))
+            else:
+                for possible_wall_id, possible_space in swap_possible_walls.items():
+                    if possible_wall_id != wall_id:
+                        while len(possible_space) >= 1:
+                            possible_start, possible_length = possible_space.pop(0)
+                            if possible_length >= art_len + 3:
+                                Add.append((SceneActions.Add, art_id, possible_wall_id, possible_start+3+int(art_len/2)))
         
         possible_actions["Flip"] = Flip
         possible_actions["Forward"] = Forward
         possible_actions["Swap"] = Swap
+        possible_actions["Delete"] = Delete
+        possible_actions["Add"] = Add
         return possible_actions
     
     def do_action(self, action, art, wall, value):
@@ -195,23 +209,32 @@ class MuseumScene():
                     raise "fuck yourself"
             return new_scene
         
+        if action == SceneActions.Add:
+            new_scene[art] = (wall, value)
+            return new_scene
+
+        if action == SceneActions.Delete:
+            new_scene.pop(art)
+            return new_scene
         
         
     def evaluation(self):
         draw = {}
 
-        g_weight = 1
-        r_weight = 0
-        s_weight = 0
+        g_weight = 0.5
+        r_weight = 0.1
+        s_weight = 0.2
+        n_weight = 0.2
 
         g_cost = goal_cost(self.scene_data, self.artwork_data, self.wall_data)
-        #r_cost = regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
-        #s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
-        r_cost = 0
-        s_cost = 0
+        r_cost = regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
+        s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
+        # r_cost = 0
+        # s_cost = 0
+        n_cost = 1 - len(self.scene_data) / self.origin_num
 
-        total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost
-        costs = [g_cost, r_cost, s_cost]
+        total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost + n_weight * n_cost
+        costs = [g_cost, r_cost, s_cost, n_cost]
         # print(costs)
 
         return total_cost, costs
@@ -274,18 +297,14 @@ if __name__ == "__main__":
     # for moves in legal_moves:
     #     print(moves)
 
-    # for _ in range(1):
+    # for _ in range(1000):
     #     legal_moves_dict = scene.get_legal_actions() #dict
     #     legal_moves = []
     #     for v in legal_moves_dict.values():
     #         legal_moves += v
     #     print(legal_moves)
-
-        # legal_moves = legal_moves_dict.values()
-    #     # action_tup = choice(legal_moves)
+    #     action_tup = choice(legal_moves)
     #     for idx, action_tup in enumerate(legal_moves):
     #         new_scene = scene.do_action(*action_tup)
-    #         print("************************************")
     #     scene.update_scene(new_scene)
-        # scene.print_scene()
         # scene.visualize(new_scene, idx)
