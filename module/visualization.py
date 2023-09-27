@@ -11,7 +11,7 @@ import math
 import time
 import json
 
-with open('_best_scene_100_10000_10cm+(9-25-9-0).pickle', 'rb') as f:
+with open('_best_scene_100_10000_10cm+(9-26-8-6).pickle', 'rb') as f:
     best_scene_data = pickle.load(f)
 
 with open('_wall_list_2023.pkl', 'rb') as f:
