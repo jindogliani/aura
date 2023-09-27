@@ -64,6 +64,9 @@ def process_artwork_heatmap(
             print("processing", num, artwork_id)
             num += 1
 
+
+
+
 """
 작품별 npy 저장하는 폴더 생성 및 작품리스트 생성
 """

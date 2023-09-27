@@ -12,30 +12,6 @@ import seaborn as sns
 import random
 import math
 
-with open('_wall_list_2023.pkl', 'rb') as f:
-    wall_list = pickle.load(f)
-
-with open('_exhibited_artwork_list_2023.pkl', 'rb') as f:
-    exhibited_artwork_list = pickle.load(f)
-
-#initial_heatmap = np.load("initial_heatmap_2023_20cm.npy") #cell size 0.2
-initial_heatmap = np.load("_initial_heatmap_2023_10cm.npy") #cell size 0.1
-
-init_cell_variance = 2000
-init_regulation_variance = 2000
-init_WCSS = 2000
-
-exhibited_artwork_order = ["PA-0023", "PA-0026", "KO-0009", "PA-0095", "PA-0098", "PA-0076", "PA-0074", "PA-0075", "PA-0077", "KO-0010", "KO-0008", "PA-0101", "PA-0057", "PA-0052", "PA-0061", "PA-0001", "PA-0003", "PA-0004", "PA-0082", "PA-0084", "PA-0083", "PA-0063", "PA-0067", "PA-0064", "PA-0024", "PA-0087", "PA-0027", "PA-0025", "PA-0036", "PA-0085", "PA-0086", "PA-0070", "PA-0065", "PA-0031", "PA-0088", "PA-0100", "PA-0099", "KO-0007", "KO-0006", "KO-0004", "KO-0005", "PA-0090", "PA-0089"]
-ordered_exhibited_artwork_list = []
-
-for order in exhibited_artwork_order:
-    for exhibited_artwork in exhibited_artwork_list:
-        if order == exhibited_artwork["id"]:
-            ordered_exhibited_artwork_list.append(exhibited_artwork)
-
-for a in ordered_exhibited_artwork_list:
-    print(a)
-
 def goal_cost(optimized_artwork_heatmap):
     # 음수는 값에 안 넣게 필터 필요
     variance = np.var(optimized_artwork_heatmap[optimized_artwork_heatmap>=0])
@@ -84,6 +60,30 @@ def similarity_cost(optimized_artwork_list):
     WCSS = sum(cluster_variance_list)
 
     return WCSS
+
+with open('_wall_list_2023.pkl', 'rb') as f:
+    wall_list = pickle.load(f)
+
+with open('_exhibited_artwork_list_2023.pkl', 'rb') as f:
+    exhibited_artwork_list = pickle.load(f)
+
+#initial_heatmap = np.load("initial_heatmap_2023_20cm.npy") #cell size 0.2
+initial_heatmap = np.load("_initial_heatmap_2023_10cm.npy") #cell size 0.1
+
+init_cell_variance = 2000
+init_regulation_variance = 2000
+init_WCSS = 2000
+
+exhibited_artwork_order = ["PA-0023", "PA-0026", "KO-0009", "PA-0095", "PA-0098", "PA-0076", "PA-0074", "PA-0075", "PA-0077", "KO-0010", "KO-0008", "PA-0101", "PA-0057", "PA-0052", "PA-0061", "PA-0001", "PA-0003", "PA-0004", "PA-0082", "PA-0084", "PA-0083", "PA-0063", "PA-0067", "PA-0064", "PA-0024", "PA-0087", "PA-0027", "PA-0025", "PA-0036", "PA-0085", "PA-0086", "PA-0070", "PA-0065", "PA-0031", "PA-0088", "PA-0100", "PA-0099", "KO-0007", "KO-0006", "KO-0004", "KO-0005", "PA-0090", "PA-0089"]
+ordered_exhibited_artwork_list = []
+
+for order in exhibited_artwork_order:
+    for exhibited_artwork in exhibited_artwork_list:
+        if order == exhibited_artwork["id"]:
+            ordered_exhibited_artwork_list.append(exhibited_artwork)
+
+for a in ordered_exhibited_artwork_list:
+    print(a)
 
 init_cell_variance = goal_cost(initial_heatmap)
 init_regulation_variance = regularization_cost(ordered_exhibited_artwork_list)

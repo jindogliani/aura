@@ -22,7 +22,7 @@ date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_
 #공간 x,z 좌표 데이터를 읽어온다.
 spaceDataCSV = open('SpaceData/coords_GMA2.csv', 'r', encoding='utf-8-sig') #2023년 광주시립미술관 전체 데이터
 #공간 세로 길이: 40미터 | 공간 가로 길이: 40미터
-c
+
 #히트맵 셀 사이즈: 0.1미터 = 10센티미터
 heatmapCellSize = 0.1
 

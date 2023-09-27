@@ -21,7 +21,7 @@ date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_
 
 def space_csv_to_heatmap(ver, spaceDataCSV, heatmap_cell_size, space_vertical_size, space_horizontal_size, x_offset, z_offset):
     
-    spaceDataCSVname = ver + spaceDataCSV.name[10:-4]
+    spaceDataCSVname = ver + '_' + spaceDataCSV.name[10:-4]
     
     reader = csv.reader(spaceDataCSV)
     #walls=edges와 같은 말. 벽의 값을 갖고 오기 위해 좌표배열1, 2를 합침
@@ -39,7 +39,10 @@ def space_csv_to_heatmap(ver, spaceDataCSV, heatmap_cell_size, space_vertical_si
     li = []
 
     for row in edgeArr:
-        x1, x2, z1, z2 = -float(row[0]), -float(row[3]), float(row[2]), float(row[5])
+        if(ver == '2023'):
+            x1, x2, z1, z2 = -float(row[0]), -float(row[3]), float(row[2]), float(row[5])
+        elif(ver == '2022'):
+            x1, x2, z1, z2 = float(row[0]), float(row[3]), float(row[2]), float(row[5])
         _x1, _x2, _z1, _z2= int((x1+x_offset)/heatmap_cell_size), int((x2+x_offset)/heatmap_cell_size), int((z1+z_offset)/heatmap_cell_size), int((z2+z_offset)/heatmap_cell_size) #z축 뒤집히는 것은 유동적 수정 필요
         img = cv2.line(img, (_x1, _z1), (_x2, _z2), 255, 1)
         wallDic = dict()
@@ -61,7 +64,7 @@ def space_csv_to_heatmap(ver, spaceDataCSV, heatmap_cell_size, space_vertical_si
             li[i]['displayable'] = True
         print(li[i])
 
-    with open('wall_list_' + ver + '.pkl', 'wb') as f:
+    with open(ver + '_wall_list' + '.pkl', 'wb') as f:
         pickle.dump(li,f)
 
     contours, hierarchy = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -80,23 +83,23 @@ def space_csv_to_heatmap(ver, spaceDataCSV, heatmap_cell_size, space_vertical_si
     sns.heatmap(sMapCSV, cmap='Greens', vmin=0, vmax=255)
     plt.show()
 
-    #np.save("SpaceData/" + spaceDataCSVname + date, _resized_img_th)
+    np.save("SpaceData/" + spaceDataCSVname + date, _resized_img_th)
     sMapCSV.to_csv("SpaceData/" + spaceDataCSVname + date + '_Heatmap.csv', index=False)
 
 
-ver = "2023"
+ver = "2022"
 
 if ver == "2023":
-    spaceDataCSV = open('SpaceData/coords_GMA2.csv', 'r', encoding='utf-8-sig')
+    spaceDataCSV = open('SpaceData/GMA.csv', 'r', encoding='utf-8-sig')
     space_vertical_size, space_horizontal_size = 40, 40
     heatmap_cell_size = 0.1
     x_offset, z_offset = 7, 12 
 
-    space_csv_to_heatmap(ver, spaceDataCSV, heatmap_cell_size, space_vertical_size, space_horizontal_size)
+    space_csv_to_heatmap(ver, spaceDataCSV, heatmap_cell_size, space_vertical_size, space_horizontal_size, x_offset, z_offset)
 elif ver == "2022":
-    spaceDataCSV = open('SpaceData/coords_GMA2.csv', 'r', encoding='utf-8-sig')
+    spaceDataCSV = open('SpaceData/HJW.csv', 'r', encoding='utf-8-sig')
     space_vertical_size, space_horizontal_size = 40, 40
     heatmap_cell_size = 0.1
-    x_offset, z_offset = 7, 12 
+    x_offset, z_offset = 25, 20 
 
-    space_csv_to_heatmap(ver, spaceDataCSV, heatmap_cell_size, space_vertical_size, space_horizontal_size)
+    space_csv_to_heatmap(ver, spaceDataCSV, heatmap_cell_size, space_vertical_size, space_horizontal_size, x_offset, z_offset)
