@@ -145,6 +145,8 @@ def centroid(coordinates):
     x_coords = [p[0] for p in coordinates]
     y_coords = [p[1] for p in coordinates]
     _len = len(coordinates)
+    if _len == 0:
+        return False
     centroid_x = sum(x_coords)/_len
     centroid_y = sum(y_coords)/_len
     return (centroid_x, centroid_y)
@@ -168,10 +170,14 @@ def similarity_cost(scene_data, artwork_data, wall_data):
 
             if art["artist"] == artist:
                 same_artist_coords_list.append(new_art_pos)
+        if len(same_artist_coords_list) <= 1:
+            continue
 
         centroid_coords = centroid(same_artist_coords_list)
 
         for coords in same_artist_coords_list:
+            if centroid_coords == False:
+                centroid_coords = coords
             same_artist_dist_list.append(math.dist(coords, centroid_coords))
 
         same_artist_dist_arr = np.array(same_artist_dist_list)
