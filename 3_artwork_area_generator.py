@@ -136,6 +136,17 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
                 wall["displayable"] = False
             if(wall["id"] == "w45"):
                 wall["hanged_artwork"] = ["PA-0070", "PA-0065"]
+        if(ver == "2022"):
+            if(wall["id"] == "w10"):
+                wall["displayable"] = False
+            if(wall["id"] == "w11"):
+                wall["displayable"] = False
+            if(wall["id"] == "w12"):
+                wall["displayable"] = False
+            if(wall["id"] == "w13"):
+                wall["displayable"] = False
+            if(wall["id"] == "w21" or wall["id"] == "w22" or wall["id"] == "w35" or wall["id"] == "w36"):
+                wall["displayable"] = False
         for order in exhibited_artwork_order:
             if order in wall["hanged_artwork"]:
                 if order not in wall["artwork"]:
