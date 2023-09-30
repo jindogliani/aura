@@ -85,6 +85,7 @@ class MuseumScene():
             if tar_artist not in self.artists:
                 self.artists.append(tar_artist)
         self.origin_artist_num = len(self.artists)
+        # print("Initial art and artisit number is %d and %d"%(self.origin_num, self.origin_artist_num))
 
     def update_scene(self, scene_data):
         for k, v in scene_data.items():
@@ -235,9 +236,9 @@ class MuseumScene():
     def evaluation(self):
         draw = {}
 
-        g_weight = 0.4
-        r_weight = 0.1
-        s_weight = 0.1
+        g_weight = 0.6
+        r_weight = 0.2
+        s_weight = 0.2
         n_weight = 0.2
         an_weight = 0.2
 
@@ -246,8 +247,10 @@ class MuseumScene():
         s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
         # r_cost = 0
         # s_cost = 0
-        n_cost = 1 - len(self.scene_data) / self.origin_num
-        an_cost = 1 - len(self.artists) / self.origin_artist_num
+        n_cost = 0
+        an_cost = 0
+        # n_cost = 1 - len(self.scene_data) / self.origin_num
+        # an_cost = 1 - len(self.artists) / self.origin_artist_num
 
         total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost + n_weight * n_cost + an_cost * an_weight
         costs = [g_cost, r_cost, s_cost, n_cost, an_cost]

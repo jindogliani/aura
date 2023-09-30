@@ -16,16 +16,19 @@ class MCTSNode(object):
         self.children = []
         self.is_leap = True
         self.self_score = 0.
+        self.self_costs = []
         self.potential_score = 0.
         self.depth = 0
+        self.history = []
 
     @property
     def all_actions(self):
         if not hasattr(self, '_all_actions'):
             legal_moves_dict = self.state.get_legal_actions()
             self._all_actions = []
-            for v in legal_moves_dict.values():
-                self._all_actions += v
+            for k, v in legal_moves_dict.items():
+                if k == 'Forward' or k == 'Flip' or k == 'Swap':
+                    self._all_actions += v
         return self._all_actions
     
     @property
@@ -37,8 +40,9 @@ class MCTSNode(object):
         next_state = self.state.move(action)
         child_node = MCTSNode(next_state, parent=self)
         self.is_leap = False
-        child_node.self_score, _ = child_node.state.get_reward
+        child_node.self_score, child_node.self_costs = child_node.state.get_reward
         child_node.depth = self.depth + 1
+        child_node.history = self.history + [action]
         self.children.append(child_node)
         return child_node
     
@@ -79,13 +83,19 @@ class MCTSNode(object):
                 max_state = next_rollout_state
                 max_costs = costs
                 best_action_path = action_path
-        
+        # self.history = best_action_path
+        # parent = self.parent
+        # all_action_path = best_action_path
+        # while parent is not None:
+        #     all_action_path = parent.history + all_action_path
+        #     parent = parent.parent
+    
         return max_reward, max_state, max_costs, best_action_path
 
 
     def rollout_policy(self, possible_moves):
         action_list = ['Forward', 'Flip', 'Swap', 'Add', 'Delete']
-        action_weight = [0.1, 0.0, 0.5, 0.2, 0.2]
+        action_weight = [0.1, 0.4, 0.5, 0.0, 0.0]
         selected_action = random.choices(action_list, weights=action_weight, k=1)[0]
         while len(possible_moves[selected_action]) == 0:
             selected_action = random.choices(action_list, weights=action_weight, k=1)[0]
