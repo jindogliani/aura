@@ -33,12 +33,14 @@ def centroid(coordinates):
     x_coords = [p[0] for p in coordinates]
     y_coords = [p[1] for p in coordinates]
     _len = len(coordinates)
+    if _len == 0:
+        return (0, 0)
     centroid_x = sum(x_coords)/_len
     centroid_y = sum(y_coords)/_len
     return (centroid_x, centroid_y)
 
 def similarity_cost(optimized_artwork_list):
-    artist_list = ["차현욱", "백지훈", "이주희", "신준민", "박지연", "황지영", "이연주", "심윤", "김도경"] #작가 수가 10 미만이라 그냥 리스트 만들고 진행, 나중에 돌리기 전에 지정
+    artist_list = ["차현욱", "백지훈", "이주희", "신준민", "박지연", "황지영", "이연주", "심윤", "김도경", "하지"] #작가 수가 10 미만이라 그냥 리스트 만들고 진행, 나중에 돌리기 전에 지정
     cluster_variance_list = []
     for artist in artist_list:
         same_artist_coords_list = []
@@ -47,7 +49,9 @@ def similarity_cost(optimized_artwork_list):
         for artwork in optimized_artwork_list:
             if artwork['artist'] == artist:
                 same_artist_coords_list.append((artwork['pos_x'], artwork['pos_z']))
-
+        if same_artist_coords_list == []:
+             same_artist_coords_list.append((0,0))
+        
         centroid_coords = centroid(same_artist_coords_list)
 
         for coords in same_artist_coords_list:
@@ -61,37 +65,38 @@ def similarity_cost(optimized_artwork_list):
 
     return WCSS
 
-with open('_wall_list_2023.pkl', 'rb') as f:
-    wall_list = pickle.load(f)
-
-with open('_exhibited_artwork_list_2023.pkl', 'rb') as f:
-    exhibited_artwork_list = pickle.load(f)
-
-#initial_heatmap = np.load("initial_heatmap_2023_20cm.npy") #cell size 0.2
-initial_heatmap = np.load("_initial_heatmap_2023_10cm.npy") #cell size 0.1
+ver = "2022"
 
 init_cell_variance = 2000
 init_regulation_variance = 2000
 init_WCSS = 2000
 
-exhibited_artwork_order = ["PA-0023", "PA-0026", "KO-0009", "PA-0095", "PA-0098", "PA-0076", "PA-0074", "PA-0075", "PA-0077", "KO-0010", "KO-0008", "PA-0101", "PA-0057", "PA-0052", "PA-0061", "PA-0001", "PA-0003", "PA-0004", "PA-0082", "PA-0084", "PA-0083", "PA-0063", "PA-0067", "PA-0064", "PA-0024", "PA-0087", "PA-0027", "PA-0025", "PA-0036", "PA-0085", "PA-0086", "PA-0070", "PA-0065", "PA-0031", "PA-0088", "PA-0100", "PA-0099", "KO-0007", "KO-0006", "KO-0004", "KO-0005", "PA-0090", "PA-0089"]
-ordered_exhibited_artwork_list = []
+if ver == "2023":
+    with open('2023_wall_list_with_artworks.pkl', 'rb') as f:
+        wall_list = pickle.load(f)
+    with open('2023_exhibited_artwork_list.pkl', 'rb') as f:
+        exhibited_artwork_list = pickle.load(f)
+    initial_heatmap = np.load("2023_initial_heatmap.npy")
 
-for order in exhibited_artwork_order:
-    for exhibited_artwork in exhibited_artwork_list:
-        if order == exhibited_artwork["id"]:
-            ordered_exhibited_artwork_list.append(exhibited_artwork)
+    init_cell_variance = goal_cost(initial_heatmap)
+    init_regulation_variance = regularization_cost(exhibited_artwork_list)
+    init_WCSS = similarity_cost(exhibited_artwork_list)
 
-for a in ordered_exhibited_artwork_list:
-    print(a)
+    print("2023 Initial Density per Cell Variance: " + str(init_cell_variance))
+    print("2023 Initial Artwork Distance Variance: " + str(init_regulation_variance))
+    print("2023 Initial WCSS: " + str(init_WCSS))
 
-init_cell_variance = goal_cost(initial_heatmap)
-init_regulation_variance = regularization_cost(ordered_exhibited_artwork_list)
-init_WCSS = similarity_cost(exhibited_artwork_list)
+elif ver == "2022":
+    with open('2022_wall_list_with_artworks.pkl', 'rb') as f:
+        wall_list = pickle.load(f)
+    with open('2022_exhibited_artwork_list.pkl', 'rb') as f:
+        exhibited_artwork_list = pickle.load(f)
+    initial_heatmap = np.load("2022_initial_heatmap.npy")
+    
+    init_cell_variance = goal_cost(initial_heatmap)
+    init_regulation_variance = regularization_cost(exhibited_artwork_list)
+    init_WCSS = similarity_cost(exhibited_artwork_list)
 
-print("Initial Density per Cell Variance: " + str(init_cell_variance))
-print("Initial Artwork Distance Variance: " + str(init_regulation_variance))
-print("Initial WCSS: " + str(init_WCSS))
-
-with open('exhibited_artwork_list_2023.pkl', 'wb') as f:
-    pickle.dump(ordered_exhibited_artwork_list,f)
+    print("2022 Initial Density per Cell Variance: " + str(init_cell_variance))
+    print("2022 Initial Artwork Distance Variance: " + str(init_regulation_variance))
+    print("2022 Initial WCSS: " + str(init_WCSS))

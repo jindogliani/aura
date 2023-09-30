@@ -100,12 +100,14 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
                 exhibited_artwork['wall'] = 'w45'
             if(exhibited_artwork['id'] == 'PA-0070'):
                 exhibited_artwork['wall'] = 'w45'
+            if(exhibited_artwork['id'] == 'PA-0087'):
+                exhibited_artwork['wall'] = 'w41'
 
         for wall in wall_list:
             if "hanged_artwork" not in wall:
                 wall["hanged_artwork"] = []
             distance = cal_dist(wall["x1"], wall["z1"], wall["x2"], wall["z2"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"])
-            if (distance < 0.1) and (abs(exhibited_artwork["theta"] - wall["theta"])<5):
+            if (distance < 0.2) and (abs(exhibited_artwork["theta"] - wall["theta"])<5):
                 if math.dist((exhibited_artwork["pos_x"], exhibited_artwork["pos_z"]), ((wall["x1"] + wall["x2"])/2, (wall["z1"] + wall["z2"])/2)) < wall["length"]/2:
                     exhibited_artwork["_theta"] = wall["theta"]
                     exhibited_artwork["wall"] = wall["id"]
@@ -124,29 +126,39 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
         artwork_location_heatmap += artwork_heatmap
 
     for wall in wall_list:
+        wall["length"] = round(wall["length"], 3)
         wall["artwork"] = []
         if(ver == "2023"):
-            if(wall["id"] == "w1"):
+            wall["x1"], wall["z1"], wall["x2"], wall["z2"] = round(wall["x1"], 3), round(wall["z1"], 3), round(wall["x2"], 3), round(wall["z2"], 3)
+            no_display_walls = ["w1", "w21", "w36", "w38"]
+            if wall["id"] in no_display_walls:
                 wall["displayable"] = False
-            if(wall["id"] == "w21"):
-                wall["displayable"] = False
-            if(wall["id"] == "w36"):
-                wall["displayable"] = False
-            if(wall["id"] == "w38"):
-                wall["displayable"] = False
+            # if(wall["id"] == "w1"):
+            #     wall["displayable"] = False
+            # if(wall["id"] == "w21"):
+            #     wall["displayable"] = False
+            # if(wall["id"] == "w36"):
+            #     wall["displayable"] = False
+            # if(wall["id"] == "w38"):
+            #     wall["displayable"] = False
+            if(wall["id"] == "w41"):
+                wall["hanged_artwork"] = ["PA-0087"]
             if(wall["id"] == "w45"):
                 wall["hanged_artwork"] = ["PA-0070", "PA-0065"]
         if(ver == "2022"):
-            if(wall["id"] == "w10"):
+            no_display_walls = ["w10", "w11", "w12", "w13", "w21", "w22", "w35", "w36"]
+            if wall["id"] in no_display_walls:
                 wall["displayable"] = False
-            if(wall["id"] == "w11"):
-                wall["displayable"] = False
-            if(wall["id"] == "w12"):
-                wall["displayable"] = False
-            if(wall["id"] == "w13"):
-                wall["displayable"] = False
-            if(wall["id"] == "w21" or wall["id"] == "w22" or wall["id"] == "w35" or wall["id"] == "w36"):
-                wall["displayable"] = False
+            # if(wall["id"] == "w10"):
+            #     wall["displayable"] = False
+            # if(wall["id"] == "w11"):
+            #     wall["displayable"] = False
+            # if(wall["id"] == "w12"):
+            #     wall["displayable"] = False
+            # if(wall["id"] == "w13"):
+            #     wall["displayable"] = False
+            # if(wall["id"] == "w21" or wall["id"] == "w22" or wall["id"] == "w35" or wall["id"] == "w36"):
+            #     wall["displayable"] = False
         for order in exhibited_artwork_order:
             if order in wall["hanged_artwork"]:
                 if order not in wall["artwork"]:
@@ -188,7 +200,7 @@ if ver == "2023":
     with open('2023_wall_list.pkl', 'rb') as f:
         wall_list = pickle.load(f)
     
-    space_heatmap = np.load('SpaceData/coords_GMA3+(9-24-17-21).npy')
+    space_heatmap = np.load('SpaceData/2023_GMA+(9-27-14-50).npy')
     exhibition_data_path = "Data_2023.json"
 
     exhibited_artwork_order = ["PA-0023", "PA-0026", "KO-0009", "PA-0095", "PA-0098", "PA-0076", "PA-0074", "PA-0075", "PA-0077", "KO-0010", "KO-0008", "PA-0101", "PA-0057", "PA-0052", "PA-0061", "PA-0001", "PA-0003", "PA-0004", "PA-0082", "PA-0084", "PA-0083", "PA-0063", "PA-0067", "PA-0064", "PA-0024", "PA-0087", "PA-0027", "PA-0025", "PA-0036", "PA-0085", "PA-0086", "PA-0070", "PA-0065", "PA-0031", "PA-0088", "PA-0100", "PA-0099", "KO-0007", "KO-0006", "KO-0004", "KO-0005", "PA-0090", "PA-0089"]
@@ -212,7 +224,7 @@ elif ver == "2022":
     space_vertical_size, space_horizontal_size = 40, 40
     heatmap_cell_size = 0.1
     x_offset, z_offset = 25, 20
-    visualize_mode = True
+    visualize_mode = False
 
     space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, total_artwork_list, exhibition_data_path, exhibited_artwork_order, x_offset, z_offset, space_vertical_size, space_vertical_size, heatmap_cell_size)
 
