@@ -166,8 +166,6 @@ for wall in optimized_wall_list:
             artwork_visitor_heatmap = np.load('Daegu_new_preAURA_1025_1117+(8-13)/'+ hanged_artwork["id"] + '.npy')
             artwork_heatmap = heatmap_generator(hanged_artwork["width"], hanged_artwork["new_coords"][0], hanged_artwork["new_coords"][1], hanged_artwork["pos_x"], hanged_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, hanged_artwork["theta"], wall["theta"], artwork_visitor_heatmap) #TODO
             optimized_artwork_heatmap += artwork_heatmap
-            # if(hanged_artwork["id"] == "PA-0083"):
-            #     optimized_artwork_heatmap += artwork_heatmap
     # print(wall)
     
 optimized_artwork_heatmap += space_heatmap

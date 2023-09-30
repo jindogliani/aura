@@ -61,7 +61,7 @@ if ver == "2022":
     space_heatmap[space_heatmap == 127] = 0
 
     for a in exhibited_artwork_list:
-        artwork_visitor_heatmap = np.load('Data_2023_preAURA_2023+(9-24-17-25)/'+ a['id'] + '.npy') # cell size 10cm
+        artwork_visitor_heatmap = np.load('Data_2022_preAURA_2022+(9-27-19-59)/'+ a['id'] + '.npy') # cell size 10cm
         # artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ k + '.npy') # cell size 20cm
         heatmap_dict[a['id']] = artwork_visitor_heatmap
 
@@ -187,8 +187,8 @@ def similarity_cost(scene_data, artwork_data, wall_data):
 
             if art["artist"] == artist:
                 same_artist_coords_list.append(new_art_pos)
-        # if same_artist_coords_list == []:
-        #      same_artist_coords_list.append((0,0))
+        if same_artist_coords_list == []:
+             same_artist_coords_list.append((0,0))
         if len(same_artist_coords_list) <= 1:
             continue
         centroid_coords = centroid(same_artist_coords_list)
