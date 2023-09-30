@@ -187,8 +187,8 @@ def similarity_cost(scene_data, artwork_data, wall_data):
 
             if art["artist"] == artist:
                 same_artist_coords_list.append(new_art_pos)
-        # if same_artist_coords_list == []:
-        #      same_artist_coords_list.append((0,0))
+        if same_artist_coords_list == []:
+             same_artist_coords_list.append((0,0))
         if len(same_artist_coords_list) <= 1:
             continue
         centroid_coords = centroid(same_artist_coords_list)
