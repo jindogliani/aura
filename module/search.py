@@ -31,8 +31,8 @@ class MonteCarloTreeSearch:
                 best_reward = reward
                 best_state = max_state
                 best_art_num = len(best_state.scene.scene_data)
-                print("Update Best Reward: %f  Number: %d [Goal : %f, Regularization : %f, Similarity : %f, Num : %f]"%(best_reward, best_art_num, max_costs[0], max_costs[1], max_costs[2], max_costs[3]))
-            pbar.set_description("Depth : %d, Reward: %f, Art Num: %d [Goal : %f, Regularization : %f, Similarity : %f, Num : %f]"%(cur_depth, reward, art_num, max_costs[0], max_costs[1], max_costs[2], max_costs[3]))
+                print("Update Best Reward: %f  Number: %d [Goal : %f, Regularization : %f, Similarity : %f, Num : %d, Artists : %d]"%(best_reward, best_art_num, max_costs[0], max_costs[1], max_costs[2], max_costs[3], max_costs[4]))
+            pbar.set_description("Depth : %d, Reward: %f, Art Num: %d [Goal : %f, Regularization : %f, Similarity : %f, Num : %d, Artists : %d]"%(cur_depth, reward, art_num, max_costs[0], max_costs[1], max_costs[2], max_costs[3], max_costs[4]))
             if best_reward > 0.9:
                 return best_state
             v.backpropagate(reward)

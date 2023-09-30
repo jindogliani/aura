@@ -18,7 +18,7 @@ heatmap_cell_size = 0.1
 space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size
 space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
 
-ver = "2023"
+ver = "2022"
 heatmap_dict = {}
 
 if ver == "2023":
@@ -61,7 +61,7 @@ if ver == "2022":
     space_heatmap[space_heatmap == 127] = 0
 
     for a in exhibited_artwork_list:
-        artwork_visitor_heatmap = np.load('Data_2023_preAURA_2023+(9-24-17-25)/'+ a['id'] + '.npy') # cell size 10cm
+        artwork_visitor_heatmap = np.load('Data_2022_preAURA_2022+(9-27-19-59)/'+ a['id'] + '.npy') # cell size 10cm
         # artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ k + '.npy') # cell size 20cm
         heatmap_dict[a['id']] = artwork_visitor_heatmap
 

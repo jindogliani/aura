@@ -11,31 +11,31 @@ import math
 import time
 import json
 
-with open('_best_scene_100_10000_10cm+(9-26-8-6).pickle', 'rb') as f:
-    best_scene_data = pickle.load(f)
+# with open('_best_scene_100_10000_10cm+(9-26-8-6).pickle', 'rb') as f:
+#     best_scene_data = pickle.load(f)
 
-with open('_wall_list_2023.pkl', 'rb') as f:
-    wall_list = pickle.load(f)
+# with open('_wall_list_2023.pkl', 'rb') as f:
+#     wall_list = pickle.load(f)
 
-with open('_exhibited_artwork_list_2023.pkl', 'rb') as f:
-    exhibited_artwork_list = pickle.load(f)
+# with open('_exhibited_artwork_list_2023.pkl', 'rb') as f:
+#     exhibited_artwork_list = pickle.load(f)
 
-exhibition_data_path = "_Data_2023.json"
-with open(exhibition_data_path, 'r', -1, encoding='utf-8') as f:
-    exhibition_data = json.load(f)
+# exhibition_data_path = "_Data_2023.json"
+# with open(exhibition_data_path, 'r', -1, encoding='utf-8') as f:
+#     exhibition_data = json.load(f)
 
 # print (best_scene_data)
 
 # space_heatmap = np.load('SpaceData/coords_GMA3+(9-23).npy') #cell size 0.2
-space_heatmap = np.load('SpaceData/coords_GMA3+(9-24-17-21).npy') #cell size 0.1
-space_heatmap[space_heatmap > 254] = -6 
-space_heatmap[space_heatmap == 0] = -3 
-space_heatmap[space_heatmap == 127] = 0 
+# space_heatmap = np.load('SpaceData/coords_GMA3+(9-24-17-21).npy') #cell size 0.1
+# space_heatmap[space_heatmap > 254] = -6 
+# space_heatmap[space_heatmap == 0] = -3 
+# space_heatmap[space_heatmap == 127] = 0 
 
-space_vertical_size, space_horizontal_size = 40, 40
-heatmap_cell_size = 0.1
-space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size
-space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
+# space_vertical_size, space_horizontal_size = 40, 40
+# heatmap_cell_size = 0.1
+# space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size
+# space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
 
 def heatmap_generator(
     artwork_width, new_pos_x, new_pos_z, old_pos_x, old_pos_z, x_offset, z_offset, heatmap_cell_size, old_theta, new_theta, artwork_visitor_heatmap

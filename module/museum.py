@@ -28,13 +28,15 @@ class SceneActions(Enum):
     Add = 3
     Delete = 4
 
+ver = "2022"
+
 class DataLoader():
-    def __init__(self, artwork_data_path = "Daegu_new.json", exhibition_data_path = "_Data_2023.json", wall_list_path = '_wall_list_2023.pkl', save_path = '_exhibited_artwork_list_2023.pkl'):
-        with open(wall_list_path, 'rb') as f:
+    def __init__(self, wall_list_path = '_wall_list_with_artworks.pkl', save_path = '_exhibited_artwork_list.pkl'):
+        with open(ver + wall_list_path, 'rb') as f:
                 wall_list = pickle.load(f)
         self.wall_list = wall_list
-        if os.path.isfile(save_path):
-            with open(save_path, 'rb') as f:
+        if os.path.isfile(ver+save_path):
+            with open(ver + save_path, 'rb') as f:
                 self.exhibited_artwork_list = pickle.load(f)
         self._get_data()
 
@@ -73,9 +75,16 @@ class MuseumScene():
         self.artwork_data = dl.artwork_data
         self.wall_data = dl.wall_data
         self.art_in_wall = {}
+        self.artists = []
         for wall_id in self.wall_data.keys():
             self.art_in_wall[wall_id] = []
             self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in self.scene_data.items() if wall == wall_id], key=lambda x: self.scene_data[x][1])
+        
+        for art_id in self.scene_data.keys():
+            tar_artist = self.artwork_data[art_id]['artist']
+            if tar_artist not in self.artists:
+                self.artists.append(tar_artist)
+        self.origin_artist_num = len(self.artists)
 
     def update_scene(self, scene_data):
         for k, v in scene_data.items():
@@ -84,6 +93,11 @@ class MuseumScene():
         self.scene_data = scene_data
         for wall_id in self.wall_data.keys():
             self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in self.scene_data.items() if wall == wall_id], key=lambda x: self.scene_data[x][1])
+        self.artists = []
+        for art_id in self.scene_data.keys():
+            tar_artist = self.artwork_data[art_id]['artist']
+            if tar_artist not in self.artists:
+                self.artists.append(tar_artist)
 
     def get_legal_actions(self):
         possible_actions = {}
@@ -221,10 +235,11 @@ class MuseumScene():
     def evaluation(self):
         draw = {}
 
-        g_weight = 0.5
+        g_weight = 0.4
         r_weight = 0.1
-        s_weight = 0.2
+        s_weight = 0.1
         n_weight = 0.2
+        an_weight = 0.2
 
         g_cost = goal_cost(self.scene_data, self.artwork_data, self.wall_data)
         r_cost = regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
@@ -232,9 +247,10 @@ class MuseumScene():
         # r_cost = 0
         # s_cost = 0
         n_cost = 1 - len(self.scene_data) / self.origin_num
+        an_cost = 1 - len(self.artists) / self.origin_artist_num
 
-        total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost + n_weight * n_cost
-        costs = [g_cost, r_cost, s_cost, n_cost]
+        total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost + n_weight * n_cost + an_cost * an_weight
+        costs = [g_cost, r_cost, s_cost, n_cost, an_cost]
         # print(costs)
 
         return total_cost, costs
