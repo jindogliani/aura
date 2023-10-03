@@ -17,7 +17,8 @@ class SceneState(object):
     @property
     def get_reward(self):
         total_cost, costs = self.scene.evaluation()
-        reward = (1-total_cost) if (1-total_cost) > 0 else 0
+        # reward = (1-total_cost) if (1-total_cost) > 0 else 0
+        reward = total_cost
         # reward = self.scene.evaluation()
         return reward, costs
     

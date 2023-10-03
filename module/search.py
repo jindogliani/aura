@@ -22,7 +22,6 @@ class MonteCarloTreeSearch:
         pbar = tqdm(range(0, simulations_number))
         best_state = None
         best_reward = -np.inf
-        
         for idx in pbar:
             v = self.tree_policy()
             cur_depth = v.depth
@@ -35,13 +34,14 @@ class MonteCarloTreeSearch:
                 max_costs = v.self_costs
                 print("Update Best Reward: %f  Number: %d [Goal : %f, Regularization : %f, Similarity : %f, Num : %f, Artists : %f]"%(best_reward, best_art_num, max_costs[0], max_costs[1], max_costs[2], max_costs[3], max_costs[4]))
                 for tup in v.history:
-                    print(tup[0])
-            pbar.set_description("Depth : %d, Reward: %f, Art Num: %d [Goal : %f, Regularization : %f, Similarity : %f, Num : %f, Artists : %f]"%(cur_depth, reward, art_num, max_costs[0], max_costs[1], max_costs[2], max_costs[3], max_costs[4]))
+                    print(tup)
+                if len(v.history) > 20:
+                    return best_state
+            # print("Depth : %d, Reward: %f, Art Num: %d [Goal : %f, Regularization : %f, Similarity : %f, Num : %f, Artists : %f]"%(cur_depth, reward, art_num, max_costs[0], max_costs[1], max_costs[2], max_costs[3], max_costs[4]))
+            # pbar.set_description("Depth : %d, Reward: %f, Art Num: %d [Goal : %f, Regularization : %f, Similarity : %f, Num : %f, Artists : %f]"%(cur_depth, reward, art_num, max_costs[0], max_costs[1], max_costs[2], max_costs[3], max_costs[4]))
             if best_reward > 0.9:
                 return best_state
             v.backpropagate(reward)
-        # exploitation only
-        return best_state
 
     def tree_policy(self):
         current_node = self.root
@@ -54,7 +54,7 @@ class MonteCarloTreeSearch:
     
 if __name__ == "__main__":
     Tree = MonteCarloTreeSearch(MCTSNode(SceneState(MuseumScene())))
-    best_state = Tree.best_action(10000)
+    best_state = Tree.best_action(80000)
     best_scene = best_state.scene.scene_data
     #dictionary to pickle data
     with open('_best_scene_100_10000_10cm' + date +'.pickle', 'wb') as f:

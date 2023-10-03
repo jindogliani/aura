@@ -44,6 +44,11 @@ class DataLoader():
         scene = {}
         artwork_data = {}
         wall_data = {}
+        heatmap_data = {}
+        if ver == '2022':
+            heatmap_path = 'Data_2022_preAURA_2022+(9-27-19-59)/'
+        elif ver == '2023':
+            heatmap_path = 'Data_2023_preAURA_2023+(9-24-17-25)/'
         for wall in self.wall_list:
             if wall['displayable'] == True:
                 wall_data[wall['id']] = wall
@@ -59,12 +64,15 @@ class DataLoader():
             art_pos = np.linalg.norm(art_vec) * np.cos(theta)
             art_pos = int(art_pos) #wall x1, z1을 기준으로 artwork의 위치 정수값
 
-            scene[artwork['id']] = [artwork['wall'], art_pos, ]
+            scene[artwork['id']] = (artwork['wall'], art_pos)
             artwork_data[artwork['id']] = artwork
+            artwork_visitor_heatmap = np.load(heatmap_path + artwork['id'] + '.npy') # cell size 10cm
+            heatmap_data[artwork['id']] = np.sum(artwork_visitor_heatmap)
 
         self.scene_data = scene
         self.artwork_data = artwork_data
         self.wall_data = wall_data
+        self.heatmap_data = dict(sorted(heatmap_data.items(), key=lambda x: x[1], reverse=False))
 
 class MuseumScene():
     def __init__(self):
@@ -74,6 +82,8 @@ class MuseumScene():
         self.origin_num = len(self.scene_data)
         self.artwork_data = dl.artwork_data
         self.wall_data = dl.wall_data
+        self.heatmap_data = dl.heatmap_data
+        self.worst_five_art = list(self.heatmap_data.keys())[:5]
         self.art_in_wall = {}
         self.artists = []
         for wall_id in self.wall_data.keys():
@@ -88,17 +98,29 @@ class MuseumScene():
         # print("Initial art and artisit number is %d and %d"%(self.origin_num, self.origin_artist_num))
 
     def update_scene(self, scene_data):
-        for k, v in scene_data.items():
-            if type(v[1]) == float or v[1] < 0 or v[1] > int(self.wall_data[v[0]]['length']*10):
-                raise "fuck yourself"
-        self.scene_data = scene_data
-        for wall_id in self.wall_data.keys():
-            self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in self.scene_data.items() if wall == wall_id], key=lambda x: self.scene_data[x][1])
         self.artists = []
-        for art_id in self.scene_data.keys():
-            tar_artist = self.artwork_data[art_id]['artist']
+        for art, (wall, pos) in scene_data.items():
+            if type(pos) == float or pos < 0 or pos > int(self.wall_data[wall]['length']*10):
+                raise "fuck yourself"
+            tar_artist = self.artwork_data[art]['artist']
             if tar_artist not in self.artists:
                 self.artists.append(tar_artist)
+
+        organized_scene_data = copy.deepcopy(scene_data)
+        for wall_id in self.wall_data.keys():
+            self.art_in_wall[wall_id] = []
+            self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in scene_data.items() if wall == wall_id], key=lambda x: scene_data[x][1])
+            
+            if len(self.art_in_wall[wall_id]) > 1:
+                art_list = sorted(self.art_in_wall[wall_id], key=lambda x: scene_data[x][1])
+                self.art_in_wall[wall_id] = art_list
+
+            elif len(self.art_in_wall[wall_id]) == 1:
+                art_id = self.art_in_wall[wall_id][0]
+                wall_middle = int(self.wall_data[wall_id]['length']*10 / 2)
+                organized_scene_data[art_id] = (wall_id, wall_middle)
+
+        self.scene_data = organized_scene_data
 
     def get_legal_actions(self):
         possible_actions = {}
@@ -122,12 +144,12 @@ class MuseumScene():
                 for idx, art_in_wall_id in enumerate(self.art_in_wall[wall_id]):
                     try:
                         _art_len = int(self.artwork_data[self.art_in_wall[wall_id][idx+1]]['width']*10/2) if int(self.artwork_data[self.art_in_wall[wall_id][idx+1]]['width']*10) % 2 == 0 else int(self.artwork_data[self.art_in_wall[wall_id][idx+1]]['width']*10/2) + 1
-                        next_start = self.scene_data[self.art_in_wall[wall_id][idx+1]][1] - _art_len- 3
+                        next_start = int(self.scene_data[self.art_in_wall[wall_id][idx+1]][1]) - _art_len- 3
                     except:
                         next_start = wall_len
                     
                     art_len = int(self.artwork_data[art_in_wall_id]['width']*10)
-                    pos = self.scene_data[art_in_wall_id][1]
+                    pos = int(self.scene_data[art_in_wall_id][1])
                     if art_len % 2 != 0:
                         art_len -= 1
                     start = pos - int(art_len/2) - 3
@@ -155,7 +177,8 @@ class MuseumScene():
             if art_id in self.scene_data.keys():
                 wall_id = self.scene_data[art_id][0]
                 wall_len = int(self.wall_data[wall_id]['length']*10) - 3
-                Delete.append((SceneActions.Delete, art_id, None, None))
+                if art_id in self.worst_five_art:
+                    Delete.append((SceneActions.Delete, art_id, None, None))
                 pos = self.scene_data[art_id][1]
                 if wall_len - sum([self.artwork_data[art]['width']*10 for art in self.art_in_wall[wall_id]]) > 3:
                     if len(self.art_in_wall[wall_id]) == 1:
@@ -197,6 +220,7 @@ class MuseumScene():
     
     def do_action(self, action, art, wall, value):
         new_scene = copy.deepcopy(self.scene_data)
+        new_art_in_wall = copy.deepcopy(self.art_in_wall)
         if action == SceneActions.Flip:
             assert art == None
             for _art in self.art_in_wall[wall]:
@@ -212,7 +236,31 @@ class MuseumScene():
             return new_scene
         
         if action == SceneActions.Swap:
+            (past_wall, _) = self.scene_data[art]
             new_scene[art] = (wall, value)
+            new_art_in_wall[wall].append(art)
+            new_art_in_wall[past_wall].remove(art)
+            for wall_id in [past_wall, wall]:
+                if len(new_art_in_wall[wall_id]) > 1:
+                    art_list = sorted(new_art_in_wall[wall_id], key=lambda x: new_scene[x][1])
+                    new_art_in_wall[wall_id] = art_list
+                    temp_len = 0
+                    temp_ratio = 0
+                    for i, art_in_wall in enumerate(art_list):
+                        temp_len += self.artwork_data[art_in_wall]['width']
+                    for art_in_wall in art_list:
+                        coord_ratio = (round(temp_ratio, 3) + round(temp_ratio+self.artwork_data[art_in_wall]['width']/temp_len, 3)) / 2
+                        new_pos = int(self.wall_data[wall_id]['length']*10 * coord_ratio)
+                        new_scene[art_in_wall] = (wall_id, new_pos)
+                        if new_pos == 0:
+                            raise None
+                        temp_ratio += self.artwork_data[art_in_wall]['width']/temp_len
+
+                elif len(new_art_in_wall[wall_id]) == 1:
+                    art_id = new_art_in_wall[wall_id][0]
+                    wall_middle = int(self.wall_data[wall_id]['length']*10 / 2)
+                    new_scene[art_id] = (wall_id, wall_middle)
+                    
             return new_scene
         
         if action == SceneActions.Forward:
@@ -236,21 +284,25 @@ class MuseumScene():
     def evaluation(self):
         draw = {}
 
-        g_weight = 0.6
-        r_weight = 0.2
-        s_weight = 0.2
-        n_weight = 0.2
-        an_weight = 0.2
+        g_weight = 0.4
+        r_weight = 0.1
+        s_weight = 0.3
+        n_weight = 0.1
+        an_weight = 0.1
 
-        g_cost = goal_cost(self.scene_data, self.artwork_data, self.wall_data)
-        r_cost = regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
-        s_cost = similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
+        g_cost = (1-goal_cost(self.scene_data, self.artwork_data, self.wall_data))
+        r_cost = 1-regularization_cost(self.scene_data, self.artwork_data, self.wall_data)
+        s_cost = 1-similarity_cost(self.scene_data, self.artwork_data, self.wall_data)
         # r_cost = 0
         # s_cost = 0
-        n_cost = 0
-        an_cost = 0
-        # n_cost = 1 - len(self.scene_data) / self.origin_num
-        # an_cost = 1 - len(self.artists) / self.origin_artist_num
+        # n_cost = 0
+        # an_cost = 0
+        n_cost = len(self.scene_data) / self.origin_num
+        an_cost = len(self.artists) / self.origin_artist_num
+
+        if g_cost < 0: g_cost = 0
+        if r_cost < 0: r_cost = 0
+        if s_cost < 0: s_cost = 0
 
         total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost + n_weight * n_cost + an_cost * an_weight
         costs = [g_cost, r_cost, s_cost, n_cost, an_cost]
@@ -309,21 +361,23 @@ if __name__ == "__main__":
     
     # total_cost = scene.evaluation()
     # print(total_cost)
-    idx = 100
-    scene.visualize(idx)
+    # idx = 100
+    # scene.visualize(idx)
 
     # print("=====================================")
     # for moves in legal_moves:
     #     print(moves)
-
-    # for _ in range(1000):
-    #     legal_moves_dict = scene.get_legal_actions() #dict
-    #     legal_moves = []
-    #     for v in legal_moves_dict.values():
-    #         legal_moves += v
-    #     print(legal_moves)
-    #     action_tup = choice(legal_moves)
-    #     for idx, action_tup in enumerate(legal_moves):
-    #         new_scene = scene.do_action(*action_tup)
-    #     scene.update_scene(new_scene)
+    sum_num = 0
+    for idx in range(1000):
+        legal_moves_dict = scene.get_legal_actions() #dict
+        legal_moves = []
+        for v in legal_moves_dict.values():
+            legal_moves += v
+        sum_num += len(legal_moves)
+        print(sum_num / (idx+1))
+        action_tup = choice(legal_moves)
+        # for idx, action_tup in enumerate(legal_moves):
+        #     new_scene = scene.do_action(*action_tup)
+        new_scene = scene.do_action(*action_tup)
+        scene.update_scene(new_scene)
         # scene.visualize(new_scene, idx)

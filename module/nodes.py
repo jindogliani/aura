@@ -27,8 +27,9 @@ class MCTSNode(object):
             legal_moves_dict = self.state.get_legal_actions()
             self._all_actions = []
             for k, v in legal_moves_dict.items():
-                if k == 'Forward' or k == 'Flip' or k == 'Swap':
-                    self._all_actions += v
+                self._all_actions += v
+                # if k == 'Forward' or k == 'Flip' or k == 'Swap':
+                #     self._all_actions += v
         return self._all_actions
     
     @property
@@ -71,7 +72,8 @@ class MCTSNode(object):
         max_state = None
         max_costs = [0, 0, 0]
         action_path = []
-        for idx in range(10):
+        best_action_path = []
+        for idx in range(5):
             possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)
             next_rollout_state = current_rollout_state.move(action)
@@ -95,10 +97,9 @@ class MCTSNode(object):
 
     def rollout_policy(self, possible_moves):
         action_list = ['Forward', 'Flip', 'Swap', 'Add', 'Delete']
-        action_weight = [0.1, 0.4, 0.5, 0.0, 0.0]
-        selected_action = random.choices(action_list, weights=action_weight, k=1)[0]
+        selected_action = random.choices(action_list)[0]
         while len(possible_moves[selected_action]) == 0:
-            selected_action = random.choices(action_list, weights=action_weight, k=1)[0]
+            selected_action = random.choices(action_list)[0]
         selected_moves = possible_moves[selected_action]
         return selected_moves[np.random.randint(len(selected_moves))]
     
