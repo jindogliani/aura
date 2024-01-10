@@ -28,7 +28,7 @@ class SceneActions(Enum):
     Add = 3
     Delete = 4
 
-ver = "2022"
+ver = "2023"
 
 class DataLoader():
     def __init__(self, wall_list_path = '_wall_list_with_artworks.pkl', save_path = '_exhibited_artwork_list.pkl'):
@@ -286,9 +286,9 @@ class MuseumScene():
 
         g_weight = 0.4
         r_weight = 0.1
-        s_weight = 0.3
-        n_weight = 0.1
-        an_weight = 0.1
+        s_weight = 0.4
+        n_weight = 0.05
+        an_weight = 0.05
 
         g_cost = (1-goal_cost(self.scene_data, self.artwork_data, self.wall_data))
         r_cost = 1-regularization_cost(self.scene_data, self.artwork_data, self.wall_data)

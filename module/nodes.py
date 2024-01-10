@@ -73,7 +73,8 @@ class MCTSNode(object):
         max_costs = [0, 0, 0]
         action_path = []
         best_action_path = []
-        for idx in range(5):
+        rollout_depth = 10
+        for idx in range(rollout_depth):
             possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)
             next_rollout_state = current_rollout_state.move(action)
@@ -104,9 +105,10 @@ class MCTSNode(object):
         return selected_moves[np.random.randint(len(selected_moves))]
     
     def backpropagate(self, max_reward):
-        self.potential_score = max_reward
+        gamma = 0.8
+        self.potential_score += max_reward
         if self.parent:
-            self.parent.backpropagate(max_reward)
+            self.parent.backpropagate(gamma * max_reward)
 
     def is_fully_expanded(self):
         return len(self.all_actions) == 0
