@@ -1,19 +1,36 @@
-# aura developer's notes
+# AURA developer's notes
 
-# 2023/08/05 홍진석
+# Daegu_new == 2022, 2023년에 전시 했던 작품들 정보를 포함하고 있는 작품 목록 데이터 (작품 가로폭 사용)
 
-# 1_space_to_matrix.py 는 2022년 하정웅미술관 공간 좌표를 계산함
-# 1_space_to_matrix_2023.py 이 2023년도 광주시립미술관 전체 공간 좌표를 계산함
-# 1.1_space_to_matrix_NotInUse.py => 이전에 공간 캡처 이미지를 통해서 공간 매트릭스를 생성하던 방법임. 현재는 정확성이 떨어져서 사용하지 않음.
+# Data_2022 == 2022년 하정웅미술관 갤러리3,4,5에서 전시했던 전시 데이터 (작품목록, 위치 사용)
+# Data_2023 == 2023년 광주시립미술관 갤러리6에서 전시했던 전시 데이터 (작품목록, 위치 사용)
 
-# 2023/08/07 홍진석
+# 1.py로 생성
+# 2022_wall_list == 하정웅미술관 갤러리3,4,5 벽들의 공간 정보가 들어 있는 딕셔너리 리스트
+# 2023_wall_list == 광주시립미술관 갤러리6 벽들의 공간 정보가 들어 있는 딕셔너리 리스트
+# SpaceData/2022_HJW+(9-30-16-10).npy == 하정웅미술관 npy, 벽 안쪽 전시 공간 값 127, 벽 부분은 255
+# SpaceData/2023_GMA+(9-27-14-50).npy == 광주시립미술관 npy, 벽 안쪽 전시 공간 값 127, 벽 부분은 255
 
-# 2_csv_to_heatmap.py => 작품 데이터: Daegu_new.json, 관람객 데이터: preAURA_1025_1030. 관람객 데이터 y_coords 나중에 음수값으로 반전 시켜야 함. 오프셋 값도 재지정 필요.
-# 2.1_csv_to_heatmap_NotInUse.py => 음수값으로 반전된 형태. 사용할 때는 NotInUse 폴더에서 꺼내야 함.
+# 2.py로 생성
+# Data_2022_preAURA_2022+(9-27-19-59) == 2022년 전시 데이터 + 관람객 데이터 + 생성 날짜 (작품별 관람객 npy, 전체히트맵 csv 저장)
+# Data_2023_preAURA_2023+(9-24-17-25) == 2023년 전시 데이터 + 관람객 데이터 + 생성 날짜 (작품별 관람객 npy, 전체히트맵 csv 저장)
 
-# 2023/08/15 홍진석 TODOs
-# 3_artwork_area_generator.py 그림 표시된 것 회전 필요. 선형대수학 회전벡터 활용
-# 4.py 배치 부분 함수 작업 필요
+# 3.py로 생성
+# 2022_wall_list_with_artworks.pkl == 걸린 작품이 순서대로 정렬된 벽 딕셔너리 리스트
+# 2023_wall_list_with_artworks.pkl == 걸린 작품이 순서대로 정렬된 벽 딕셔너리 리스트
+# 2022_exhibited_artwork_list.pkl == 한붓그리기 형태로 정렬된 순서의 작품 딕셔너리 리스트
+# 2023_exhibited_artwork_list.pkl == 한붓그리기 형태로 정렬된 순서의 작품 딕셔너리 리스트
 
-# 태욱이형한테 물어봐야 할 부분
-# 4.py에 iteration 
+# 4.py 는 딕셔너리 리스트 체크
+
+# 5.py
+# 각 2022, 2023 버전 별 initial Cost Function 및 initial score 각각 계산
+# goal_cost() => cell들의 분산값 계산.
+# init_cell_variance => initial cell 분산값
+# regularization_cost() => Scene Rationality를 목적으로 한붓그리기 형태로 작품들 각각의 포지션 및 거리 계산 후, 거리에 대한 분산 측정
+# init_distance_variance => 초기 작품 거리들의 분산값
+# similarity_cost() => 같은 작가의 클러스터를 생성하고 클러스터 안에 centroid 값을 구하고 작품 포지션과의 거리 계산 후 작가별 거리 분산값을 계산 
+# init_WCSS => 작가별 거리 분산값들의 합. WCSS (Within-Cluster Sum of Squares), 클러스터들의 거리분산의 합.
+
+# 6.py
+# 

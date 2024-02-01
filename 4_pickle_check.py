@@ -27,6 +27,7 @@ print()
 print()
 print()
 
+'''
 with open('2022_wall_list_with_artworks.pkl', 'rb') as f:
     wall_list_22 = pickle.load(f)
 
@@ -42,4 +43,6 @@ for artwork in exhibited_artwork_list_22:
     print(artwork)
 
 print(len(exhibited_artwork_list_22))
+'''
+
 print(len(exhibited_artwork_list_23))

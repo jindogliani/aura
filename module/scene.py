@@ -5,7 +5,7 @@ import numpy as np
 from museum import *
     
 class SceneState(object):
-    def __init__(self, state: MuseumScene):
+    def __init__(self, state: MuseumScene): # MuseumScene 에서 def 갖고 옴.
         self.scene = state
         self.terminal = False
         self.threshold = 0.1
@@ -15,21 +15,20 @@ class SceneState(object):
         return legal_actions
     
     @property
-    def get_reward(self):
+    def get_reward(self): #TODO #나중에 괄호를 사용할 필요가 없는 상태에서 reward랑 costs를 뽑는다.
         total_cost, costs = self.scene.evaluation()
         # reward = (1-total_cost) if (1-total_cost) > 0 else 0
         reward = total_cost
         # reward = self.scene.evaluation()
         return reward, costs
     
-    def move(self, action_tup):
+    def move(self, action_tup): 
         #action (Action, art_id, wall_id)
-        new_scene = self.scene.do_action(*action_tup)
+        new_scene = self.scene.do_action(*action_tup) 
         # self.scene.update_scene(new_scene)
         new_state = MuseumScene()
         new_state.update_scene(new_scene)
         return SceneState(new_state)
     
-
     def is_terminal(self):
         return self.terminal

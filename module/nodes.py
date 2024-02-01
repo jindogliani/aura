@@ -14,14 +14,14 @@ class MCTSNode(object):
         self.state = state
         self.parent = parent 
         self.children = []
-        self.is_leap = True
+        self.is_leaf = True
         self.self_score = 0.
         self.self_costs = []
         self.potential_score = 0.
         self.depth = 0
         self.history = []
 
-    @property
+    @property 
     def all_actions(self):
         if not hasattr(self, '_all_actions'):
             legal_moves_dict = self.state.get_legal_actions()
@@ -40,7 +40,7 @@ class MCTSNode(object):
         action = self.all_actions.pop()
         next_state = self.state.move(action)
         child_node = MCTSNode(next_state, parent=self)
-        self.is_leap = False
+        self.is_leaf = False
         child_node.self_score, child_node.self_costs = child_node.state.get_reward
         child_node.depth = self.depth + 1
         child_node.history = self.history + [action]
@@ -61,7 +61,7 @@ class MCTSNode(object):
         return self.children[np.argmax(choices_weights)]
     
     def is_leaf_node(self):
-        return self.is_leap
+        return self.is_leaf
     
     def is_terminate(self):
         return False

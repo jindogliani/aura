@@ -13,8 +13,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-currentPath = os.getcwd()
-date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_hour) + ')'
+date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_min) + ')'
 
 def cal_dist(x1, y1, x2, y2, a, b):
     area = abs((x1-a) * (y2-b) - (y1-b) * (x2 - a))
@@ -66,12 +65,12 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
     space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
 
     if(visualize_mode == False):
-        space_heatmap[space_heatmap > 254] = -1000 #공간 벽을 -10으로 변환
-        space_heatmap[space_heatmap == 0] = -1000 #공간 외부 값을 0에서 -15으로 전환
+        space_heatmap[space_heatmap > 254] = -1000 #공간 벽을 -1000으로 변환
+        space_heatmap[space_heatmap == 0] = -1000 #공간 외부 값을 0에서 -1000으로 전환
         space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
     else:
-        space_heatmap[space_heatmap > 254] = -6 #공간 벽을 -10으로 변환
-        space_heatmap[space_heatmap == 0] = -3 #공간 외부 값을 0에서 -15으로 전환
+        space_heatmap[space_heatmap > 254] = -6 #공간 벽을 -6으로 변환
+        space_heatmap[space_heatmap == 0] = -3 #공간 외부 값을 0에서 -3으로 전환
         space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
 
     exhibited_artwork_list =[]
@@ -133,14 +132,6 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
             no_display_walls = ["w1", "w21", "w36", "w38"]
             if wall["id"] in no_display_walls:
                 wall["displayable"] = False
-            # if(wall["id"] == "w1"):
-            #     wall["displayable"] = False
-            # if(wall["id"] == "w21"):
-            #     wall["displayable"] = False
-            # if(wall["id"] == "w36"):
-            #     wall["displayable"] = False
-            # if(wall["id"] == "w38"):
-            #     wall["displayable"] = False
             if(wall["id"] == "w41"):
                 wall["hanged_artwork"] = ["PA-0087"]
             if(wall["id"] == "w45"):
@@ -149,16 +140,6 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
             no_display_walls = ["w10", "w11", "w12", "w13", "w21", "w22", "w35", "w36"]
             if wall["id"] in no_display_walls:
                 wall["displayable"] = False
-            # if(wall["id"] == "w10"):
-            #     wall["displayable"] = False
-            # if(wall["id"] == "w11"):
-            #     wall["displayable"] = False
-            # if(wall["id"] == "w12"):
-            #     wall["displayable"] = False
-            # if(wall["id"] == "w13"):
-            #     wall["displayable"] = False
-            # if(wall["id"] == "w21" or wall["id"] == "w22" or wall["id"] == "w35" or wall["id"] == "w36"):
-            #     wall["displayable"] = False
         for order in exhibited_artwork_order:
             if order in wall["hanged_artwork"]:
                 if order not in wall["artwork"]:
@@ -176,25 +157,36 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
         print(a)
 
     heatmap = space_heatmap + artwork_location_heatmap
-    np.save(ver + "_initial_heatmap", heatmap)
+
+
+    _ver = ""
+    if (visualize_mode):
+        _ver = ver + date + '_vis'
+    else:
+        _ver = ver + date
+
+    np.save(_ver + "_initial_heatmap", heatmap)
     heatmapCSV = pd.DataFrame(heatmap)
     sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
     plt.show()
 
-    with open(ver + '_exhibited_artwork_list.pkl', 'wb') as f:
+    with open(_ver + '_exhibited_artwork_list.pkl', 'wb') as f:
         pickle.dump(ordered_exhibited_artwork_list,f)
 
-    with open(ver + '_wall_list_with_artworks.pkl', 'wb') as f:
+    with open(_ver + '_wall_list_with_artworks.pkl', 'wb') as f:
         pickle.dump(wall_list,f)
 
 
 ver = "2022"
-cwd = os.getcwd()
+space_vertical_size, space_horizontal_size = 40, 40
+heatmap_cell_size = 0.1
+visualize_mode = False
 
 artwork_data_path = "Daegu_new.json"
 with open(artwork_data_path, "r", encoding='UTF8') as f:
     artwork_data = json.load(f)
 total_artwork_list = [{"id": artwork["id"], "size": artwork["dimensions"], "artist": artwork["artists"][0]} for artwork in artwork_data["exhibitionObjects"]]
+
 
 if ver == "2023":
     with open('2023_wall_list.pkl', 'rb') as f:
@@ -205,10 +197,7 @@ if ver == "2023":
 
     exhibited_artwork_order = ["PA-0023", "PA-0026", "KO-0009", "PA-0095", "PA-0098", "PA-0076", "PA-0074", "PA-0075", "PA-0077", "KO-0010", "KO-0008", "PA-0101", "PA-0057", "PA-0052", "PA-0061", "PA-0001", "PA-0003", "PA-0004", "PA-0082", "PA-0084", "PA-0083", "PA-0063", "PA-0067", "PA-0064", "PA-0024", "PA-0087", "PA-0027", "PA-0025", "PA-0036", "PA-0085", "PA-0086", "PA-0070", "PA-0065", "PA-0031", "PA-0088", "PA-0100", "PA-0099", "KO-0007", "KO-0006", "KO-0004", "KO-0005", "PA-0090", "PA-0089"]
     
-    space_vertical_size, space_horizontal_size = 40, 40
-    heatmap_cell_size = 0.1
     x_offset, z_offset = 7, 12 
-    visualize_mode = False
 
     space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, total_artwork_list, exhibition_data_path, exhibited_artwork_order, x_offset, z_offset, space_vertical_size, space_vertical_size, heatmap_cell_size)
 
@@ -221,10 +210,7 @@ elif ver == "2022":
 
     exhibited_artwork_order = ["PA-0064", "PA-0067", "PA-0027", "PA-0025", "PA-0087", "PA-0070", "PA-0086", "PA-0024", "PA-0085", "PA-0063", "PA-0083", "PA-0072", "PA-0081", "PA-0075", "PA-0074", "PA-0052", "PA-0061", "PA-0098", "PA-0095", "PA-0093", "PA-0092", "PA-0026", "KO-0004", "KO-0001", "PA-0084", "PA-0088", "PA-0090", "PA-0089", "PA-0019", "PA-0017", "PA-0020", "PA-0056", "PA-0060", "PA-0013", "PA-0039"]
 
-    space_vertical_size, space_horizontal_size = 40, 40
-    heatmap_cell_size = 0.1
     x_offset, z_offset = 25, 20
-    visualize_mode = False
 
     space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, total_artwork_list, exhibition_data_path, exhibited_artwork_order, x_offset, z_offset, space_vertical_size, space_vertical_size, heatmap_cell_size)
 

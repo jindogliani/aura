@@ -17,7 +17,7 @@ print(date)
 class MonteCarloTreeSearch:
     def __init__(self, node: MCTSNode):
         self.root = node
-        self.root.is_leap = False
+        self.root.is_leaf = False
 
     def best_action(self, simulations_number):
         # pbar = tqdm(range(0, simulations_number))
