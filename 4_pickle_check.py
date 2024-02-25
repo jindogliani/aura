@@ -16,6 +16,8 @@ for wall in wall_list_23:
     print(wall)
 
 print()
+print()
+print()
 
 with open('2023_exhibited_artwork_list.pkl', 'rb') as f:
     exhibited_artwork_list_23 = pickle.load(f)

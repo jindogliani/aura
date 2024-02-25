@@ -32,5 +32,17 @@
 # similarity_cost() => 같은 작가의 클러스터를 생성하고 클러스터 안에 centroid 값을 구하고 작품 포지션과의 거리 계산 후 작가별 거리 분산값을 계산 
 # init_WCSS => 작가별 거리 분산값들의 합. WCSS (Within-Cluster Sum of Squares), 클러스터들의 거리분산의 합.
 
-# 6.py
+# museum.py
+# 계산된 score를 cost.py에서 받아옴
+
+# 마지막에 visualization.py에서
+
+# scene.py
 # 
+
+# nodes.py
+# scene.py에서 sceneState 클래스를 갖고 옴
+
+# cost.py
+# goal_cost(), regularization_cost(), similarity_cost() 를 통해서 해당 씬의 score 값 계산
+# 해당 씬의 score 값을 계산해서 museum.py로 보내줌

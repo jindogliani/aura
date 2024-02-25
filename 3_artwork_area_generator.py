@@ -165,22 +165,22 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
     else:
         _ver = ver + date
 
-    np.save(_ver + "_initial_heatmap", heatmap)
+    # np.save(_ver + "_initial_heatmap", heatmap)
     heatmapCSV = pd.DataFrame(heatmap)
     sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
     plt.show()
 
-    with open(_ver + '_exhibited_artwork_list.pkl', 'wb') as f:
-        pickle.dump(ordered_exhibited_artwork_list,f)
+    # with open(_ver + '_exhibited_artwork_list.pkl', 'wb') as f:
+    #     pickle.dump(ordered_exhibited_artwork_list,f)
 
-    with open(_ver + '_wall_list_with_artworks.pkl', 'wb') as f:
-        pickle.dump(wall_list,f)
+    # with open(_ver + '_wall_list_with_artworks.pkl', 'wb') as f:
+    #     pickle.dump(wall_list,f)
 
 
 ver = "2022"
 space_vertical_size, space_horizontal_size = 40, 40
 heatmap_cell_size = 0.1
-visualize_mode = False
+visualize_mode = True
 
 artwork_data_path = "Daegu_new.json"
 with open(artwork_data_path, "r", encoding='UTF8') as f:

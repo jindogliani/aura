@@ -29,6 +29,7 @@ class SceneActions(Enum):
     Delete = 4
 
 ver = "2023"
+heatmap_cell_size_cm = 10 #10cm로 셀 사이즈 지정
 
 class DataLoader():
     def __init__(self, wall_list_path = '_wall_list_with_artworks.pkl', save_path = '_exhibited_artwork_list.pkl'):
@@ -38,9 +39,9 @@ class DataLoader():
         if os.path.isfile(ver+save_path):
             with open(ver + save_path, 'rb') as f:
                 self.exhibited_artwork_list = pickle.load(f)
-        self._get_data()
+        self._get_data() # scene data 구조체 생성
 
-    def _get_data(self):
+    def _get_data(self): # __init__ 에서 데이터 소환
         scene = {}
         artwork_data = {}
         wall_data = {}
@@ -49,22 +50,24 @@ class DataLoader():
             heatmap_path = 'Data_2022_preAURA_2022+(9-27-19-59)/'
         elif ver == '2023':
             heatmap_path = 'Data_2023_preAURA_2023+(9-24-17-25)/'
+        
         for wall in self.wall_list:
             if wall['displayable'] == True:
-                wall_data[wall['id']] = wall
+                wall_data[wall['id']] = wall  #탐색 가능한 벽만 남겨둠.
 
         for artwork in self.exhibited_artwork_list:
             wall = wall_data[artwork['wall']]
-            art_p = [artwork['pos_x']*10, artwork['pos_z']*10]
-            wall_0 = [wall['x1']*10, wall['z1']*10]
-            wall_1 = [wall['x2']*10, wall['z2']*10]
+            art_p = [artwork['pos_x']*heatmap_cell_size_cm, artwork['pos_z']*heatmap_cell_size_cm]
+            wall_0 = [wall['x1']*heatmap_cell_size_cm, wall['z1']*heatmap_cell_size_cm]
+            wall_1 = [wall['x2']*heatmap_cell_size_cm, wall['z2']*heatmap_cell_size_cm]
             wall_vec = np.array([wall_1[0] - wall_0[0], wall_1[1] - wall_0[1]])
             art_vec = np.array([art_p[0] - wall_0[0], art_p[1] - wall_0[1]])
             theta = np.arccos(np.dot(wall_vec, art_vec) / (np.linalg.norm(wall_vec) * np.linalg.norm(art_vec)))
             art_pos = np.linalg.norm(art_vec) * np.cos(theta)
-            art_pos = int(art_pos) #wall x1, z1을 기준으로 artwork의 위치 정수값
+            art_pos = int(art_pos) #wall x1, z1�쓣 湲곗���쑝濡� artwork�쓽 �쐞移� �젙�닔媛�
+            # 벽 안에서의 작품 위치를 int형으로... 난... 아직도 싫어...
 
-            scene[artwork['id']] = (artwork['wall'], art_pos)
+            scene[artwork['id']] = (artwork['wall'], art_pos) #key: 작품 id, value: (벽 id, 벽 안에서의 작품 위치 int형)
             artwork_data[artwork['id']] = artwork
             artwork_visitor_heatmap = np.load(heatmap_path + artwork['id'] + '.npy') # cell size 10cm
             heatmap_data[artwork['id']] = np.sum(artwork_visitor_heatmap)
@@ -87,7 +90,7 @@ class MuseumScene():
         self.art_in_wall = {}
         self.artists = []
         for wall_id in self.wall_data.keys():
-            self.art_in_wall[wall_id] = []
+            self.art_in_wall[wall_id] = [] #wall 당 작품이 뭐뭐 들었나 확인
             self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in self.scene_data.items() if wall == wall_id], key=lambda x: self.scene_data[x][1])
         
         for art_id in self.scene_data.keys():
@@ -100,7 +103,7 @@ class MuseumScene():
     def update_scene(self, scene_data):
         self.artists = []
         for art, (wall, pos) in scene_data.items():
-            if type(pos) == float or pos < 0 or pos > int(self.wall_data[wall]['length']*10):
+            if type(pos) == float or pos < 0 or pos > int(self.wall_data[wall]['length']*heatmap_cell_size_cm):
                 raise "fuck yourself"
             tar_artist = self.artwork_data[art]['artist']
             if tar_artist not in self.artists:
@@ -117,8 +120,8 @@ class MuseumScene():
 
             elif len(self.art_in_wall[wall_id]) == 1:
                 art_id = self.art_in_wall[wall_id][0]
-                wall_middle = int(self.wall_data[wall_id]['length']*10 / 2)
-                organized_scene_data[art_id] = (wall_id, wall_middle)
+                wall_middle = int(self.wall_data[wall_id]['length']*heatmap_cell_size_cm / 2)
+                organized_scene_data[art_id] = (wall_id, wall_middle) #
 
         self.scene_data = organized_scene_data
 
@@ -311,8 +314,9 @@ class MuseumScene():
         return total_cost, costs
 
     def visualize(self, num):
-        visualization(best_scene_data, self.artwork_data, self.wall_data, num)
-        convert_scene_json(best_scene_data, self.artwork_data, self.wall_data, num)
+        visualization(self.scene_data, self.artwork_data, self.wall_data, num)
+        # visualization(best_scene_data, self.artwork_data, self.wall_data, num)
+        # convert_scene_json(best_scene_data, self.artwork_data, self.wall_data, num)
         print(wall_list)
              
     # def print_scene(self):
@@ -357,6 +361,16 @@ class MuseumScene():
 
 if __name__ == "__main__":
     scene = MuseumScene()
+    
+    print(len(scene.scene_data))
+    print(scene.scene_data)
+
+    for k, v in scene.scene_data.items():
+        print(k, v)
+    
+    idx = 828
+    scene.visualize(idx)
+
     #scene.print_scene()
     
     # total_cost = scene.evaluation()
@@ -367,17 +381,18 @@ if __name__ == "__main__":
     # print("=====================================")
     # for moves in legal_moves:
     #     print(moves)
-    sum_num = 0
-    for idx in range(1000):
-        legal_moves_dict = scene.get_legal_actions() #dict
-        legal_moves = []
-        for v in legal_moves_dict.values():
-            legal_moves += v
-        sum_num += len(legal_moves)
-        print(sum_num / (idx+1))
-        action_tup = choice(legal_moves)
-        # for idx, action_tup in enumerate(legal_moves):
-        #     new_scene = scene.do_action(*action_tup)
-        new_scene = scene.do_action(*action_tup)
-        scene.update_scene(new_scene)
-        # scene.visualize(new_scene, idx)
+    
+    # sum_num = 0
+    # for idx in range(1000):
+    #     legal_moves_dict = scene.get_legal_actions() #dict
+    #     legal_moves = []
+    #     for v in legal_moves_dict.values():
+    #         legal_moves += v
+    #     sum_num += len(legal_moves)
+    #     print(sum_num / (idx+1))
+    #     action_tup = choice(legal_moves)
+    #     # for idx, action_tup in enumerate(legal_moves):
+    #     #     new_scene = scene.do_action(*action_tup)
+    #     new_scene = scene.do_action(*action_tup)
+    #     scene.update_scene(new_scene)
+    #     # scene.visualize(new_scene, idx)

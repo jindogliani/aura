@@ -14,8 +14,8 @@ class SceneState(object):
         legal_actions = self.scene.get_legal_actions()
         return legal_actions
     
-    @property
-    def get_reward(self): #TODO #나중에 괄호를 사용할 필요가 없는 상태에서 reward랑 costs를 뽑는다.
+    @property #나중에 괄호를 사용할 필요가 없는 상태에서 reward랑 costs를 뽑는다.
+    def get_reward(self): 
         total_cost, costs = self.scene.evaluation()
         # reward = (1-total_cost) if (1-total_cost) > 0 else 0
         reward = total_cost
