@@ -189,7 +189,7 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
     })
 
     # 등고선 KDE 플롯 생성
-    sns.kdeplot(data=df, x='x', y='y', weights='intensity', fill=True, levels=30, cmap="Reds")
+    sns.kdeplot(data=df, x='x', y='y', weights='intensity', fill=True, bw_adjust=0.4, levels=100, cmap="rainbow")
     plt.gca().invert_yaxis()  # y축 방향을 뒤집어 배열 인덱스와 일치시킴
 
     # sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
