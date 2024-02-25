@@ -155,6 +155,7 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
 
     for a in ordered_exhibited_artwork_list:
         print(a)
+    print(len(ordered_exhibited_artwork_list))
 
     heatmap = space_heatmap + artwork_location_heatmap
 
@@ -162,12 +163,36 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
     _ver = ""
     if (visualize_mode):
         _ver = ver + date + '_vis'
+        if(ver == "2022"):
+            rows, cols = heatmap.shape
+            new_arr = np.full_like(heatmap, -3)
+            shift = 65
+            new_arr[shift:rows, :] = heatmap[0:rows-shift, :]
+            heatmap = new_arr
     else:
         _ver = ver + date
 
     # np.save(_ver + "_initial_heatmap", heatmap)
     heatmapCSV = pd.DataFrame(heatmap)
-    sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
+    
+    # x, y 좌표 그리드 생성
+    heatmap = np.where(heatmap < 0, 0, heatmap)
+    x = np.arange(heatmap.shape[1])
+    y = np.arange(heatmap.shape[0])
+    x, y = np.meshgrid(x, y)
+
+    # (x, y) 좌표와 해당 intensity 값을 포함하는 DataFrame 생성
+    df = pd.DataFrame({
+        'x': x.ravel(),
+        'y': y.ravel(),
+        'intensity': heatmap.ravel()
+    })
+
+    # 등고선 KDE 플롯 생성
+    sns.kdeplot(data=df, x='x', y='y', weights='intensity', fill=True, levels=30, cmap="Reds")
+    plt.gca().invert_yaxis()  # y축 방향을 뒤집어 배열 인덱스와 일치시킴
+
+    # sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
     plt.show()
 
     # with open(_ver + '_exhibited_artwork_list.pkl', 'wb') as f:
@@ -177,7 +202,7 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
     #     pickle.dump(wall_list,f)
 
 
-ver = "2022"
+ver = "2023"
 space_vertical_size, space_horizontal_size = 40, 40
 heatmap_cell_size = 0.1
 visualize_mode = True
@@ -195,8 +220,9 @@ if ver == "2023":
     space_heatmap = np.load('SpaceData/2023_GMA+(9-27-14-50).npy')
     exhibition_data_path = "Data_2023.json"
 
-    exhibited_artwork_order = ["PA-0023", "PA-0026", "KO-0009", "PA-0095", "PA-0098", "PA-0076", "PA-0074", "PA-0075", "PA-0077", "KO-0010", "KO-0008", "PA-0101", "PA-0057", "PA-0052", "PA-0061", "PA-0001", "PA-0003", "PA-0004", "PA-0082", "PA-0084", "PA-0083", "PA-0063", "PA-0067", "PA-0064", "PA-0024", "PA-0087", "PA-0027", "PA-0025", "PA-0036", "PA-0085", "PA-0086", "PA-0070", "PA-0065", "PA-0031", "PA-0088", "PA-0100", "PA-0099", "KO-0007", "KO-0006", "KO-0004", "KO-0005", "PA-0090", "PA-0089"]
-    
+    exhibited_artwork_order = ["PA-0023", "PA-0026", "PA-0095", "PA-0098", "PA-0074", "PA-0075", "PA-0077", "KO-0010", "KO-0008", "PA-0101", "PA-0052", "PA-0061", "PA-0001", "PA-0003", "PA-0004", "PA-0082", "PA-0084", "PA-0083", "PA-0063", "PA-0067", "PA-0064", "PA-0024", "PA-0087", "PA-0027", "PA-0025", "PA-0036", "PA-0085", "PA-0086", "PA-0070", "PA-0065", "PA-0031", "PA-0088", "PA-0100", "PA-0099", "KO-0007", "KO-0006", "KO-0004", "KO-0005", "PA-0090", "PA-0089"]
+    print(len(exhibited_artwork_order))
+
     x_offset, z_offset = 7, 12 
 
     space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, total_artwork_list, exhibition_data_path, exhibited_artwork_order, x_offset, z_offset, space_vertical_size, space_vertical_size, heatmap_cell_size)
@@ -209,6 +235,7 @@ elif ver == "2022":
     exhibition_data_path = "Data_2022.json"
 
     exhibited_artwork_order = ["PA-0064", "PA-0067", "PA-0027", "PA-0025", "PA-0087", "PA-0070", "PA-0086", "PA-0024", "PA-0085", "PA-0063", "PA-0083", "PA-0072", "PA-0081", "PA-0075", "PA-0074", "PA-0052", "PA-0061", "PA-0098", "PA-0095", "PA-0093", "PA-0092", "PA-0026", "KO-0004", "KO-0001", "PA-0084", "PA-0088", "PA-0090", "PA-0089", "PA-0019", "PA-0017", "PA-0020", "PA-0056", "PA-0060", "PA-0013", "PA-0039"]
+    print(len(exhibited_artwork_order))
 
     x_offset, z_offset = 25, 20
 
