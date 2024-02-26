@@ -1,0 +1,10 @@
+[2024-02-26 17:53:23,562 - __main__ - INFO] Weights: Goal 0.4, Regularization 0.1, Similarity 0.4, Number 0.05, Artists 0.05
+[2024-02-26 17:53:23,562 - __main__ - INFO] ==========================================================
+[2024-02-26 17:53:24,162 - __main__ - INFO] [1] Update Best Reward: 0.237938  Number: 39 [Goal : 0.324275, Regularization : 0.000000, Similarity : 0.023696, Num : 0.975000, Artists : 1.000000]
+[2024-02-26 17:53:24,162 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2023_0+(2-26-17-53)\trials_0_10_40/reward_0.2379380692074619.pickle
+[2024-02-26 17:53:24,162 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0099', None, None)
+[2024-02-26 17:53:24,162 - __main__ - INFO] ==========================================================
+[2024-02-26 17:53:25,381 - __main__ - INFO] [3] Update Best Reward: 0.252201  Number: 39 [Goal : 0.322247, Regularization : 0.034270, Similarity : 0.052814, Num : 0.975000, Artists : 1.000000]
+[2024-02-26 17:53:25,381 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2023_0+(2-26-17-53)\trials_0_10_40/reward_0.2522013237787478.pickle
+[2024-02-26 17:53:25,381 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0085', None, None)
+[2024-02-26 17:53:25,381 - __main__ - INFO] ==========================================================

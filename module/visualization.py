@@ -13,9 +13,6 @@ import json
 
 date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_min) + ')'
 
-with open('Results/reward_0.46337374214916843.pickle', 'rb') as f:
-    best_scene_data = pickle.load(f)
-
 ver = "2023"
 heatmap_dict = {}
 

@@ -45,7 +45,7 @@ class MonteCarloTreeSearch:
                 print("[%d] Update Best Reward: %f  Number: %d [Goal : %f, Regularization : %f, Similarity : %f, Num : %f, Artists : %f]"%(idx, best_reward, best_art_num, max_costs[0], max_costs[1], max_costs[2], max_costs[3], max_costs[4]))
                 self.logger.info("Saved path: " + self.save_dir + "/reward_" + str(best_reward) + '.pickle') 
                 with open(os.path.join(self.save_dir, "reward_" + str(best_reward) +'.pickle'), 'wb') as f:
-                    pickle.dump(best_state, f, pickle.HIGHEST_PROTOCOL)
+                    pickle.dump(best_state.scene.scene_data, f, pickle.HIGHEST_PROTOCOL)
 
                 for tup in v.history:
                     self.logger.info(tup)
