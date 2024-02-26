@@ -30,14 +30,17 @@ def heatmap_generator(
     _x1, _x2, _z1, _z2 = ((x1 + x_offset)/heatmap_cell_size), (x2 + x_offset)/heatmap_cell_size, (z1 + z_offset)/heatmap_cell_size, (z2 + z_offset)/heatmap_cell_size
     _x1, _x2, _z1, _z2 = round(_x1), round(_x2), round(_z1), round(_z2)
     artwork_heatmap = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
-    artwork_heatmap = cv2.line(artwork_heatmap, (_x1, _z1), (_x2, _z2), 255, 1) #작품 프레임 두께 10cm
-    
+    if new_theta in (0, 90, 180, 270):
+        artwork_heatmap = cv2.line(artwork_heatmap, (_x1, _z1), (_x2, _z2), 255, 1) #작품 프레임 두께 20cm
+    else:
+        artwork_heatmap = cv2.line(artwork_heatmap, (_x1, _z1), (_x2, _z2), 255, 1) #작품 프레임 두께 10cm
+
     #작품이 향하고 있는 방향 표시
     direction = np.zeros((space_vertcal_cells, space_horizontal_cells), dtype = np.int16)
     direction = cv2.line(direction, (_x1, _z1), (round((_x1+_x2)/2), round((_z1+_z2)/2)), 255, 1)
     direction_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), 90, 0.7)
     direction = cv2.warpAffine(direction, direction_rotation, direction.shape)
-    artwork_heatmap += direction
+    # artwork_heatmap += direction # 작품 방향 이제 표시 X 02.26
 
     #작품 새로운 벽 방향으로 회전
     artwork_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta, 1)
@@ -69,9 +72,9 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
         space_heatmap[space_heatmap == 0] = -1000 #공간 외부 값을 0에서 -1000으로 전환
         space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
     else:
-        space_heatmap[space_heatmap > 254] = -6 #공간 벽을 -6으로 변환
-        space_heatmap[space_heatmap == 0] = -3 #공간 외부 값을 0에서 -3으로 전환
-        space_heatmap[space_heatmap == 127] = 0 #공간 내부 값을 127에서 0으로 전환
+        space_heatmap[space_heatmap > 254] = gallery_wall_intensity #공간 벽을 -6으로 변환
+        space_heatmap[space_heatmap == 0] = gallery_outside_intensity #공간 외부 값을 0에서 -3으로 전환
+        space_heatmap[space_heatmap == 127] = gallery_inside_intensity #공간 내부 값을 127에서 0으로 전환
 
     exhibited_artwork_list =[]
     with open(exhibition_data_path, 'r', -1, encoding='utf-8') as f:
@@ -121,7 +124,7 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
         elif ver == "2022":
             artwork_visitor_heatmap = np.load('Data_2022_preAURA_2022+(9-27-19-59)/'+ exhibited_artwork["id"] + '.npy') #cell size 0.1
         
-        artwork_heatmap = heatmap_generator(visualize_mode, exhibited_artwork["width"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, exhibited_artwork["theta"], exhibited_artwork["theta"], artwork_visitor_heatmap, space_horizontal_cells, space_vertcal_cells) #TODO
+        artwork_heatmap = heatmap_generator(visualize_mode, exhibited_artwork["width"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], exhibited_artwork["pos_x"], exhibited_artwork["pos_z"], x_offset, z_offset, heatmap_cell_size, exhibited_artwork["_theta"], exhibited_artwork["_theta"], artwork_visitor_heatmap, space_horizontal_cells, space_vertcal_cells) #TODO
         artwork_location_heatmap += artwork_heatmap
 
     for wall in wall_list:
@@ -159,7 +162,6 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
 
     heatmap = space_heatmap + artwork_location_heatmap
 
-
     _ver = ""
     if (visualize_mode):
         _ver = ver + date + '_vis'
@@ -174,7 +176,29 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
 
     # np.save(_ver + "_initial_heatmap", heatmap)
     heatmapCSV = pd.DataFrame(heatmap)
+    sns.heatmap(heatmapCSV, cmap='rainbow', vmin=-10, vmax=50) # RdYlGn_r or rainbow
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.savefig('visualize/' + ver + date + '_pre_UIpC_heatmap.png')
+
+    # LCL_illustrator(ver, heatmap)
+
+    plt.show()
+
+    # with open(_ver + '_exhibited_artwork_list.pkl', 'wb') as f:
+    #     pickle.dump(ordered_exhibited_artwork_list,f)
+
+    # with open(_ver + '_wall_list_with_artworks.pkl', 'wb') as f:
+    #     pickle.dump(wall_list,f)
+
+def LCL_illustrator(ver, heatmap):
     
+    if(ver == "2023"): #왜 2023은 혼자 y축이 반전되었을까?
+            rows, cols = heatmap.shape
+            new_arr = np.full_like(heatmap, -3)
+            shift = 5
+            new_arr[shift:rows, :] = heatmap[0:rows-shift, :]
+            heatmap = new_arr
+
     # x, y 좌표 그리드 생성
     heatmap = np.where(heatmap < 0, 0, heatmap)
     x = np.arange(heatmap.shape[1])
@@ -188,30 +212,35 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
         'intensity': heatmap.ravel()
     })
 
+    plt.figure(figsize=(10, 10), dpi=300)
+
+    img_bgr = cv2.imread("SpaceData/" + ver + "_gallery_2k.png", cv2.IMREAD_COLOR)
+    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+    plt.imshow(img_rgb,  extent=[0, 400, 0, 400])
+    
     # 등고선 KDE 플롯 생성
-    sns.kdeplot(data=df, x='x', y='y', weights='intensity', fill=True, bw_adjust=0.4, levels=100, cmap="rainbow")
-    plt.gca().invert_yaxis()  # y축 방향을 뒤집어 배열 인덱스와 일치시킴
-
-    # sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
-    plt.show()
-
-    # with open(_ver + '_exhibited_artwork_list.pkl', 'wb') as f:
-    #     pickle.dump(ordered_exhibited_artwork_list,f)
-
-    # with open(_ver + '_wall_list_with_artworks.pkl', 'wb') as f:
-    #     pickle.dump(wall_list,f)
-
+    sns.kdeplot(data=df, x='x', y='y', weights='intensity',
+                fill=True, bw_adjust=0.3, levels=120,
+                cmap="Reds", alpha=0.5)
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.axis('off')
+    # plt.gca().invert_yaxis()  # y축 방향을 뒤집어 배열 인덱스와 일치시킴
+    plt.savefig('visualize/' + ver + date + '_pre_LCL.png', transparent=True)
 
 ver = "2023"
+visualize_mode = True
+
 space_vertical_size, space_horizontal_size = 40, 40
 heatmap_cell_size = 0.1
-visualize_mode = True
+
+gallery_outside_intensity = -3
+gallery_wall_intensity = -6
+gallery_inside_intensity = 0
 
 artwork_data_path = "Daegu_new.json"
 with open(artwork_data_path, "r", encoding='UTF8') as f:
     artwork_data = json.load(f)
 total_artwork_list = [{"id": artwork["id"], "size": artwork["dimensions"], "artist": artwork["artists"][0]} for artwork in artwork_data["exhibitionObjects"]]
-
 
 if ver == "2023":
     with open('2023_wall_list.pkl', 'rb') as f:
@@ -240,4 +269,3 @@ elif ver == "2022":
     x_offset, z_offset = 25, 20
 
     space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, total_artwork_list, exhibition_data_path, exhibited_artwork_order, x_offset, z_offset, space_vertical_size, space_vertical_size, heatmap_cell_size)
-

@@ -330,7 +330,10 @@ class MuseumScene():
         return total_cost, costs
 
     def visualize(self, num):
-        visualization(self.scene_data, self.artwork_data, self.wall_data, num)
+        with open('Results/reward_0.46337374214916843.pickle', 'rb') as f:
+            best_scene_data = pickle.load(f)
+        
+        visualization(best_scene_data.scene.scene_data, self.artwork_data, self.wall_data, num)
         # visualization(best_scene_data, self.artwork_data, self.wall_data, num)
         # convert_scene_json(best_scene_data, self.artwork_data, self.wall_data, num)
         print(wall_list)
@@ -378,13 +381,13 @@ class MuseumScene():
 if __name__ == "__main__":
     scene = MuseumScene()
     
-    print(len(scene.scene_data))
-    print(scene.scene_data)
+    # print(len(scene.scene_data))
+    # print(scene.scene_data)
 
-    for k, v in scene.scene_data.items():
-        print(k, v)
+    # for k, v in scene.scene_data.items():
+    #     print(k, v)
     
-    idx = 828
+    idx = 000
     scene.visualize(idx)
 
     #scene.print_scene()

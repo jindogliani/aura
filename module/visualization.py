@@ -8,12 +8,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import random
 import math
-import time
+# import time
 import json
 
-with open('Results/best_scene_901_30000+(9-24-17-11).pickle', 'rb') as f:
+date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_min) + ')'
+
+with open('Results/reward_0.46337374214916843.pickle', 'rb') as f:
     best_scene_data = pickle.load(f)
-print (best_scene_data)
 
 ver = "2023"
 heatmap_dict = {}
@@ -129,9 +130,47 @@ def visualization(scene_data, artwork_data, wall_data, num):
     scene_heatmap += space_heatmap
 
     heatmapCSV = pd.DataFrame(scene_heatmap)
+    LCL_illustrator(ver, scene_heatmap)
     sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
     plt.savefig('__visualization_%d.png'%num)
     plt.close()
+
+def LCL_illustrator(ver, heatmap):
+    
+    if(ver == "2023"): #왜 2023은 혼자 y축이 반전되었을까?
+            rows, cols = heatmap.shape
+            new_arr = np.full_like(heatmap, -3)
+            shift = 5
+            new_arr[shift:rows, :] = heatmap[0:rows-shift, :]
+            heatmap = new_arr
+
+    # x, y 좌표 그리드 생성
+    heatmap = np.where(heatmap < 0, 0, heatmap)
+    x = np.arange(heatmap.shape[1])
+    y = np.arange(heatmap.shape[0])
+    x, y = np.meshgrid(x, y)
+
+    # (x, y) 좌표와 해당 intensity 값을 포함하는 DataFrame 생성
+    df = pd.DataFrame({
+        'x': x.ravel(),
+        'y': y.ravel(),
+        'intensity': heatmap.ravel()
+    })
+
+    plt.figure(figsize=(10, 10), dpi=300)
+
+    img_bgr = cv2.imread("SpaceData/" + ver + "_gallery_2k.png", cv2.IMREAD_COLOR)
+    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+    plt.imshow(img_rgb,  extent=[0, 400, 0, 400])
+    
+    # 등고선 KDE 플롯 생성
+    sns.kdeplot(data=df, x='x', y='y', weights='intensity',
+                fill=True, bw_adjust=0.3, levels=120,
+                cmap="Reds", alpha=0.5)
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.axis('off')
+    # plt.gca().invert_yaxis()  # y축 방향을 뒤집어 배열 인덱스와 일치시킴
+    plt.savefig('visualize/' + ver + date + '_post_LCL.png', transparent=True)
 
 
 def convert_scene_json(scene_data, artwork_data, wall_data, num):
