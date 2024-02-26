@@ -78,7 +78,7 @@ class DataLoader():
         self.heatmap_data = dict(sorted(heatmap_data.items(), key=lambda x: x[1], reverse=False))
 
 class MuseumScene():
-    def __init__(self, weights = None):
+    def __init__(self):
         dl = DataLoader()
         dl._get_data()
         self.scene_data = dl.scene_data
@@ -89,7 +89,6 @@ class MuseumScene():
         self.worst_five_art = list(self.heatmap_data.keys())[:5]
         self.art_in_wall = {}
         self.artists = []
-        self.weights = weights
         for wall_id in self.wall_data.keys():
             self.art_in_wall[wall_id] = [] #wall 당 작품이 뭐뭐 들었나 확인
             self.art_in_wall[wall_id] = sorted([art for art, (wall, pos) in self.scene_data.items() if wall == wall_id], key=lambda x: self.scene_data[x][1])
@@ -101,18 +100,17 @@ class MuseumScene():
         self.origin_artist_num = len(self.artists)
         # print("Initial art and artisit number is %d and %d"%(self.origin_num, self.origin_artist_num))
 
-        if(self.weights is None):
-            self.weights = {}
-            g_weight = 0.4
-            r_weight = 0.1
-            s_weight = 0.4
-            n_weight = 0.05
-            an_weight = 0.05
-            self.weights['g'] = g_weight
-            self.weights['r'] = r_weight
-            self.weights['s'] = s_weight
-            self.weights['n'] = n_weight
-            self.weights['an'] = an_weight
+        self.weights = {}
+        g_weight = 0.9
+        r_weight = 0.1
+        s_weight = 0.0
+        n_weight = 0.0
+        an_weight = 0.0
+        self.weights['g'] = g_weight
+        self.weights['r'] = r_weight
+        self.weights['s'] = s_weight
+        self.weights['n'] = n_weight
+        self.weights['an'] = an_weight
         
     def update_scene(self, scene_data):
         self.artists = []
@@ -322,7 +320,6 @@ class MuseumScene():
         if g_cost < 0: g_cost = 0
         if r_cost < 0: r_cost = 0
         if s_cost < 0: s_cost = 0
-
         total_cost = g_weight * g_cost + r_weight * r_cost + s_weight * s_cost + n_weight * n_cost + an_cost * an_weight
         costs = [g_cost, r_cost, s_cost, n_cost, an_cost]
         # print(costs)
