@@ -75,11 +75,6 @@ if __name__ == "__main__":
     parser.add_argument('--trials', type=int, required=True, help='number of trials')
     parser.add_argument('--r_depth', type=int, required=True, help='rollout depth')
     parser.add_argument('--t_depth', type=int, default=40, help='tree depth')
-    parser.add_argument('--g_weight', type=int, required=False, help='goal weight')
-    parser.add_argument('--r_weight', type=int, required=False, help='regularization weight')
-    parser.add_argument('--s_weight', type=int, required=False, help='similarity weight')
-    parser.add_argument('--n_weight', type=int, required=False, help='number weight')
-    parser.add_argument('--an_weight', type=int, required=False, help='artists weight')
     args = parser.parse_args()
 
     log_dir = os.path.join(os.getcwd(), date)
@@ -94,13 +89,9 @@ if __name__ == "__main__":
                         format='[%(asctime)s - %(name)s - %(levelname)s] %(message)s')
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
-    if (args.g_weight is None):
-        museumScene = MuseumScene()
-        weights = museumScene.get_weights()
-    else:
-        weights = {'g': args.g_weight, 'r': args.r_weight, 's': args.s_weight, 'n': args.n_weight, 'an': args.an_weight}
-        museumScene = MuseumScene(weights=weights)
 
+    museumScene = MuseumScene()
+    weights = museumScene.get_weights()
     Tree = MonteCarloTreeSearch(MCTSNode(SceneState(museumScene)), logger, file_dir, args.t_depth)
 
     logger.info(f"Weights: Goal {weights['g']}, Regularization {weights['r']}, Similarity {weights['s']}, Number {weights['n']}, Artists {weights['an']}")
