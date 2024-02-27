@@ -14,7 +14,18 @@ import json
 date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_min) + ')'
 
 ver = "2023"
+LCLmode = True
+
 heatmap_dict = {}
+
+gallery_outside_intensity = -2
+gallery_wall_intensity = -4
+gallery_inside_intensity = 0
+
+space_vertical_size, space_horizontal_size = 40, 40
+heatmap_cell_size = 0.1
+space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size
+space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
 
 if ver == "2023":
     with open("Data_2023.json", 'r', -1, encoding='utf-8') as f:
@@ -25,20 +36,17 @@ if ver == "2023":
         exhibited_artwork_list = pickle.load(f)
 
     space_heatmap = np.load('SpaceData/2023_GMA+(9-27-14-50).npy') #cell size 0.1
-    space_heatmap[space_heatmap > 254] = -6 
-    space_heatmap[space_heatmap == 0] = -3 
-    space_heatmap[space_heatmap == 127] = 0 
+    space_heatmap[space_heatmap > 254] = gallery_wall_intensity 
+    space_heatmap[space_heatmap == 0] = gallery_outside_intensity 
+    space_heatmap[space_heatmap == 127] = gallery_inside_intensity 
 
     init_scene_data = {'PA-0023': ('w5', 28), 'PA-0026': ('w5', 65), 'PA-0095': ('w8', 12), 'PA-0098': ('w8', 33), 'PA-0074': ('w9', 16), 'PA-0075': ('w9', 31), 'PA-0077': ('w9', 49), 'KO-0010': ('w9', 80), 'KO-0008': ('w9', 106), 'PA-0101': ('w9', 132), 'PA-0052': ('w10', 29), 'PA-0061': ('w10', 49), 'PA-0001': ('w14', 33), 'PA-0003': ('w18', 41), 'PA-0004': ('w18', 93), 'PA-0082': ('w24', 17), 'PA-0084': ('w24', 48), 'PA-0083': ('w26', 21), 'PA-0063': ('w26', 46), 'PA-0067': ('w27', 22), 'PA-0064': ('w27', 49), 'PA-0024': ('w31', 53), 'PA-0087': ('w41', 28), 'PA-0027': ('w42', 13), 'PA-0025': ('w42', 44), 'PA-0036': ('w43', 19), 'PA-0085': ('w43', 40), 'PA-0086': ('w43', 55), 'PA-0070': ('w45', 12), 'PA-0065': ('w45', 50), 'PA-0031': ('w46', 35), 'PA-0088': ('w50', 34), 'PA-0100': ('w52', 29), 'PA-0099': ('w52', 58), 'KO-0007': ('w56', 33), 'KO-0006': ('w57', 49), 'KO-0004': ('w57', 86), 'KO-0005': ('w57', 112), 'PA-0090': ('w57', 154), 'PA-0089': ('w58', 34)}
-
 
     for k, v in init_scene_data.items():
         artwork_visitor_heatmap = np.load('Data_2023_preAURA_2023+(9-24-17-25)/'+ k + '.npy') # cell size 10cm
         # artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ k + '.npy') # cell size 20cm
         heatmap_dict[k] = artwork_visitor_heatmap
 
-    print(len(exhibited_artwork_list))
-    print(len(init_scene_data))
 
 if ver == "2022":
     with open("Data_2022.json", 'r', -1, encoding='utf-8') as f:
@@ -49,9 +57,9 @@ if ver == "2022":
         exhibited_artwork_list = pickle.load(f)
 
     space_heatmap = np.load('SpaceData/2022_HJW+(9-27-20-52).npy') #cell size 0.1
-    space_heatmap[space_heatmap > 254] = -6 
-    space_heatmap[space_heatmap == 0] = -3 
-    space_heatmap[space_heatmap == 127] = 0 
+    space_heatmap[space_heatmap > 254] = gallery_wall_intensity 
+    space_heatmap[space_heatmap == 0] = gallery_outside_intensity 
+    space_heatmap[space_heatmap == 127] = gallery_inside_intensity 
 
     init_scene_data = {'PA-0064': ('w0', 26), 'PA-0067': ('w0', 49), 'PA-0027': ('w1', 16), 'PA-0025': ('w2', 26), 'PA-0087': ('w3', 19), 'PA-0070': ('w3', 41), 'PA-0086': ('w5', 24), 'PA-0024': ('w6', 28), 'PA-0085': ('w7', 12), 'PA-0063': ('w8', 18), 'PA-0083': ('w8', 41), 'PA-0072': ('w14', 8), 'PA-0081': ('w15', 11), 'PA-0075': ('w15', 26), 'PA-0074': ('w15', 41), 'PA-0052': ('w15', 62), 'PA-0061': ('w15', 85), 'PA-0098': ('w15', 105), 'PA-0095': ('w15', 124), 'PA-0093': ('w16', 19), 'PA-0092': ('w16', 40), 'PA-0026': ('w16', 62), 'KO-0004': ('w18', 21), 'KO-0001': ('w18', 39), 'PA-0084': ('w18', 91), 'PA-0088': ('w19', 20), 'PA-0090': ('w23', 21), 'PA-0089': ('w23', 42), 'PA-0019': ('w24', 12), 'PA-0017': ('w24', 26), 'PA-0020': ('w24', 38), 'PA-0056': ('w29', 18), 'PA-0060': ('w29', 49), 'PA-0013': ('w34', 10), 'PA-0039': ('w34', 27)}
 
@@ -59,12 +67,6 @@ if ver == "2022":
         artwork_visitor_heatmap = np.load('Data_2022_preAURA_2022+(9-27-19-59)/'+ a['id'] + '.npy') # cell size 10cm
         # artwork_visitor_heatmap = np.load('Daegu_new_preAURA_2023+(9-23)/'+ k + '.npy') # cell size 20cm
         heatmap_dict[a['id']] = artwork_visitor_heatmap
-
-
-space_vertical_size, space_horizontal_size = 40, 40
-heatmap_cell_size = 0.1
-space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size
-space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
 
 
 def heatmap_generator(
@@ -80,15 +82,15 @@ def heatmap_generator(
     direction = cv2.line(direction, (_x1, _z1), (round((_x1+_x2)/2), round((_z1+_z2)/2)), 255, 1)
     direction_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), 90, 0.7)
     direction = cv2.warpAffine(direction, direction_rotation, direction.shape)
-    artwork_heatmap += direction
+    # artwork_heatmap += direction
 
     artwork_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta, 1)
     artwork_heatmap = cv2.warpAffine(artwork_heatmap, artwork_rotation, artwork_heatmap.shape)
-    artwork_heatmap[artwork_heatmap > 0] = -10 
-    #artwork_heatmap[artwork_heatmap > 0] = 0 
-
-    #artwork_visitor_rotation = cv2.getRotationMatrix2D((round(old_pos_x/heatmap_cell_size), round(old_pos_z/heatmap_cell_size)), 0, 1)
-    #artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_rotation, artwork_visitor_heatmap.shape)
+    
+    artwork_intensity = -10 #LCL 만들 때는 음수를 다 0으로 해줌
+    if not LCLmode:
+        artwork_intensity = 15 #UIpC 히트맵 
+    artwork_heatmap[artwork_heatmap > 0] = artwork_intensity
 
     artwork_visitor_transform = np.float32([[1, 0, round((new_pos_x - old_pos_x)/heatmap_cell_size)], [0, 1, round((new_pos_z - old_pos_z)/heatmap_cell_size)]])
     artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_transform, artwork_visitor_heatmap.shape)
@@ -126,17 +128,32 @@ def visualization(scene_data, artwork_data, wall_data, num):
     
     scene_heatmap += space_heatmap
 
-    heatmapCSV = pd.DataFrame(scene_heatmap)
-    LCL_illustrator(ver, scene_heatmap)
-    sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=-10, vmax=50)
-    plt.savefig('__visualization_%d.png'%num)
+    if(ver == "2022"): #2022년 데이터 가운데로 shift
+            rows, cols = heatmap.shape
+            new_arr = np.full_like(heatmap, gallery_outside_intensity)
+            shift = 65
+            new_arr[shift:rows, :] = heatmap[0:rows-shift, :]
+            heatmap = new_arr
+
+    if LCLmode:
+        LCL_illustrator(ver, scene_heatmap)
+    else:
+        heatmap = np.flipud(heatmap) # UIpC 히트맵 생성할 때는 한번 위아래 반전 시켜줌
+
+        heatmapCSV = pd.DataFrame(heatmap)
+        plt.figure(figsize=(10, 8), dpi=100)
+        sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=gallery_wall_intensity, vmax=30)
+        plt.gca().set_aspect('equal', adjustable='box')
+        plt.savefig('visualize/' + ver + date + '_post_UIpC_heatmap.png')
+    
+    plt.show()
     plt.close()
 
 def LCL_illustrator(ver, heatmap):
     
     if(ver == "2023"): #왜 2023은 혼자 y축이 반전되었을까?
             rows, cols = heatmap.shape
-            new_arr = np.full_like(heatmap, -3)
+            new_arr = np.full_like(heatmap, gallery_outside_intensity)
             shift = 5
             new_arr[shift:rows, :] = heatmap[0:rows-shift, :]
             heatmap = new_arr
@@ -163,7 +180,7 @@ def LCL_illustrator(ver, heatmap):
     # 등고선 KDE 플롯 생성
     sns.kdeplot(data=df, x='x', y='y', weights='intensity',
                 fill=True, bw_adjust=0.3, levels=120,
-                cmap="Reds", alpha=0.5)
+                cmap="RdYlGn_r", alpha=0.5)
     plt.gca().set_aspect('equal', adjustable='box')
     plt.axis('off')
     # plt.gca().invert_yaxis()  # y축 방향을 뒤집어 배열 인덱스와 일치시킴
