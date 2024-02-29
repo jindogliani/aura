@@ -46,19 +46,17 @@ def heatmap_generator(
     artwork_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta, 1)
     artwork_heatmap = cv2.warpAffine(artwork_heatmap, artwork_rotation, artwork_heatmap.shape)
     if(visualize_mode):
-        artwork_heatmap[artwork_heatmap > 0] = -10 # 확인용
+        artwork_intensity = 15
+        artwork_heatmap[artwork_heatmap > 0] = artwork_intensity # 확인용
     else:
         artwork_heatmap[artwork_heatmap > 0] = 0 # 분산 계산용
 
-    #artwork_visitor_rotation = cv2.getRotationMatrix2D((round(old_pos_x/heatmap_cell_size), round(old_pos_z/heatmap_cell_size)), 0, 1)
-    #artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_rotation, artwork_visitor_heatmap.shape)
     artwork_visitor_transform = np.float32([[1, 0, round((new_pos_x - old_pos_x)/heatmap_cell_size)], [0, 1, round((new_pos_z - old_pos_z)/heatmap_cell_size)]])
     artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_transform, artwork_visitor_heatmap.shape)
     artwork_visitor_rotation = cv2.getRotationMatrix2D((round((_x1+_x2)/2), round((_z1+_z2)/2)), new_theta - old_theta, 1)
     artwork_visitor_heatmap = cv2.warpAffine(artwork_visitor_heatmap, artwork_visitor_rotation, artwork_visitor_heatmap.shape)
 
     artwork_heatmap += artwork_visitor_heatmap
-
     return artwork_heatmap
 
 
@@ -167,7 +165,7 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
         _ver = ver + date + '_vis'
         if(ver == "2022"):
             rows, cols = heatmap.shape
-            new_arr = np.full_like(heatmap, -3)
+            new_arr = np.full_like(heatmap, gallery_outside_intensity)
             shift = 65
             new_arr[shift:rows, :] = heatmap[0:rows-shift, :]
             heatmap = new_arr
@@ -175,12 +173,17 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
         _ver = ver + date
 
     # np.save(_ver + "_initial_heatmap", heatmap)
-    heatmapCSV = pd.DataFrame(heatmap)
-    sns.heatmap(heatmapCSV, cmap='rainbow', vmin=-10, vmax=50) # RdYlGn_r or rainbow
-    plt.gca().set_aspect('equal', adjustable='box')
-    plt.savefig('visualize/' + ver + date + '_pre_UIpC_heatmap.png')
 
-    # LCL_illustrator(ver, heatmap)
+    if LCLmode:
+        LCL_illustrator(ver, heatmap)
+    else:
+        heatmap = np.flipud(heatmap)
+        heatmapCSV = pd.DataFrame(heatmap)
+
+        plt.figure(figsize=(10, 8), dpi=100)
+        sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=gallery_wall_intensity, vmax=30) # RdYlGn_r or rainbow
+        plt.gca().set_aspect('equal', adjustable='box')
+        plt.savefig('visualize/' + ver + date + '_pre_UIpC_heatmap.png')
 
     plt.show()
 
@@ -194,7 +197,7 @@ def LCL_illustrator(ver, heatmap):
     
     if(ver == "2023"): #왜 2023은 혼자 y축이 반전되었을까?
             rows, cols = heatmap.shape
-            new_arr = np.full_like(heatmap, -3)
+            new_arr = np.full_like(heatmap, gallery_outside_intensity)
             shift = 5
             new_arr[shift:rows, :] = heatmap[0:rows-shift, :]
             heatmap = new_arr
@@ -221,7 +224,7 @@ def LCL_illustrator(ver, heatmap):
     # 등고선 KDE 플롯 생성
     sns.kdeplot(data=df, x='x', y='y', weights='intensity',
                 fill=True, bw_adjust=0.3, levels=120,
-                cmap="Reds", alpha=0.5)
+                cmap="RdYlGn_r", alpha=0.5)
     plt.gca().set_aspect('equal', adjustable='box')
     plt.axis('off')
     # plt.gca().invert_yaxis()  # y축 방향을 뒤집어 배열 인덱스와 일치시킴
@@ -229,12 +232,13 @@ def LCL_illustrator(ver, heatmap):
 
 ver = "2023"
 visualize_mode = True
+LCLmode = False
 
 space_vertical_size, space_horizontal_size = 40, 40
 heatmap_cell_size = 0.1
 
-gallery_outside_intensity = -3
-gallery_wall_intensity = -6
+gallery_outside_intensity = -2
+gallery_wall_intensity = -4
 gallery_inside_intensity = 0
 
 artwork_data_path = "Daegu_new.json"
