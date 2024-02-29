@@ -1,0 +1,235 @@
+[2024-02-26 11:54:29,642 - __main__ - INFO] Weights: Goal 0.3, Regularization 0.3, Similarity 0.3, Number 0.05, Artists 0.05
+[2024-02-26 11:54:29,643 - __main__ - INFO] ==========================================================
+[2024-02-26 11:54:31,689 - __main__ - INFO] [1] Update Best Reward: 0.203141  Number: 39 [Goal : 0.324275, Regularization : 0.000000, Similarity : 0.023696, Num : 0.975000, Artists : 1.000000]
+[2024-02-26 11:54:31,689 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.20314105190559645.pickle
+[2024-02-26 11:54:31,690 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0099', None, None)
+[2024-02-26 11:54:31,690 - __main__ - INFO] ==========================================================
+[2024-02-26 11:54:35,644 - __main__ - INFO] [3] Update Best Reward: 0.221549  Number: 39 [Goal : 0.322247, Regularization : 0.034270, Similarity : 0.052814, Num : 0.975000, Artists : 1.000000]
+[2024-02-26 11:54:35,644 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.22154916750972775.pickle
+[2024-02-26 11:54:35,645 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0085', None, None)
+[2024-02-26 11:54:35,645 - __main__ - INFO] ==========================================================
+[2024-02-26 11:54:58,033 - __main__ - INFO] [14] Update Best Reward: 0.226376  Number: 40 [Goal : 0.329898, Regularization : 0.091355, Similarity : 0.000000, Num : 1.000000, Artists : 1.000000]
+[2024-02-26 11:54:58,035 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.2263759001306882.pickle
+[2024-02-26 11:54:58,036 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w34', 14)
+[2024-02-26 11:54:58,036 - __main__ - INFO] ==========================================================
+[2024-02-26 11:55:11,832 - __main__ - INFO] [21] Update Best Reward: 0.231166  Number: 40 [Goal : 0.319842, Regularization : 0.075043, Similarity : 0.042335, Num : 1.000000, Artists : 1.000000]
+[2024-02-26 11:55:11,832 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.23116611194820286.pickle
+[2024-02-26 11:55:11,832 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w4', 14)
+[2024-02-26 11:55:11,833 - __main__ - INFO] ==========================================================
+[2024-02-26 11:57:05,588 - __main__ - INFO] [79] Update Best Reward: 0.234025  Number: 40 [Goal : 0.368082, Regularization : 0.014079, Similarity : 0.064590, Num : 1.000000, Artists : 1.000000]
+[2024-02-26 11:57:05,588 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.234025378658691.pickle
+[2024-02-26 11:57:05,588 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 11:57:05,588 - __main__ - INFO] ==========================================================
+[2024-02-26 11:59:58,108 - __main__ - INFO] [168] Update Best Reward: 0.240958  Number: 40 [Goal : 0.378266, Regularization : 0.091596, Similarity : 0.000000, Num : 1.000000, Artists : 1.000000]
+[2024-02-26 11:59:58,108 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.24095837557006916.pickle
+[2024-02-26 11:59:58,108 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w45', 29)
+[2024-02-26 11:59:58,108 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 11:59:58,109 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w34', 14)
+[2024-02-26 11:59:58,109 - __main__ - INFO] ==========================================================
+[2024-02-26 12:00:15,544 - __main__ - INFO] [177] Update Best Reward: 0.260247  Number: 40 [Goal : 0.367992, Regularization : 0.075316, Similarity : 0.090848, Num : 1.000000, Artists : 1.000000]
+[2024-02-26 12:00:15,544 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.26024674106663065.pickle
+[2024-02-26 12:00:15,545 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w45', 29)
+[2024-02-26 12:00:15,545 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:00:15,545 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w4', 14)
+[2024-02-26 12:00:15,545 - __main__ - INFO] ==========================================================
+[2024-02-26 12:24:58,781 - __main__ - INFO] [1015] Update Best Reward: 0.364544  Number: 40 [Goal : 0.369414, Regularization : 0.086129, Similarity : 0.426271, Num : 1.000000, Artists : 1.000000]
+[2024-02-26 12:24:58,781 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.36454401076379617.pickle
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w45', 29)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0088', None, 16)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0070', None, 11)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w41', 0)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w27', 0)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w26', 0)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0010', None, 13)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w19', 14)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w58', 0)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0008', None, 13)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w23', 14)
+[2024-02-26 12:24:58,782 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0026', 'w23', 58)
+[2024-02-26 12:24:58,782 - __main__ - INFO] ==========================================================
+[2024-02-26 12:27:09,196 - __main__ - INFO] [1092] Update Best Reward: 0.381033  Number: 39 [Goal : 0.370728, Regularization : 0.105432, Similarity : 0.464783, Num : 0.975000, Artists : 1.000000]
+[2024-02-26 12:27:09,197 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.3810326385517175.pickle
+[2024-02-26 12:27:09,197 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w45', 29)
+[2024-02-26 12:27:09,197 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:27:09,197 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0088', None, 16)
+[2024-02-26 12:27:09,197 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:27:09,197 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0070', None, 11)
+[2024-02-26 12:27:09,197 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w41', 0)
+[2024-02-26 12:27:09,197 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w27', 0)
+[2024-02-26 12:27:09,197 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w26', 0)
+[2024-02-26 12:27:09,197 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0010', None, 13)
+[2024-02-26 12:27:09,198 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w19', 14)
+[2024-02-26 12:27:09,198 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w58', 0)
+[2024-02-26 12:27:09,198 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0008', None, 13)
+[2024-02-26 12:27:09,198 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w23', 14)
+[2024-02-26 12:27:09,198 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0026', 'w23', 12)
+[2024-02-26 12:27:09,198 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0085', None, None)
+[2024-02-26 12:27:09,198 - __main__ - INFO] ==========================================================
+[2024-02-26 12:29:10,161 - __main__ - INFO] [1164] Update Best Reward: 0.386824  Number: 40 [Goal : 0.368906, Regularization : 0.088424, Similarity : 0.498750, Num : 1.000000, Artists : 1.000000]
+[2024-02-26 12:29:10,161 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.38682378813543117.pickle
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w45', 29)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0088', None, 16)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0070', None, 11)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w41', 0)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w27', 0)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w26', 0)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0010', None, 13)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w19', 14)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w58', 0)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0008', None, 13)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w23', 14)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0026', 'w23', 12)
+[2024-02-26 12:29:10,162 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:29:10,162 - __main__ - INFO] ==========================================================
+[2024-02-26 12:33:23,774 - __main__ - INFO] [1315] Update Best Reward: 0.393630  Number: 40 [Goal : 0.380695, Regularization : 0.097044, Similarity : 0.501029, Num : 1.000000, Artists : 1.000000]
+[2024-02-26 12:33:23,774 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.3936304762113293.pickle
+[2024-02-26 12:33:23,774 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w45', 29)
+[2024-02-26 12:33:23,774 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:33:23,774 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0088', None, 16)
+[2024-02-26 12:33:23,774 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:33:23,774 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0070', None, 11)
+[2024-02-26 12:33:23,774 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w41', 0)
+[2024-02-26 12:33:23,774 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w27', 0)
+[2024-02-26 12:33:23,775 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w26', 0)
+[2024-02-26 12:33:23,775 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0010', None, 13)
+[2024-02-26 12:33:23,775 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w19', 14)
+[2024-02-26 12:33:23,775 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w58', 0)
+[2024-02-26 12:33:23,775 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0008', None, 13)
+[2024-02-26 12:33:23,775 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w23', 14)
+[2024-02-26 12:33:23,775 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0026', 'w23', 12)
+[2024-02-26 12:33:23,775 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w52', 0)
+[2024-02-26 12:33:23,775 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0086', None, 10)
+[2024-02-26 12:33:23,775 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:33:23,775 - __main__ - INFO] ==========================================================
+[2024-02-26 12:35:31,009 - __main__ - INFO] [1391] Update Best Reward: 0.394180  Number: 40 [Goal : 0.381737, Regularization : 0.092481, Similarity : 0.506381, Num : 1.000000, Artists : 1.000000]
+[2024-02-26 12:35:31,009 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.39417969354781945.pickle
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w45', 29)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0088', None, 16)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0070', None, 11)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w41', 0)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w27', 0)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w26', 0)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0010', None, 13)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w19', 14)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w58', 0)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0008', None, 13)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w23', 14)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0026', 'w23', 12)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w52', 0)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0086', None, 10)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w23', 0)
+[2024-02-26 12:35:31,010 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:35:31,011 - __main__ - INFO] ==========================================================
+[2024-02-26 12:51:14,855 - __main__ - INFO] [1969] Update Best Reward: 0.396141  Number: 39 [Goal : 0.386195, Regularization : 0.252829, Similarity : 0.352279, Num : 0.975000, Artists : 1.000000]
+[2024-02-26 12:51:14,855 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.3961407429922194.pickle
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w45', 29)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0088', None, 16)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0070', None, 11)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w41', 0)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w27', 0)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w26', 0)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0010', None, 13)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w19', 14)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w58', 0)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0008', None, 13)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w23', 14)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0026', 'w23', 12)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w52', 0)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0086', None, 10)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w23', 0)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0063', None, 14)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0087', None, 17)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w5', 14)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0099', None, None)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w14', 0)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w45', 0)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0007', None, 20)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w32', 14)
+[2024-02-26 12:51:14,856 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0067', None, 15)
+[2024-02-26 12:51:14,856 - __main__ - INFO] ==========================================================
+[2024-02-26 12:52:20,433 - __main__ - INFO] [2009] Update Best Reward: 0.410446  Number: 38 [Goal : 0.388493, Regularization : 0.256970, Similarity : 0.397690, Num : 0.950000, Artists : 1.000000]
+[2024-02-26 12:52:20,433 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.41044594219371594.pickle
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w45', 29)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0088', None, 16)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0070', None, 11)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w41', 0)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w27', 0)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w26', 0)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0010', None, 13)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w19', 14)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w58', 0)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0008', None, 13)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w23', 14)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0026', 'w23', 12)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w52', 0)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0086', None, 10)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w23', 0)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0063', None, 14)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0087', None, 17)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w5', 14)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0099', None, None)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w14', 0)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w45', 0)
+[2024-02-26 12:52:20,434 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0007', None, 20)
+[2024-02-26 12:52:20,435 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w32', 14)
+[2024-02-26 12:52:20,435 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0067', None, 15)
+[2024-02-26 12:52:20,435 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0085', None, None)
+[2024-02-26 12:52:20,435 - __main__ - INFO] ==========================================================
+[2024-02-26 13:24:16,515 - __main__ - INFO] [3192] Update Best Reward: 0.413453  Number: 37 [Goal : 0.399392, Regularization : 0.228847, Similarity : 0.429104, Num : 0.925000, Artists : 1.000000]
+[2024-02-26 13:24:16,515 - __main__ - INFO] Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/reward_0.41345289038063276.pickle
+[2024-02-26 13:24:16,515 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w45', 29)
+[2024-02-26 13:24:16,515 - __main__ - INFO] End of MCTS
+[2024-02-26 13:24:16,515 - __main__ - INFO] Final Saved path: /root/workplace/aura/2023_0+(2-26-11-54)/trials_0_10_40/final.pickle
+[2024-02-26 13:24:16,515 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w45', 29)
+[2024-02-26 13:24:16,515 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0088', None, 16)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0070', None, 11)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w41', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w27', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w26', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0010', None, 13)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w19', 14)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w58', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0008', None, 13)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w23', 14)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0026', 'w23', 12)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w52', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0086', None, 10)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w23', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0063', None, 14)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0087', None, 17)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w5', 14)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0099', None, None)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w14', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w45', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Forward: 0>, 'KO-0007', None, 20)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w32', 14)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0067', None, 15)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w31', 14)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w46', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0098', None, 22)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w52', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w52', 14)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w8', 31)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w34', 14)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w41', 0)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0001', None, 17)
+[2024-02-26 13:24:16,516 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w34', 0)
+[2024-02-26 13:24:16,517 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0098', None, 8)
+[2024-02-26 13:24:16,517 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0023', 'w31', 88)
+[2024-02-26 13:24:16,517 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w18', 0)
+[2024-02-26 13:24:16,517 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0024', None, 19)
+[2024-02-26 13:24:16,517 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w8', 0)
+[2024-02-26 13:24:16,517 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0075', None, None)
+[2024-02-26 13:24:16,517 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0085', None, None)

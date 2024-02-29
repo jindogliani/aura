@@ -101,9 +101,9 @@ class MuseumScene():
         # print("Initial art and artisit number is %d and %d"%(self.origin_num, self.origin_artist_num))
 
         self.weights = {}
-        g_weight = 0.9
-        r_weight = 0.1
-        s_weight = 0.0
+        g_weight = 0.4
+        r_weight = 0.3
+        s_weight = 0.3
         n_weight = 0.0
         an_weight = 0.0
         self.weights['g'] = g_weight
@@ -229,7 +229,7 @@ class MuseumScene():
         possible_actions["Flip"] = Flip
         possible_actions["Forward"] = Forward
         possible_actions["Swap"] = Swap
-        possible_actions["Delete"] = Delete
+        # possible_actions["Delete"] = Delete
         possible_actions["Add"] = Add
         return possible_actions
     
