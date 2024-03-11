@@ -1,0 +1,94 @@
+[2024-03-11 23:57:32,286 - __main__ - INFO] Weights: Goal 0.5, Regularization 0, Similarity 0.5, Number 0.0, Artists 0.0
+[2024-03-11 23:57:32,286 - __main__ - INFO] ==========================================================
+[2024-03-11 23:57:34,382 - __main__ - INFO] [1] Update Best Reward: 0.131640  Number: 34 [Goal : 0.244893, Regularization : 0.005251, Similarity : 0.018388, Num : 0.971429, Artists : 1.000000]
+[2024-03-11 23:57:34,382 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.1316404573668224.pickle
+[2024-03-11 23:57:34,382 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0019', None, None)
+[2024-03-11 23:57:34,382 - __main__ - INFO] ==========================================================
+[2024-03-11 23:57:42,483 - __main__ - INFO] [5] Update Best Reward: 0.140537  Number: 34 [Goal : 0.254338, Regularization : 0.000000, Similarity : 0.026736, Num : 0.971429, Artists : 1.000000]
+[2024-03-11 23:57:42,483 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.1405369955560451.pickle
+[2024-03-11 23:57:42,483 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0070', None, None)
+[2024-03-11 23:57:42,483 - __main__ - INFO] ==========================================================
+[2024-03-11 23:59:22,258 - __main__ - INFO] [51] Update Best Reward: 0.142358  Number: 35 [Goal : 0.243256, Regularization : 0.005455, Similarity : 0.041459, Num : 1.000000, Artists : 1.000000]
+[2024-03-11 23:59:22,258 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.1423576614046707.pickle
+[2024-03-11 23:59:22,258 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w16', 0)
+[2024-03-11 23:59:22,258 - __main__ - INFO] ==========================================================
+[2024-03-11 23:59:55,515 - __main__ - INFO] [66] Update Best Reward: 0.142397  Number: 34 [Goal : 0.254386, Regularization : 0.000000, Similarity : 0.030408, Num : 0.971429, Artists : 1.000000]
+[2024-03-11 23:59:55,515 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.1423971491460228.pickle
+[2024-03-11 23:59:55,515 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0056', None, 18)
+[2024-03-11 23:59:55,515 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0070', None, None)
+[2024-03-11 23:59:55,515 - __main__ - INFO] ==========================================================
+[2024-03-11 23:59:59,969 - __main__ - INFO] [68] Update Best Reward: 0.142740  Number: 35 [Goal : 0.241701, Regularization : 0.000000, Similarity : 0.043778, Num : 1.000000, Artists : 1.000000]
+[2024-03-11 23:59:59,969 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.1427397075647977.pickle
+[2024-03-11 23:59:59,969 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0056', None, 18)
+[2024-03-11 23:59:59,969 - __main__ - INFO] (<SceneActions.EmptySwap: 5>, 'PA-0067', 'w5', 32)
+[2024-03-11 23:59:59,969 - __main__ - INFO] ==========================================================
+[2024-03-12 00:01:43,917 - __main__ - INFO] [114] Update Best Reward: 0.144194  Number: 35 [Goal : 0.243257, Regularization : 0.000000, Similarity : 0.045131, Num : 1.000000, Artists : 1.000000]
+[2024-03-12 00:01:43,917 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.1441943490520839.pickle
+[2024-03-12 00:01:43,917 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0056', None, 18)
+[2024-03-12 00:01:43,917 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w16', 0)
+[2024-03-12 00:01:43,917 - __main__ - INFO] ==========================================================
+[2024-03-12 00:04:30,896 - __main__ - INFO] [188] Update Best Reward: 0.155120  Number: 34 [Goal : 0.246631, Regularization : 0.000000, Similarity : 0.063608, Num : 0.971429, Artists : 1.000000]
+[2024-03-12 00:04:30,896 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.1551195531181886.pickle
+[2024-03-12 00:04:30,896 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0056', None, 18)
+[2024-03-12 00:04:30,896 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w5', 0)
+[2024-03-12 00:04:30,896 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w16', 0)
+[2024-03-12 00:04:30,896 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0019', None, None)
+[2024-03-12 00:04:30,896 - __main__ - INFO] ==========================================================
+[2024-03-12 00:04:39,797 - __main__ - INFO] [192] Update Best Reward: 0.164016  Number: 34 [Goal : 0.256077, Regularization : 0.000000, Similarity : 0.071956, Num : 0.971429, Artists : 1.000000]
+[2024-03-12 00:04:39,797 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.1640162086324105.pickle
+[2024-03-12 00:04:39,797 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0056', None, 18)
+[2024-03-12 00:04:39,797 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w5', 0)
+[2024-03-12 00:04:39,797 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w16', 0)
+[2024-03-12 00:04:39,797 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0070', None, None)
+[2024-03-12 00:04:39,797 - __main__ - INFO] ==========================================================
+[2024-03-12 00:04:44,505 - __main__ - INFO] [194] Update Best Reward: 0.164358  Number: 35 [Goal : 0.243390, Regularization : 0.000000, Similarity : 0.085326, Num : 1.000000, Artists : 1.000000]
+[2024-03-12 00:04:44,505 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.16435786514060347.pickle
+[2024-03-12 00:04:44,505 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0056', None, 18)
+[2024-03-12 00:04:44,505 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w5', 0)
+[2024-03-12 00:04:44,505 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w16', 0)
+[2024-03-12 00:04:44,505 - __main__ - INFO] (<SceneActions.EmptySwap: 5>, 'PA-0067', 'w5', 32)
+[2024-03-12 00:04:44,505 - __main__ - INFO] ==========================================================
+[2024-03-12 00:09:28,530 - __main__ - INFO] [319] Update Best Reward: 0.164476  Number: 34 [Goal : 0.255811, Regularization : 0.000000, Similarity : 0.073141, Num : 0.971429, Artists : 1.000000]
+[2024-03-12 00:09:28,530 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.164475750430017.pickle
+[2024-03-12 00:09:28,530 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0056', None, 18)
+[2024-03-12 00:09:28,530 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w5', 0)
+[2024-03-12 00:09:28,530 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w16', 0)
+[2024-03-12 00:09:28,530 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0064', 'w29', 11)
+[2024-03-12 00:09:28,530 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0064', 'w0', 11)
+[2024-03-12 00:09:28,530 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0070', None, None)
+[2024-03-12 00:09:28,530 - __main__ - INFO] ==========================================================
+[2024-03-12 00:27:36,780 - __main__ - INFO] [815] Update Best Reward: 0.168690  Number: 34 [Goal : 0.257032, Regularization : 0.000000, Similarity : 0.080348, Num : 0.971429, Artists : 1.000000]
+[2024-03-12 00:27:36,780 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.16868966045481454.pickle
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0056', None, 18)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w5', 0)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w16', 0)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0064', 'w29', 11)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0064', 'w0', 11)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0060', None, 7)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0061', None, 12)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0039', None, 12)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w7', 0)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0052', None, 25)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w1', 0)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w6', 0)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0056', None, 28)
+[2024-03-12 00:27:36,780 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0070', None, None)
+[2024-03-12 00:27:36,780 - __main__ - INFO] ==========================================================
+[2024-03-12 00:29:51,225 - __main__ - INFO] [877] Update Best Reward: 0.172253  Number: 35 [Goal : 0.255335, Regularization : 0.000000, Similarity : 0.089170, Num : 1.000000, Artists : 1.000000]
+[2024-03-12 00:29:51,225 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2022_505+(3-11-23-57)\trials_505_40_40/reward_0.17225262686581033.pickle
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0056', None, 18)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w5', 0)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w16', 0)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0064', 'w29', 11)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Swap: 1>, 'PA-0064', 'w0', 11)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0060', None, 7)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0061', None, 12)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0039', None, 12)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w7', 0)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0052', None, 25)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w1', 0)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w6', 0)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0056', None, 28)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w3', 0)
+[2024-03-12 00:29:51,225 - __main__ - INFO] (<SceneActions.EmptySwap: 5>, 'PA-0067', 'w5', 32)
+[2024-03-12 00:29:51,225 - __main__ - INFO] ==========================================================
