@@ -18,7 +18,7 @@ heatmap_cell_size = 0.1
 space_vertcal_cells, space_horizontal_cells = space_vertical_size / heatmap_cell_size, space_horizontal_size / heatmap_cell_size
 space_horizontal_cells, space_vertcal_cells = round(space_horizontal_cells), round(space_vertcal_cells)
 
-ver = "2023"
+ver = "2022"
 heatmap_dict = {}
 
 if ver == "2023":
