@@ -29,7 +29,7 @@ class SceneActions(Enum):
     Delete = 4
     EmptySwap = 5
 
-ver = "2023"
+ver = "2022"
 heatmap_cell_size_cm = 10 #10cm로 셀 사이즈 지정
 
 class DataLoader():
