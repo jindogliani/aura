@@ -102,9 +102,9 @@ class MuseumScene():
         # print("Initial art and artisit number is %d and %d"%(self.origin_num, self.origin_artist_num))
 
         self.weights = {}
-        g_weight = 0.9
-        r_weight = 0.0
-        s_weight = 0.1
+        g_weight = 0.4
+        r_weight = 0.3
+        s_weight = 0.3
         n_weight = 0.0
         an_weight = 0.0
         self.weights['g'] = g_weight
@@ -243,6 +243,8 @@ class MuseumScene():
     def do_action(self, action, art, wall, value):
         new_scene = copy.deepcopy(self.scene_data)
         new_art_in_wall = copy.deepcopy(self.art_in_wall)
+        if wall not in new_art_in_wall.keys():
+                new_art_in_wall[wall] = []
         if action == SceneActions.Flip:
             assert art == None
             for _art in self.art_in_wall[wall]:
@@ -257,11 +259,9 @@ class MuseumScene():
                     raise "fuck yourself"
             return new_scene
         
-        if action == SceneActions.Swap or SceneActions.EmptySwap: #TODO #HTW #이렇게 해도 될려나
+        if action == SceneActions.Swap or action == SceneActions.EmptySwap: #TODO #HTW #이렇게 해도 될려나
             (past_wall, _) = self.scene_data[art]
             new_scene[art] = (wall, value)
-            if wall not in new_art_in_wall.keys():
-                new_art_in_wall[wall] = []
             new_art_in_wall[wall].append(art)
             new_art_in_wall[past_wall].remove(art)
             for wall_id in [past_wall, wall]:
@@ -394,7 +394,7 @@ if __name__ == "__main__":
     #     print(k, v)
     
     idx = 000
-    scene.visualize(idx)
+    # scene.visualize(idx)
 
     #scene.print_scene()
     
@@ -414,7 +414,7 @@ if __name__ == "__main__":
     #     for v in legal_moves_dict.values():
     #         legal_moves += v
     #     sum_num += len(legal_moves)
-    #     print(sum_num / (idx+1))
+    #     print(idx)
     #     action_tup = choice(legal_moves)
     #     # for idx, action_tup in enumerate(legal_moves):
     #     #     new_scene = scene.do_action(*action_tup)

@@ -1,0 +1,18 @@
+[2024-03-11 20:43:39,947 - __main__ - INFO] Weights: Goal 0.5, Regularization 0.0, Similarity 0.5, Number 0.0, Artists 0.0
+[2024-03-11 20:43:39,947 - __main__ - INFO] ==========================================================
+[2024-03-11 20:43:41,130 - __main__ - INFO] [1] Update Best Reward: 0.173985  Number: 39 [Goal : 0.324275, Regularization : 0.000000, Similarity : 0.023696, Num : 0.975000, Artists : 1.000000]
+[2024-03-11 20:43:41,130 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2023_505+(3-11-20-43)\trials_505_20_40/reward_0.17398508650932742.pickle
+[2024-03-11 20:43:41,130 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0099', None, None)
+[2024-03-11 20:43:41,130 - __main__ - INFO] ==========================================================
+[2024-03-11 20:43:43,420 - __main__ - INFO] [3] Update Best Reward: 0.187530  Number: 39 [Goal : 0.322247, Regularization : 0.034270, Similarity : 0.052814, Num : 0.975000, Artists : 1.000000]
+[2024-03-11 20:43:43,420 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2023_505+(3-11-20-43)\trials_505_20_40/reward_0.1875304465702865.pickle
+[2024-03-11 20:43:43,420 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0085', None, None)
+[2024-03-11 20:43:43,420 - __main__ - INFO] ==========================================================
+[2024-03-11 20:44:49,840 - __main__ - INFO] [59] Update Best Reward: 0.195438  Number: 40 [Goal : 0.367128, Regularization : 0.000000, Similarity : 0.023747, Num : 1.000000, Artists : 1.000000]
+[2024-03-11 20:44:49,840 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2023_505+(3-11-20-43)\trials_505_20_40/reward_0.19543789548054252.pickle
+[2024-03-11 20:44:49,840 - __main__ - INFO] (<SceneActions.Forward: 0>, 'PA-0074', None, 8)
+[2024-03-11 20:44:49,840 - __main__ - INFO] ==========================================================
+[2024-03-11 20:45:16,136 - __main__ - INFO] [81] Update Best Reward: 0.216336  Number: 40 [Goal : 0.368082, Regularization : 0.014079, Similarity : 0.064590, Num : 1.000000, Artists : 1.000000]
+[2024-03-11 20:45:16,136 - __main__ - INFO] Saved path: C:\Users\uvrla\OneDrive\Desktop\optimizer\aura\2023_505+(3-11-20-43)\trials_505_20_40/reward_0.2163359775420715.pickle
+[2024-03-11 20:45:16,136 - __main__ - INFO] (<SceneActions.Flip: 2>, None, 'w9', 0)
+[2024-03-11 20:45:16,136 - __main__ - INFO] ==========================================================
