@@ -5,16 +5,15 @@ sys.path.insert(0,os.path.join(os.getcwd(), 'module'))
 from nodes import MCTSNode
 from scene import SceneState
 from museum import MuseumScene
+from museum import ver
 # import time
 from tqdm import tqdm
 import pickle
 import numpy as np
 import argparse
 import logging
-date = '2023_0+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_min) + ')'
+date = '+' + '(' + str(localtime(time()).tm_mon) +'-'+ str(localtime(time()).tm_mday) +'-'+ str(localtime(time()).tm_hour) + '-'+ str(localtime(time()).tm_min) + ')'
 # date = time.time()
-
-print(date)
 
 class MonteCarloTreeSearch:
     def __init__(self, node: MCTSNode, logger, save_dir,t_depth=40):
@@ -77,7 +76,7 @@ if __name__ == "__main__":
     parser.add_argument('--t_depth', type=int, default=40, help='tree depth')
     args = parser.parse_args()
 
-    log_dir = os.path.join(os.getcwd(), date)
+    log_dir = os.path.join(os.getcwd(), ver+"_"+str(args.trials)+date)
     if (os.path.exists(log_dir) == False):
         os.makedirs(log_dir, exist_ok=False)
     file_dir = os.path.join(log_dir, 'trials_' + str(args.trials) + "_" + str(args.r_depth) + "_" + str(args.t_depth))

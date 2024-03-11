@@ -27,8 +27,9 @@ class SceneActions(Enum):
     Flip = 2
     Add = 3
     Delete = 4
+    EmptySwap = 5
 
-ver = "2023"
+ver = "2022"
 heatmap_cell_size_cm = 10 #10cm로 셀 사이즈 지정
 
 class DataLoader():
@@ -143,6 +144,7 @@ class MuseumScene():
         Flip = []
         Forward = []
         Swap = []
+        EmptySwap = []
         Delete = []
         Add = []
         swap_possible_walls = {}
@@ -214,7 +216,11 @@ class MuseumScene():
                                 Forward.append((SceneActions.Forward, art_id, None, wall_len - (pos + int(art_len/2))))
                 for possible_wall_id, possible_space in swap_possible_walls.items():
                     if possible_wall_id != wall_id:
-                        while len(possible_space) >= 1:
+                        if len(possible_space) == 1: #TODO #HTW #완전 빈 벽일 때
+                            possible_start, possible_length = possible_space.pop(0)
+                            if possible_length >= art_len + 3:
+                                EmptySwap.append((SceneActions.EmptySwap, art_id, possible_wall_id, possible_start+3+int(art_len/2)))
+                        while len(possible_space) > 1: #TODO #HTW #뭐라도 들어 있어서 튜플이 두개일 때
                             possible_start, possible_length = possible_space.pop(0)
                             if possible_length >= art_len + 3:
                                 Swap.append((SceneActions.Swap, art_id, possible_wall_id, possible_start+3+int(art_len/2)))
@@ -229,7 +235,8 @@ class MuseumScene():
         possible_actions["Flip"] = Flip
         possible_actions["Forward"] = Forward
         possible_actions["Swap"] = Swap
-        # possible_actions["Delete"] = Delete
+        possible_actions["EmptySwap"] = EmptySwap
+        possible_actions["Delete"] = Delete
         possible_actions["Add"] = Add
         return possible_actions
     
@@ -247,10 +254,10 @@ class MuseumScene():
                         new_scene[_art] = (wall, wall_len - _pos - 1)
             for k, v in new_scene.items():
                 if type(v[1]) == float or v[1] < 0 or v[1] > int(self.wall_data[v[0]]['length']*10):
-                    raise "fuck your self"
+                    raise "fuck yourself"
             return new_scene
         
-        if action == SceneActions.Swap:
+        if action == SceneActions.Swap or SceneActions.EmptySwap: #TODO #HTW #이렇게 해도 될려나
             (past_wall, _) = self.scene_data[art]
             new_scene[art] = (wall, value)
             new_art_in_wall[wall].append(art)
