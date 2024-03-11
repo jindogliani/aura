@@ -327,7 +327,7 @@ class MuseumScene():
         return total_cost, costs
 
     def visualize(self, num):
-        with open('Results/final_02262157.pickle', 'rb') as f:
+        with open('2023_0+(2-28-13-44)/trials_0_40_40/final.pickle', 'rb') as f:
             best_scene_data = pickle.load(f)
         
         visualization(best_scene_data, self.artwork_data, self.wall_data, num)
