@@ -1,0 +1,18 @@
+[2024-03-12 13:25:46,271 - __main__ - INFO] Weights: Goal 0.5, Regularization 0.3, Similarity 0.2, Number 0.0, Artists 0.0
+[2024-03-12 13:25:46,271 - __main__ - INFO] ==========================================================
+[2024-03-12 13:26:12,971 - __main__ - INFO] [1] Update Best Reward: 0.127699  Number: 34 [Goal : 0.244893, Regularization : 0.005251, Similarity : 0.018388, Num : 0.971429, Artists : 1.000000]
+[2024-03-12 13:26:12,972 - __main__ - INFO] Saved path: /root/workplace/aura/2022_532+(3-12-13-25)/trials_532_20_40/reward_0.12769941402824647.pickle
+[2024-03-12 13:26:12,972 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0019', None, None)
+[2024-03-12 13:26:12,972 - __main__ - INFO] ==========================================================
+[2024-03-12 13:28:41,085 - __main__ - INFO] [5] Update Best Reward: 0.132516  Number: 34 [Goal : 0.254338, Regularization : 0.000000, Similarity : 0.026736, Num : 0.971429, Artists : 1.000000]
+[2024-03-12 13:28:41,086 - __main__ - INFO] Saved path: /root/workplace/aura/2022_532+(3-12-13-25)/trials_532_20_40/reward_0.13251619903359343.pickle
+[2024-03-12 13:28:41,087 - __main__ - INFO] (<SceneActions.Delete: 4>, 'PA-0070', None, None)
+[2024-03-12 13:28:41,087 - __main__ - INFO] ==========================================================
+[2024-03-12 13:29:17,590 - __main__ - INFO] [6] Update Best Reward: 0.151557  Number: 35 [Goal : 0.241580, Regularization : 0.102558, Similarity : 0.000000, Num : 1.000000, Artists : 1.000000]
+[2024-03-12 13:29:17,596 - __main__ - INFO] Saved path: /root/workplace/aura/2022_532+(3-12-13-25)/trials_532_20_40/reward_0.15155725312524132.pickle
+[2024-03-12 13:29:17,596 - __main__ - INFO] (<SceneActions.EmptySwap: 5>, 'PA-0067', 'w8', 55)
+[2024-03-12 13:29:17,596 - __main__ - INFO] ==========================================================
+[2024-03-12 13:30:08,389 - __main__ - INFO] [8] Update Best Reward: 0.184213  Number: 35 [Goal : 0.241434, Regularization : 0.211655, Similarity : 0.000000, Num : 1.000000, Artists : 1.000000]
+[2024-03-12 13:30:08,390 - __main__ - INFO] Saved path: /root/workplace/aura/2022_532+(3-12-13-25)/trials_532_20_40/reward_0.18421348582261982.pickle
+[2024-03-12 13:30:08,390 - __main__ - INFO] (<SceneActions.EmptySwap: 5>, 'PA-0064', 'w9', 11)
+[2024-03-12 13:30:08,390 - __main__ - INFO] ==========================================================
