@@ -73,7 +73,7 @@ class MCTSNode(object):
         max_costs = [0, 0, 0]
         action_path = []
         best_action_path = []
-        rollout_depth = 40 #롤아웃 뎁스 
+        rollout_depth = 30 #롤아웃 뎁스 
         for idx in range(rollout_depth):
             possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)

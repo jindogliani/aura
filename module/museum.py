@@ -29,7 +29,7 @@ class SceneActions(Enum):
     Delete = 4
     EmptySwap = 5
 
-ver = "2022"
+ver = "2023"
 heatmap_cell_size_cm = 10 #10cm로 셀 사이즈 지정
 
 class DataLoader():
@@ -103,8 +103,8 @@ class MuseumScene():
 
         self.weights = {}
         g_weight = 0.5
-        r_weight = 0.3
-        s_weight = 0.2
+        r_weight = 0
+        s_weight = 0.5
         n_weight = 0.0
         an_weight = 0.0
         self.weights['g'] = g_weight
