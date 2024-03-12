@@ -180,7 +180,7 @@ def space_artwork_visitor_merge(ver, visualize_mode, wall_list, space_heatmap, t
         heatmap = np.flipud(heatmap)
         heatmapCSV = pd.DataFrame(heatmap)
 
-        plt.figure(figsize=(10, 8), dpi=100)
+        plt.figure(figsize=(10, 8), dpi=300)
         sns.heatmap(heatmapCSV, cmap='RdYlGn_r', vmin=gallery_wall_intensity, vmax=30) # RdYlGn_r or rainbow
         plt.gca().set_aspect('equal', adjustable='box')
         plt.savefig('visualize/' + ver + date + '_pre_UIpC_heatmap.png')
@@ -230,7 +230,7 @@ def LCL_illustrator(ver, heatmap):
     # plt.gca().invert_yaxis()  # y축 방향을 뒤집어 배열 인덱스와 일치시킴
     plt.savefig('visualize/' + ver + date + '_pre_LCL.png', transparent=True)
 
-ver = "2023"
+ver = "2022"
 visualize_mode = True
 LCLmode = False
 

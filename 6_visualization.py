@@ -15,7 +15,7 @@ import json
 #     best_scene_data = pickle.load(f)
 # print (best_scene_data)
 
-ver = "2023"
+ver = "2022"
 heatmap_dict = {}
 
 
