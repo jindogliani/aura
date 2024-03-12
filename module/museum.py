@@ -29,7 +29,7 @@ class SceneActions(Enum):
     Delete = 4
     EmptySwap = 5
 
-ver = "2023"
+ver = "2022"
 heatmap_cell_size_cm = 10 #10cm로 셀 사이즈 지정
 
 class DataLoader():
@@ -102,9 +102,9 @@ class MuseumScene():
         # print("Initial art and artisit number is %d and %d"%(self.origin_num, self.origin_artist_num))
 
         self.weights = {}
-        g_weight = 0.5
-        r_weight = 0
-        s_weight = 0.5
+        g_weight = 0.2
+        r_weight = 0.1
+        s_weight = 0.7
         n_weight = 0.0
         an_weight = 0.0
         self.weights['g'] = g_weight
